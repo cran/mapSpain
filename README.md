@@ -3,12 +3,16 @@
 
 <!-- badges: start -->
 
-![R-CMD-check](https://github.com/dieghernan/mapSpain/workflows/R-CMD-check/badge.svg)
-[![codecov](https://codecov.io/gh/dieghernan/mapSpain/branch/master/graph/badge.svg)](https://codecov.io/gh/dieghernan/mapSpain)
-[![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/mapSpain)](https://CRAN.R-project.org/package=mapSpain)
+[![CRAN
+results](https://cranchecks.info/badges/worst/mapSpain)](https://cran.r-project.org/web/checks/check_results_mapSpain.html)
+[![R-CMD-check](https://github.com/rOpenSpain/mapSpain/workflows/R-CMD-check/badge.svg)](https://github.com/rOpenSpain/mapSpain/actions?query=workflow%3AR-CMD-check)
+[![codecov](https://codecov.io/gh/rOpenSpain/mapSpain/branch/master/graph/badge.svg?token=6L01BKLL85)](https://codecov.io/gh/rOpenSpain/mapSpain)
+[![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4318025.svg)](https://doi.org/10.5281/zenodo.4318025)
 <!-- badges: end -->
 
-**[mapSpain](https://dieghernan.github.io/mapSpain/)** is a package that
+**[mapSpain](https://ropenspain.github.io/mapSpain/)** is a package that
 provides spatial `sf` objects of the administrative boundaries of Spain,
 including CCAA, provinces and municipalities.
 
@@ -18,15 +22,22 @@ several basemap of public institutions of Spain, and the ability of
 downloading and processing static tiles.
 
 Full site with examples and vignettes on
-<https://dieghernan.github.io/mapSpain/>
+<https://ropenspain.github.io/mapSpain/>
 
 ## Installation
+
+Install `mapSpain` from
+[**CRAN**](https://CRAN.R-project.org/package=mapSpain):
+
+``` r
+install.packages("mapSpain")
+```
 
 You can install the developing version of `mapSpain` with:
 
 ``` r
 library(remotes)
-install_github("dieghernan/mapSpain")
+install_github("rOpenSpain/mapSpain")
 ```
 
 ## Usage
@@ -84,7 +95,7 @@ CCAAbox <- esp_get_can_box()
 plot(CCAAbox, add = TRUE, col = pal[length(pal)])
 ```
 
-![](https://raw.githubusercontent.com/dieghernan/mapSpain/master/README-static-1.svg)<!-- -->
+![](https://raw.githubusercontent.com/ropenspain/mapSpain/master/img/README-static-1.svg)<!-- -->
 
 You can combine `POLYGONS` with static tiles
 
@@ -152,7 +163,7 @@ legendChoro(
 )
 ```
 
-![](https://raw.githubusercontent.com/dieghernan/mapSpain/master/README-tile-1.svg)<!-- -->
+![](https://raw.githubusercontent.com/ropenspain/mapSpain/master/img/README-tile-1.svg)<!-- -->
 
 ### A note on caching
 
@@ -180,7 +191,7 @@ Some packages recommended for visualization are:
 ## Contribute
 
 Check the Github page for [source
-code](https://github.com/dieghernan/mapSpain/).
+code](https://github.com/ropenspain/mapSpain/).
 
 ## Copyright notice
 

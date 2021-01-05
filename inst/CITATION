@@ -1,14 +1,16 @@
 citHeader("To cite the 'mapSpain' package in publications use:")
 
-year = sub('.*(2[[:digit:]]{3})-.*', '\\1', meta$Date, perl = TRUE)
+year = format(Sys.time(), "%Y")
 vers = paste('R package version', meta$Version)
-auth = Filter(function(p) 'aut' %in% p$role, as.person(meta$Author))
+url = 'https://CRAN.R-project.org/package=mapSpain'
 citEntry(
+  header = 'diego_hernangomez_2020_4318025',
   entry = 'manual',
   title = paste('mapSpain:', meta$Title),
-  author = auth,
+  author = "Diego Hernangómez",
   year = year,
   note = vers,
-  url = 'https://dieghernan.github.io/mapSpain/',
-  textVersion = paste('Hernangomez, D. (', year, '). mapSpain: ', meta$Title, '. ', vers, '.', sep = '')
+  url = url,
+  doi = '10.5281/zenodo.4318025',
+  textVersion = paste0('D, Hernangómez (', year, '). mapSpain: ', meta$Title, '. ', vers, '. http://doi.org/10.5281/zenodo.4318025. Package url: ', url)
 )
