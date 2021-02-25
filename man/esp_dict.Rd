@@ -12,16 +12,16 @@ esp_dict_translate(sourcevar, lang = "en", all = FALSE)
 \arguments{
 \item{sourcevar}{Vector which contains the subdivision names to be converted.}
 
-\item{origin, destination}{One of \code{'text', 'nuts', 'iso2', 'codauto'}
-and \code{'cpro'}.}
+\item{origin, destination}{One of "text", "nuts", "iso2",
+"codauto" and "cpro".}
 
 \item{lang}{Language of translation. Available languages are:
 \itemize{
-  \item{\code{es}: }{Spanish}
-  \item{\code{en}: }{English}
-  \item{\code{ca}: }{Catalan}
-  \item{\code{ga}: }{Galician}
-  \item{\code{eu}: }{Basque}
+\item "es": Spanish
+\item "en": English
+\item "ca": Catalan
+\item "ga": Galician
+\item "eu": Basque
 }}
 
 \item{all}{Logical. Should the function return all names or not?
@@ -30,20 +30,18 @@ On \code{FALSE} it returns a character vector. See Value}
 \value{
 \code{esp_dict_region_code} returns a vector of characters.
 
-\code{esp_dict_translate} returns a character vector or a named list
-with each of the possible names of each \code{sourcevar} on the required
-language \code{lang}.
+\code{ esp_dict_translate} returns a character vector or a named list with each
+of the possible names of each \code{sourcevar} on the required language \code{lang}.
 }
 \description{
-Converts long subdivision names into different coding schemes
-and languages.
+Converts long subdivision names into different coding schemes and languages.
 }
 \details{
-If no match is found for any value, the function displays a warning
-and returns \code{NA} for those values.
+If no match is found for any value, the function displays a warning and
+returns \code{NA} for those values.
 
-Note that mixing names of different administrative levels (e.g. Catalonia
-and Barcelona) may return empty values, depending on the \code{destination}
+Note that mixing names of different administrative levels (e.g. "Catalonia"
+and "Barcelona") may return empty values, depending on the \code{destination}
 values.
 }
 \examples{
@@ -58,15 +56,18 @@ esp_dict_region_code(vals, destination = "iso2")
 
 iso2vals <- c("ES-M", "ES-S", "ES-SG")
 esp_dict_region_code(iso2vals, origin = "iso2")
-esp_dict_region_code(iso2vals, origin = "iso2",
-                     destination = "nuts")
-esp_dict_region_code(iso2vals, origin = "iso2",
-                     destination = "cpro")
+esp_dict_region_code(iso2vals,
+  origin = "iso2",
+  destination = "nuts"
+)
+esp_dict_region_code(iso2vals,
+  origin = "iso2",
+  destination = "cpro"
+)
 
 # Mixing levels
 valsmix <- c("Centro", "Andalucia", "Seville", "Menorca")
 esp_dict_region_code(valsmix, destination = "nuts")
-
 \dontrun{
 
 # Warning
@@ -75,8 +76,11 @@ esp_dict_region_code(valsmix, destination = "codauto")
 esp_dict_region_code(valsmix, destination = "iso2")
 }
 
-vals <-  c("La Rioja", "Sevilla", "Madrid",
-           "Jaen", "Orense", "Baleares")
+
+vals <- c(
+  "La Rioja", "Sevilla", "Madrid",
+  "Jaen", "Orense", "Baleares"
+)
 esp_dict_translate(vals)
 esp_dict_translate(vals, lang = "es")
 esp_dict_translate(vals, lang = "ca")
@@ -88,3 +92,4 @@ esp_dict_translate(vals, lang = "ga", all = TRUE)
 \author{
 dieghernan, \url{https://github.com/dieghernan/}
 }
+\concept{dictionary}

@@ -2,32 +2,92 @@
 % Please edit documentation in R/esp_get_prov.R
 \name{esp_get_prov}
 \alias{esp_get_prov}
+\alias{esp_get_prov_siane}
 \title{Get Provinces boundaries of Spain}
+\source{
+IGN data via a custom CDN (see
+\url{https://github.com/rOpenSpain/mapSpain/tree/sianedata}).
+}
 \usage{
 esp_get_prov(prov = NULL, ...)
+
+esp_get_prov_siane(
+  prov = NULL,
+  year = Sys.Date(),
+  epsg = "4258",
+  cache = TRUE,
+  update_cache = FALSE,
+  cache_dir = NULL,
+  verbose = FALSE,
+  resolution = "3",
+  moveCAN = TRUE,
+  rawcols = FALSE
+)
 }
 \arguments{
 \item{prov}{A vector of names and/or codes for provinces
 or \code{NULL} to get all the provinces. See Details.}
 
-\item{...}{Additional parameters from \link{esp_get_nuts}.}
+\item{...}{Additional parameters from \code{\link[=esp_get_nuts]{esp_get_nuts()}}.}
+
+\item{year}{Release year. See \code{\link[=esp_get_nuts]{esp_get_nuts()}} for \code{esp_get_prov} and
+Details for \code{esp_get_prov_siane}}
+
+\item{epsg}{projection of the map: 4-digit \href{https://epsg.io/}{EPSG code}.
+One of:
+\itemize{
+\item "4258": ETRS89
+\item "4326": WGS84
+\item "3035": ETRS89 / ETRS-LAEA
+\item "3857": Pseudo-Mercator
+}}
+
+\item{cache}{A logical whether to do caching. Default is \code{TRUE}.}
+
+\item{update_cache}{A logical whether to update cache. Default is \code{FALSE}.
+When set to \code{TRUE} it would force a fresh download of the source
+\code{.geojson} file.}
+
+\item{cache_dir}{A path to a cache directory. See Details.}
+
+\item{verbose}{Display information. Useful for debugging,
+default is \code{FALSE}.}
+
+\item{resolution}{Resolution of the polygon. Values available are
+"3", "6.5" or "10".}
+
+\item{moveCAN}{A logical \code{TRUE/FALSE} or a vector of coordinates
+\code{c(lat, lon)}. It places the Canary Islands close to Spain's mainland.
+Initial position can be adjusted using the vector of coordinates.}
+
+\item{rawcols}{Logical. Setting this to \code{TRUE} would add the raw columns of
+the dataset provided by IGN.}
 }
 \value{
 A \code{POLYGON/POINT} object.
 }
 \description{
-Loads a simple feature (\code{sf}) object containing the
-province boundaries of Spain.
+Loads a simple feature (\code{sf}) object containing the province boundaries of
+Spain.
+
+\code{esp_get_prov} uses GISCO (Eurostat) as source
+
+\code{esp_get_prov_siane} use CartoBase ANE as source, provided by Instituto
+Geografico Nacional (IGN), \url{http://www.ign.es/web/ign/portal}. Years
+available are 2005 up to today.
 }
 \details{
-When using \code{prov} you can use and mix names and NUTS codes
-(levels 1, 2 or 3), ISO codes (corresponding to level 2 or 3) or
-\code{cpro}.
+When using \code{prov} you can use and mix names and NUTS codes (levels 1, 2 or
+3), ISO codes (corresponding to level 2 or 3) or \code{cpro}.
 
 Ceuta and Melilla are considered as provinces on this dataset.
 
-When calling a superior level (Autonomous Community or NUTS1) , all the
- provinces of that level would be added.
+When calling a superior level (Autonomous Community or NUTS1) ,
+all the provinces of that level would be added.
+
+On \code{esp_get_prov_siane}, \code{year} could be passed as a single year ("YYYY"
+format, as end of year) or as a specific date ("YYYY-MM-DD" format).
+Historical information starts as of 2005.
 }
 \examples{
 
@@ -36,19 +96,25 @@ library(sf)
 # Random Provinces
 
 Random <-
-  esp_get_prov(prov = c("Zamora",
-                        "Palencia",
-                        "ES-GR",
-                        "ES521",
-                        "01"))
+  esp_get_prov(prov = c(
+    "Zamora",
+    "Palencia",
+    "ES-GR",
+    "ES521",
+    "01"
+  ))
 plot(st_geometry(Random), col = hcl.colors(6))
 
 # All Provinces of a Zone plus an addition
 
 Mix <-
-  esp_get_prov(prov = c("Noroeste",
-                        "Castilla y Leon", "La Rioja"),
-               resolution = "20")
+  esp_get_prov(
+    prov = c(
+      "Noroeste",
+      "Castilla y Leon", "La Rioja"
+    ),
+    resolution = "20"
+  )
 plot(
   Mix[, "nuts1.code"],
   pal = hcl.colors(3),
@@ -58,9 +124,10 @@ plot(
 )
 }
 \seealso{
-\link{esp_get_hex_prov}, \link{esp_get_nuts}, \link{esp_get_ccaa},
-\link{esp_get_munic}, \link{esp_codelist}
+\code{\link[=esp_get_hex_prov]{esp_get_hex_prov()}}, \code{\link[=esp_get_nuts]{esp_get_nuts()}}, \code{\link[=esp_get_ccaa]{esp_get_ccaa()}},
+\code{\link[=esp_get_munic]{esp_get_munic()}}, \link{esp_codelist}.
 }
 \author{
 dieghernan, \url{https://github.com/dieghernan/}
 }
+\concept{political}

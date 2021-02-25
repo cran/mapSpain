@@ -2,9 +2,13 @@
 % Please edit documentation in R/esp_get_munic.R
 \name{esp_get_munic}
 \alias{esp_get_munic}
+\alias{esp_get_munic_siane}
 \title{Get municipalities boundaries of Spain}
 \source{
 \href{https://gisco-services.ec.europa.eu/distribution/v2/}{GISCO API}
+
+IGN data via a custom CDN (see
+\url{https://github.com/rOpenSpain/mapSpain/tree/sianedata}.
 }
 \usage{
 esp_get_munic(
@@ -18,16 +22,59 @@ esp_get_munic(
   munic = NULL,
   moveCAN = TRUE
 )
+
+esp_get_munic_siane(
+  year = Sys.Date(),
+  epsg = "4258",
+  cache = TRUE,
+  update_cache = FALSE,
+  cache_dir = NULL,
+  verbose = FALSE,
+  resolution = 3,
+  region = NULL,
+  munic = NULL,
+  moveCAN = TRUE,
+  rawcols = FALSE
+)
 }
 \arguments{
-\item{year, epsg, cache, update_cache, cache_dir, verbose, moveCAN}{See \link{esp_get_nuts}. Years available: 2001, 2004, 2006,
-2008, 2010, 2013 and any year between 2016 and 2019.}
+\item{year}{Release year. See Details for years available.}
+
+\item{epsg}{projection of the map: 4-digit \href{https://epsg.io/}{EPSG code}.
+One of:
+\itemize{
+\item "4258": ETRS89
+\item "4326": WGS84
+\item "3035": ETRS89 / ETRS-LAEA
+\item "3857": Pseudo-Mercator
+}}
+
+\item{cache}{A logical whether to do caching. Default is \code{TRUE}.}
+
+\item{update_cache}{A logical whether to update cache. Default is \code{FALSE}.
+When set to \code{TRUE} it would force a fresh download of the source
+\code{.geojson} file.}
+
+\item{cache_dir}{A path to a cache directory. See Details.}
+
+\item{verbose}{Display information. Useful for debugging,
+default is \code{FALSE}.}
 
 \item{region}{A vector of names and/or codes for provinces
 or \code{NULL} to get all the municipalities. See Details.}
 
 \item{munic}{A name or regex expression with the names of the required
 municipalities. \code{NULL} would not produce any filtering.}
+
+\item{moveCAN}{A logical \code{TRUE/FALSE} or a vector of coordinates
+\code{c(lat, lon)}. It places the Canary Islands close to Spain's mainland.
+Initial position can be adjusted using the vector of coordinates.}
+
+\item{resolution}{Resolution of the polygon. Values available are
+"3", "6.5" or  "10".}
+
+\item{rawcols}{Logical. Setting this to \code{TRUE} would add the raw columns of
+the dataset provided by IGN.}
 }
 \value{
 A \code{POLYGON} object.
@@ -35,6 +82,12 @@ A \code{POLYGON} object.
 \description{
 Loads a simple feature (\code{sf}) object containing the
 municipalities boundaries of Spain.
+
+\code{esp_get_munic} uses GISCO (Eurostat) as source.
+
+\code{esp_get_munic_siane} uses CartoBase ANE as source, provided by Instituto
+Geografico Nacional (IGN), \url{http://www.ign.es/web/ign/portal}. Years
+available are 2005 up to today.
 }
 \details{
 When using \code{region} you can use and mix names and NUTS codes
@@ -43,9 +96,15 @@ When using \code{region} you can use and mix names and NUTS codes
 
 When calling a superior level (Province, Autonomous Community or NUTS1) ,
 all the municipalities of that level would be added.
+
+On \code{esp_get_munic} years available are: 2001, 2004, 2006,
+2008, 2010, 2013 and any year between 2016 and 2019.
+
+On \code{esp_get_munic_siane}, \code{year} could be passed as a single
+year ("YYYY" format, as end of year) or as a specific
+date ("YYYY-MM-DD" format). Historical information starts as of 2005.
 }
 \examples{
-
 
 library(sf)
 
@@ -58,13 +117,15 @@ SAN <-
 
 plot(st_geometry(Base), col = "cornsilk", border = "grey80")
 plot(st_geometry(SAN),
-     col = "firebrick3",
-     border = NA,
-     add = TRUE)
+  col = "firebrick3",
+  border = NA,
+  add = TRUE
+)
 }
 \seealso{
-\link{esp_get_nuts},\link{esp_munic.sf}, \link{esp_codelist}
+\code{\link[=esp_get_nuts]{esp_get_nuts()}}, \link{esp_munic.sf}, \link{esp_codelist}.
 }
 \author{
 dieghernan, \url{https://github.com/dieghernan/}
 }
+\concept{political}

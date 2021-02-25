@@ -2,30 +2,92 @@
 % Please edit documentation in R/esp_get_ccaa.R
 \name{esp_get_ccaa}
 \alias{esp_get_ccaa}
+\alias{esp_get_ccaa_siane}
 \title{Get Autonomous Communities boundaries of Spain}
+\source{
+IGN data via a custom CDN (see
+\url{https://github.com/rOpenSpain/mapSpain/tree/sianedata}.
+}
 \usage{
 esp_get_ccaa(ccaa = NULL, ...)
+
+esp_get_ccaa_siane(
+  ccaa = NULL,
+  year = Sys.Date(),
+  epsg = "4258",
+  cache = TRUE,
+  update_cache = FALSE,
+  cache_dir = NULL,
+  verbose = FALSE,
+  resolution = "3",
+  moveCAN = TRUE,
+  rawcols = FALSE
+)
 }
 \arguments{
 \item{ccaa}{A vector of names and/or codes for autonomous communities
 or \code{NULL} to get all the autonomous communities. See Details.}
 
-\item{...}{Additional parameters from \link{esp_get_nuts}.}
+\item{...}{Additional parameters from \code{\link[=esp_get_nuts]{esp_get_nuts()}}.}
+
+\item{year}{Release year. See \code{\link[=esp_get_nuts]{esp_get_nuts()}} for \code{esp_get_ccaa} and
+Details for \code{esp_get_ccaa_siane}}
+
+\item{epsg}{projection of the map: 4-digit \href{https://epsg.io/}{EPSG code}.
+One of:
+\itemize{
+\item "4258": ETRS89
+\item "4326": WGS84
+\item "3035": ETRS89 / ETRS-LAEA
+\item "3857": Pseudo-Mercator
+}}
+
+\item{cache}{A logical whether to do caching. Default is \code{TRUE}.}
+
+\item{update_cache}{A logical whether to update cache. Default is \code{FALSE}.
+When set to \code{TRUE} it would force a fresh download of the source
+\code{.geojson} file.}
+
+\item{cache_dir}{A path to a cache directory. See Details.}
+
+\item{verbose}{Display information. Useful for debugging,
+default is \code{FALSE}.}
+
+\item{resolution}{Resolution of the polygon. Values available are
+"3", "6.5" or "10".}
+
+\item{moveCAN}{A logical \code{TRUE/FALSE} or a vector of coordinates
+\code{c(lat, lon)}. It places the Canary Islands close to Spain's mainland.
+Initial position can be adjusted using the vector of coordinates.}
+
+\item{rawcols}{Logical. Setting this to \code{TRUE} would add the raw columns of
+the dataset provided by IGN.}
 }
 \value{
 A \code{POLYGON/POINT} object.
 }
 \description{
-Loads a simple feature (\code{sf}) object containing the
-autonomous communities boundaries of Spain.
+Loads a simple feature (\code{sf}) object containing the autonomous communities
+boundaries of Spain.
+
+\code{esp_get_ccaa} uses GISCO (Eurostat) as source
+
+\code{esp_get_ccaa_siane} uses CartoBase ANE as source, provided by
+Instituto Geografico Nacional (IGN), \url{http://www.ign.es/web/ign/portal}.
+
+Years available are 2005 up to today.
 }
 \details{
-When using \code{ccaa} you can use and mix names and NUTS codes
-(levels 1 or 2), ISO codes (corresponding to level 2) or \code{codauto}.
-Ceuta and Melilla are considered as Autonomous Communities on this dataset.
+When using \code{ccaa} you can use and mix names and NUTS codes (levels 1 or 2),
+ISO codes (corresponding to level 2) or \code{codauto}. Ceuta and Melilla are
+considered as Autonomous Communities on this dataset.
 
 When calling a NUTS1 level, all the Autonomous Communities of that level
 would be added.
+
+On \code{esp_get_ccaa_siane}, \code{year} could be passed as a single year ("YYYY"
+format, as end of year) or as a specific date ("YYYY-MM-DD" format).
+Historical information starts as of 2005.
 }
 \examples{
 
@@ -34,19 +96,23 @@ library(sf)
 # Random CCAA
 
 Random <-
-  esp_get_ccaa(ccaa = c("Euskadi",
-                        "Catalunya",
-                        "ES-EX",
-                        "Canarias",
-                        "ES52",
-                        "01"))
+  esp_get_ccaa(ccaa = c(
+    "Euskadi",
+    "Catalunya",
+    "ES-EX",
+    "Canarias",
+    "ES52",
+    "01"
+  ))
 plot(st_geometry(Random), col = hcl.colors(6))
 
 # All CCAA of a Zone plus an addition
 
 Mix <-
-  esp_get_ccaa(ccaa = c("La Rioja", "Noroeste"),
-               resolution = "20")
+  esp_get_ccaa(
+    ccaa = c("La Rioja", "Noroeste"),
+    resolution = "20"
+  )
 plot(
   Mix[, "nuts1.code"],
   pal = hcl.colors(2),
@@ -56,9 +122,10 @@ plot(
 )
 }
 \seealso{
-\link{esp_get_hex_ccaa}, \link{esp_get_nuts}, \link{esp_get_prov},
-\link{esp_get_munic}, \link{esp_codelist}
+\code{\link[=esp_get_hex_ccaa]{esp_get_hex_ccaa()}}, \code{\link[=esp_get_nuts]{esp_get_nuts()}}, \code{\link[=esp_get_prov]{esp_get_prov()}},
+\code{\link[=esp_get_munic]{esp_get_munic()}}, \link{esp_codelist}
 }
 \author{
 dieghernan, \url{https://github.com/dieghernan/}
 }
+\concept{political}

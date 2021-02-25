@@ -1,24 +1,33 @@
-#' @title Get complementary lines when plotting Canary Islands.
-#' @name esp_get_can_box
-#' @description When plotting Spain, it is usual to represent the Canary
-#' Islands as an inset (see \code{moveCAN} on \link{esp_get_nuts}). These
-#' functions provides complementary borders when Canary Islands are displaces.
+#' Get complementary lines when plotting Canary Islands.
 #'
-#' \code{esp_get_can_box} is used to draw lines around the displaced
-#' Canary Islands.
-#' @return A \code{LINESTRING} or \code{POLYGON} object if
-#' \code{style = 'poly'}.
-#' @author dieghernan, \url{https://github.com/dieghernan/}
-#' @seealso \link{esp_get_nuts}, \link{esp_get_ccaa}.
+#' @concept political
+#'
+#' @rdname esp_get_can_box
+#'
+#' @description
+#' When plotting Spain, it is usual to represent the Canary Islands as an inset
+#' (see `moveCAN` on [esp_get_nuts()]. These functions provides complementary
+#' borders when Canary Islands are displaced.
+#'
+#' `esp_get_can_box` is used to draw lines around the displaced Canary Islands.
+#'
+#' @return A `LINESTRING` or `POLYGON` object if `style = "poly"`.
+#'
+#' @author dieghernan, <https://github.com/dieghernan/>
+#'
+#' @seealso [esp_get_nuts()], [esp_get_ccaa()].
+#'
 #' @export
 #'
 #' @param style Style of line around Canary Islands. Four options available:
-#' \code{'left', 'right', 'box'} or \code{'poly'}.
-#' @param moveCAN,epsg See \link{esp_get_nuts}
+#'   "left", "right", "box" or "poly".
+#'
+#' @inheritParams esp_get_nuts
+#'
 #' @examples
 #' library(sf)
 #'
-#' Provs <-  esp_get_prov()
+#' Provs <- esp_get_prov()
 #' Box <- esp_get_can_box()
 #' Line <- esp_get_can_provinces()
 #'
@@ -30,7 +39,7 @@
 #'
 #' # Displacing Canary
 #'
-#' Provs_D <-  esp_get_prov(moveCAN = c(15, 0))
+#' Provs_D <- esp_get_prov(moveCAN = c(15, 0))
 #' Box_D <- esp_get_can_box(style = "left", moveCAN = c(15, 0))
 #' Line_D <- esp_get_can_provinces(moveCAN = c(15, 0))
 #'
@@ -45,24 +54,31 @@
 #' library(giscoR)
 #'
 #' Countries <-
-#'   gisco_get_countries(res = "20",
-#'                       epsg = "4326",
-#'                       region = c("Europe", "Africa"))
+#'   gisco_get_countries(
+#'     res = "20",
+#'     epsg = "4326",
+#'     region = c("Europe", "Africa")
+#'   )
 #' CANbox <-
-#'   esp_get_can_box(style = "poly",
-#'                   epsg = "4326",
-#'                   moveCAN = c(12.5, 0))
-#' CCAA <- esp_get_ccaa(res = "20",
-#'                      epsg = "4326",
-#'                      moveCAN = c(12.5, 0))
+#'   esp_get_can_box(
+#'     style = "poly",
+#'     epsg = "4326",
+#'     moveCAN = c(12.5, 0)
+#'   )
+#' CCAA <- esp_get_ccaa(
+#'   res = "20",
+#'   epsg = "4326",
+#'   moveCAN = c(12.5, 0)
+#' )
 #'
 #'
 #' plot_sf(CCAA, axes = TRUE)
 #' plot(st_geometry(Countries), col = "grey80", add = TRUE)
 #' plot(st_geometry(CANbox),
-#'      border = "black",
-#'      col = "white",
-#'      add = TRUE)
+#'   border = "black",
+#'   col = "white",
+#'   add = TRUE
+#' )
 #' plot(st_geometry(CCAA), add = TRUE, col = "beige")
 #' box()
 esp_get_can_box <- function(style = "right",
@@ -87,13 +103,12 @@ esp_get_can_box <- function(style = "right",
 
 
   if (style == "box" | style == "poly") {
-    bbox <- bbox + c(-0.5,-0.3, 0.5, 0.3)
+    bbox <- bbox + c(-0.5, -0.3, 0.5, 0.3)
 
     lall <- sf::st_as_sfc(bbox, crs = sf::st_crs(CAN))
     if (style == "box") {
       lall <- sf::st_cast(lall, "LINESTRING")
     }
-
   } else if (style == "right") {
     bbox <- bbox + c(0, 0, 0.5, 0.3)
 
@@ -117,7 +132,6 @@ esp_get_can_box <- function(style = "right",
     pall <- c(p1, p2, p3, p4)
     lall <- sf::st_linestring(sf::st_coordinates(pall))
     lall <- sf::st_sfc(lall, crs = sf::st_crs(CAN))
-
   }
 
   moving <- FALSE
@@ -145,13 +159,22 @@ esp_get_can_box <- function(style = "right",
   lall <- sf::st_transform(lall, as.numeric(epsg))
 
   return(lall)
-
 }
 
 #' @rdname esp_get_can_box
-#' @description \code{esp_get_can_provinces} is used to draw a separator
-#' line between the two provinces of the Canary Islands.
-#' @return \code{esp_get_can_provinces} returns a \code{LINESTRING} object.
+#'
+#' @concept political
+#'
+#' @description
+#' `esp_get_can_provinces` is used to draw a separator line between the two
+#' provinces of the Canary Islands.
+#'
+#' @return `esp_get_can_provinces` returns a `LINESTRING` object.
+#'
+#' @source
+#' `esp_get_can_provinces` extracted from CartoBase ANE,
+#' `se89_mult_admin_provcan_l.shp` file.
+#'
 #' @export
 esp_get_can_provinces <- function(moveCAN = TRUE,
                                   epsg = "4258") {
@@ -161,9 +184,11 @@ esp_get_can_provinces <- function(moveCAN = TRUE,
     stop("epsg should be one of '4258','4326','3035', '3857'")
   }
 
-
-  m <- c(sf::st_point(c(-15.25274, 29.20)),
-         sf::st_point(c(-16.4, 27.639)))
+  # From CartoBase ANE: se89_mult_admin_provcan_l
+  m <- c(
+    sf::st_point(c(-16.29902, 27.71454)),
+    sf::st_point(c(-15.69362, 28.78078))
+  )
 
   lall <- sf::st_linestring(sf::st_coordinates(m))
   lall <- sf::st_sfc(lall, crs = sf::st_crs(4326))
@@ -193,5 +218,4 @@ esp_get_can_provinces <- function(moveCAN = TRUE,
   lall <- sf::st_transform(lall, as.numeric(epsg))
 
   return(lall)
-
 }
