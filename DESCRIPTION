@@ -1,7 +1,7 @@
 Package: mapSpain
 Type: Package
 Title: Administrative Boundaries of Spain
-Version: 0.2.0
+Version: 0.2.1
 Authors@R: 
     c(person(given = "Diego",
              family = "Hernangómez",
@@ -34,7 +34,7 @@ Imports: sf (>= 0.9), countrycode (>= 1.2.0), giscoR (>= 0.2.0), raster
         2.0.0)
 Suggests: cartography (>= 2.4), rgdal, tinytest
 NeedsCompilation: no
-Packaged: 2021-02-25 00:05:41 UTC; diego
+Packaged: 2021-03-19 07:19:20 UTC; diego
 Author: Diego Hernangómez [aut, cre, cph]
     (<https://orcid.org/0000-0001-8457-4658>),
   EuroGeographics [cph] (for the administrative boundaries.),
@@ -42,4 +42,4 @@ Author: Diego Hernangómez [aut, cre, cph]
     boundaries.)
 Maintainer: Diego Hernangómez <diego.hernangomezherrero@gmail.com>
 Repository: CRAN
-Date/Publication: 2021-02-25 10:10:02 UTC
+Date/Publication: 2021-03-19 07:40:02 UTC
