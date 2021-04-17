@@ -12,7 +12,7 @@
 #'
 #' @export
 #'
-#' @param ... Additional parameters from [esp_get_nuts()].
+#' @inheritDotParams esp_get_nuts -nuts_level -region
 #'
 #' @examples
 #'
@@ -20,11 +20,11 @@
 #'
 #' OriginalCan <- esp_get_country(moveCAN = FALSE)
 #'
-#' plot(OriginalCan$geometry, col = hcl.colors(5))
+#' plot(OriginalCan$geometry, col = "grey70")
 #'
 #' MovedCan <- esp_get_country(moveCAN = TRUE)
 #'
-#' plot(MovedCan$geometry, col = hcl.colors(5))
+#' plot(MovedCan$geometry, col = "grey70")
 esp_get_country <- function(...) {
   params <- list(...)
   params$nuts_level <- 1
