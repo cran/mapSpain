@@ -1,7 +1,7 @@
 Package: mapSpain
 Type: Package
 Title: Administrative Boundaries of Spain
-Version: 0.2.2
+Version: 0.2.3
 Authors@R: 
     c(person(given = "Diego",
              family = "Hernangómez",
@@ -29,13 +29,12 @@ BugReports: https://github.com/rOpenSpain/mapSpain/issues
 URL: https://ropenspain.github.io/mapSpain/,
         https://github.com/rOpenSpain/mapSpain
 Depends: R (>= 3.6.0)
-Imports: sf (>= 0.9), countrycode (>= 1.2.0), giscoR (>= 0.2.0), raster
+Imports: sf (>= 0.9), countrycode (>= 1.2.0), giscoR (>= 0.2.4), raster
         (>= 3.0), png (>= 0.1-5), slippymath (>= 0.3.1), leaflet (>=
         2.0.0)
-Suggests: tmap (>= 3.0.0), rgdal, tinytest, tibble, knitr, rmarkdown
-VignetteBuilder: knitr
+Suggests: tmap (>= 3.0.0), rgdal, tinytest, tibble
 NeedsCompilation: no
-Packaged: 2021-04-17 05:51:52 UTC; diego
+Packaged: 2021-04-25 19:17:54 UTC; diego
 Author: Diego Hernangómez [aut, cre, cph]
     (<https://orcid.org/0000-0001-8457-4658>),
   EuroGeographics [cph] (for the administrative boundaries.),
@@ -43,4 +42,4 @@ Author: Diego Hernangómez [aut, cre, cph]
     boundaries.)
 Maintainer: Diego Hernangómez <diego.hernangomezherrero@gmail.com>
 Repository: CRAN
-Date/Publication: 2021-04-17 06:40:02 UTC
+Date/Publication: 2021-04-25 19:40:02 UTC

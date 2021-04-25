@@ -1,3 +1,21 @@
+# mapSpain 0.2.3
+
+-   Move minimum version of `giscoR` to v0.2.4
+
+-   Fix typos on `esp_dict_translate()` [\#36](https://github.com/rOpenSpain/mapSpain/issues/36)
+
+-   Not run examples on tiles, as the server sometimes doesn't respond.
+
+-   Refactor `sysdata.rda`.
+
+-   CRAN fixes:
+
+    -   Removed broken link on `addProviderEspTiles()`.
+
+    -   Vignette removed (CRAN warning).
+
+-   Now the `cache` directory is created recursively.
+
 # mapSpain 0.2.2
 
 -   Migrate examples, vignettes and README to `tmap`.
