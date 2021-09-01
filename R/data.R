@@ -13,39 +13,40 @@
 #' (equivalent to NUTS2), Provinces and NUTS3 level. See Note.
 #'
 #' @source
-#' * INE: Instituto Nacional de Estadistica: <https://www.ine.es/>
-#' * Eurostat (NUTS): <https://ec.europa.eu/eurostat/web/nuts/background>
-#' * ISO: <https://www.iso.org/obp/ui/#iso:code:3166:ES>
-#' * CLDR: <https://unicode-org.github.io/cldr-staging/charts/38/index.html>
+#' * **INE**: Instituto Nacional de Estadistica: <https://www.ine.es/>
+#' * **Eurostat (NUTS)**: <https://ec.europa.eu/eurostat/web/nuts/background>
+#' * **ISO**: <https://www.iso.org/obp/ui/#iso:code:3166:ES>
+#' * **CLDR**: <https://unicode-org.github.io/cldr-staging/charts/38/index.html>
 #'
 #' @encoding UTF-8
 #'
 #' @format
-#' data frame with codes as columns
-#'   * \strong{nuts*.code}: NUTS code of each subdivision.
-#'   * \strong{nuts*.code}: NUTS name of each subdivision.
-#'   * \strong{codauto}: INE code of each autonomous community.
-#'   * \strong{iso2.*.code}: ISO2 code of each autonomous
+#' A data frame with `r nrow(mapSpain::esp_codelist)` rows
+#' codes as columns
+#'   * **nuts+.code**: NUTS code of each subdivision.
+#'   * **nuts+.code**: NUTS name of each subdivision.
+#'   * **codauto**: INE code of each autonomous community.
+#'   * **iso2.+.code**: ISO2 code of each autonomous
 #'   community and province.
-#'   * \strong{ine.*.name}: INE name of each autonomous community
+#'   * **ine.+.name**: INE name of each autonomous community
 #'   and province.
-#'   * \strong{iso2.*.name.(lang)}: ISO2 name of each autonomous community
+#'   * **iso2.+.name.(lang)**: ISO2 name of each autonomous community
 #'   and province. Several languages available.
-#'   * \strong{cldr.*.name.(lang)}: CLDR name of each autonomous community and
+#'   * **cldr.+.name.(lang)**: CLDR name of each autonomous community and
 #'   province. Several languages available.
-#'   * \strong{ccaa.short.*}: Short (common) name of each autonomous
+#'   * **ccaa.short.+**: Short (common) name of each autonomous
 #'   community. Several languages available.
-#'   * \strong{cpro}: INE code of each province.
-#'   * \strong{prov.shortname.*}: Short (common) name of each province.
+#'   * **cpro**: INE code of each province.
+#'   * **prov.shortname.+**: Short (common) name of each province.
 #'   Several languages available.
 #'
 #' @note
 #' Languages available are:
-#'   * "en": English
-#'   * "es": Spanish
-#'   * "ca": Catalan
-#'   * "ga": Galician
-#'   * "eu": Basque
+#'   * **"en"**: English
+#'   * **"es"**: Spanish
+#'   * **"ca"**: Catalan
+#'   * **"ga"**: Galician
+#'   * **"eu"**: Basque
 #'
 #' Although NUTS2 matches the first subdivision level of Spain
 #' (CCAA - Autonomous Communities), it should be noted that NUTS3 does not
@@ -57,6 +58,8 @@
 #' or Murcia) on this dataset.
 #'
 #' @examples
+#'
+#' data("esp_codelist")
 #'
 #' library(tibble)
 #'
@@ -85,8 +88,8 @@ NULL
 #' @seealso [esp_get_nuts()]
 #'
 #' @format
-#' A `POLYGON` data frame (resolution: 1:1million, EPSG:4258) object with 86
-#' rows and fields:
+#' A `POLYGON` data frame (resolution: 1:1million, EPSG:4258) object with
+#' `r prettyNum(nrow(mapSpain::esp_nuts.sf), big.mark=",")` rows and fields:
 #'   * COAST_TYPE: COAST_TYPE
 #'   * FID: FID
 #'   * NUTS_NAME: NUTS name on local alphabet
@@ -101,7 +104,7 @@ NULL
 #' @example inst/examples/esp_nuts_sf.R
 NULL
 
-#' All Municipalities `POLYGON` object of Spain
+#' All Municipalities `POLYGON` object of Spain (2019)
 #'
 #' @concept datasets
 #'
@@ -121,15 +124,17 @@ NULL
 #'
 #' @seealso [esp_get_munic()]
 #' @format
-#' A `POLYGON` data frame (resolution: 1:1million, EPSG:4258) object:
-#'   * codauto: INE code of each autonomous community.
-#'   * ine.ccaa.name: INE name of each autonomous community.
-#'   * cpro: INE code of each province.
-#'   * ine.prov.name: INE name of each province.
-#'   * cmun: INE code of each municipality.
-#'   * name: Name of the municipality.
-#'   * LAU_CODE: LAU Code (GISCO) of the municipality.
-#'   * geometry: geometry field.
+#' A `POLYGON` data frame (resolution: 1:1million, EPSG:4258) object with
+#' `r prettyNum(nrow(mapSpain::esp_munic.sf), big.mark=",")` rows and fields:
+#'   * **codauto**: INE code of each autonomous community.
+#'   * **ine.ccaa.name**: INE name of each autonomous community.
+#'   * **cpro**: INE code of each province.
+#'   * **ine.prov.name**: INE name of each province.
+#'   * **cmun**: INE code of each municipality.
+#'   * **name**: Name of the municipality.
+#'   * **LAU_CODE**: LAU Code (GISCO) of the municipality. This is a
+#'     combination of **cpro** and **cmun**, aligned with INE coding scheme.
+#'   * **geometry**: geometry field.
 #'
 #' @example inst/examples/esp_munic_sf.R
 NULL
@@ -144,10 +149,17 @@ NULL
 #' @docType data
 #'
 #' @description
-#' A data frame with 8131 rows containing the population data by municipality
-#' in Spain (2019).
+#' A data frame with `r prettyNum(nrow(mapSpain::pobmun19), big.mark=",")`
+#' rows containing the population data by municipality in Spain (2019).
 #'
 #' @source INE: Instituto Nacional de Estadistica <https://www.ine.es/>
+#'
+#' @examples
+#' data("pobmun19")
+#'
+#' library(tibble)
+#'
+#' as_tibble(pobmun19)
 NULL
 
 
@@ -178,55 +190,28 @@ NULL
 #' @format
 #' A data frame object with a list of the required parameters for calling
 #' the service:
-#'   * provider: Provider name.
-#'   * field: Description of `value`.
-#'   * value: INE code of each province.
+#'   * **provider**: Provider name.
+#'   * **field**: Description of `value`.
+#'   * **value**: INE code of each province.
 #'
 #'
 #' @details
-#' Providers available to be passed to `type` are:
-#'   * **IDErioja:** "IDErioja"
-#'   * **IGNBase:** "IGNBase.Todo", "IGNBase.Gris", "IGNBase.TodoNoFondo,
-#'     IGNBase.Orto"
-#'   * **MDT:** "MDT.Elevaciones", "MDT.Relieve", "MDT.CurvasNivel"
-#'   * **PNOA:** "PNOA.MaximaActualidad", "PNOA.Mosaico"
-#'   * **OcupacionSuelo:** "OcupacionSuelo.Ocupacion", "OcupacionSuelo.Usos"
-#'   * **LiDAR:** "LiDAR"
-#'   * **MTN:** "MTN"
-#'   * **Geofisica:** "Geofisica.Terremotos10dias",
-#'     "Geofisica.Terremotos30dias", "Geofisica.Terremotos365dias",
-#'     "Geofisica.VigilanciaVolcanica"
-#'   * **CaminoDeSantiago:** "CaminoDeSantiago.CaminoFrances",
-#'     "CaminoDeSantiago.CaminosTuronensis", "CaminoDeSantiago.CaminosGalicia",
-#'     "CaminoDeSantiago.CaminosDelNorte", "CaminoDeSantiago.CaminosAndaluces",
-#'     "CaminoDeSantiago.CaminosCentro", "CaminoDeSantiago.CaminosEste",
-#'     "CaminoDeSantiago.CaminosCatalanes", "CaminoDeSantiago.CaminosSureste",
-#'     "CaminoDeSantiago.CaminosInsulares", "CaminoDeSantiago.CaminosPiemonts",
-#'     "CaminoDeSantiago.CaminosTolosana", "CaminoDeSantiago.CaminosPortugueses"
-#'   * **Catastro:** "Catastro.Catastro", "Catastro.Parcela",
-#'     "Catastro.CadastralParcel", "Catastro.CadastralZoning",
-#'     "Catastro.Address", "Catastro.Building"
-#'   * **RedTransporte:** "RedTransporte.Carreteras",
-#'     "RedTransporte.Ferroviario", "RedTransporte.Aerodromo",
-#'     "RedTransporte.AreaServicio", "RedTransporte.EstacionesFerroviario",
-#'     "RedTransporte.Puertos"
-#'   * **Cartociudad:** "Cartociudad.CodigosPostales", "Cartociudad.Direcciones"
-#'   * **NombresGeograficos:** "NombresGeograficos"
-#'   * **UnidadesAdm:** "UnidadesAdm.Limites", "UnidadesAdm.Unidades"
-#'   * **Hidrografia:** "Hidrografia.MasaAgua", "Hidrografia.Cuencas",
-#'     "Hidrografia.Subcuencas", "Hidrografia.POI", "Hidrografia.ManMade",
-#'     "Hidrografia.LineaCosta", "Hidrografia.Rios", "Hidrografia.Humedales"
-#'   * **Militar:** "Militar.CEGET1M", "Militar.CEGETM7814",
-#'      "Militar.CEGETM7815", "Militar.CEGETM682", "Militar.CECAF1M"
-#'   * **ADIF:** "ADIF.Vias", "ADIF.Nodos", "ADIF.Estaciones"
-#'   * **LimitesMaritimos:** "LimitesMaritimos.LimitesMaritimos",
-#'     "LimitesMaritimos.LineasBase"
-#'   * **Copernicus:** "Copernicus.LandCover", "Copernicus.Forest",
-#'       "Copernicus.ForestLeaf", "Copernicus.WaterWet", "Copernicus.SoilSeal",
-#'       "Copernicus.GrassLand", "Copernicus.Local", "Copernicus.RiparianGreen",
-#'    "Copernicus.RiparianLandCover", "Copernicus.Natura2k",
-#'    "Copernicus.UrbanAtlas"
-#'   * **ParquesNaturales:** "ParquesNaturales.Limites",
-#'     "ParquesNaturales.ZonasPerifericas"
+#' Providers available to be passed to `type` on [esp_getTiles()] are:
 #'
+#' ```{r, echo=FALSE}
+#'
+#' t <- mapSpain::leaflet.providersESP.df
+#' t <- paste0("'", unique(t$provider), "'")
+#' t <- data.frame(provider=t)
+#'
+#' knitr::kable(t)
+#'
+#'
+#' ```
+#' @examples
+#' data("leaflet.providersESP.df")
+#'
+#' library(tibble)
+#'
+#' as_tibble(leaflet.providersESP.df)
 NULL

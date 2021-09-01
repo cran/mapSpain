@@ -1,0 +1,226 @@
+## ---- include = FALSE------------------------------------------------------------------------
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE,
+  tidy = "styler",
+  dpi = 90,
+  fig.path = "./",
+  out.width = "100%"
+)
+
+
+## ---- eval=FALSE-----------------------------------------------------------------------------
+## 
+## esp_set_cache_dir("./path/to/location")
+
+
+## ----basic-----------------------------------------------------------------------------------
+
+library(mapSpain)
+library(tmap)
+
+country <- esp_get_country()
+lines <- esp_get_can_box()
+
+tm_shape(country) +
+  tm_polygons() +
+  tm_shape(lines) +
+  tm_lines() +
+  tm_graticules(lines = FALSE) +
+  tm_style("classic") +
+  tm_layout(main.title = "Map of Spain")
+
+# Plot provinces
+
+Andalucia <- esp_get_prov("Andalucia")
+
+tm_shape(Andalucia) +
+  tm_polygons(col = "darkgreen", border.col = "white") +
+  tm_graticules(lines = FALSE)
+
+# Plot municipalities
+
+Euskadi_CCAA <- esp_get_ccaa("Euskadi")
+Euskadi <- esp_get_munic(region = "Euskadi")
+
+# Use dictionary
+
+Euskadi$name_eu <- esp_dict_translate(Euskadi$ine.prov.name, lang = "eu")
+
+tm_shape(Euskadi_CCAA) +
+  tm_fill("grey50") +
+  tm_shape(Euskadi) +
+  tm_polygons("name_eu",
+    palette = c("red2", "darkgreen", "ivory2"),
+    title = ""
+  ) +
+  tm_layout(
+    main.title = paste0(
+      "Euskal Autonomia Erkidegoko",
+      "\n",
+      "Probintziak"
+    ),
+    main.title.size = 0.8,
+    main.title.fontface = "bold"
+  )
+
+
+## ----choro-----------------------------------------------------------------------------------
+
+census <- mapSpain::pobmun19
+
+# Extract CCAA from base dataset
+
+codelist <- mapSpain::esp_codelist
+
+census <-
+  unique(merge(census, codelist[, c("cpro", "codauto")],
+               all.x = TRUE))
+
+# Summarize by CCAA
+census_ccaa <-
+  aggregate(cbind(pob19, men, women) ~ codauto, data = census, sum)
+
+census_ccaa$porc_women <- census_ccaa$women / census_ccaa$pob19
+census_ccaa$porc_women_lab <-
+  paste0(round(100 * census_ccaa$porc_women, 2), "%")
+
+# Merge into spatial data
+
+CCAA_sf <- esp_get_ccaa()
+CCAA_sf <- merge(CCAA_sf, census_ccaa)
+Can <- esp_get_can_box()
+
+
+# Plot with tmap
+tm_shape(CCAA_sf) +
+  tm_polygons(
+    "porc_women",
+    border.col = "grey70",
+    title = "Porc. women",
+    palette = "Blues",
+    alpha = 0.7,
+    legend.format = list(
+      fun = function(x) {
+        sprintf("%1.1f%%", 100 * x)
+      }
+    )
+  ) +
+  tm_shape(CCAA_sf, point.per = "feature") +
+  tm_text("porc_women_lab", remove.overlap = TRUE, shadow = TRUE) +
+  tm_shape(Can) +
+  tm_lines(col = "grey70") +
+  tm_layout(legend.position = c("LEFT", "center"),
+            frame = FALSE)
+
+
+## ----thematic, fig.asp=0.7-------------------------------------------------------------------
+
+# Population density of Spain
+
+library(sf)
+
+pop <- mapSpain::pobmun19
+munic <- esp_get_munic()
+
+# Get area (km2) - Use LAEA projection
+municarea <- as.double(st_area(st_transform(munic, 3035)) / 1000000)
+munic$area <- municarea
+
+munic.pop <- merge(munic, pop, all.x = TRUE, by = c("cpro", "cmun"))
+munic.pop$dens <- munic.pop$pob19 / munic.pop$area
+
+br <-
+  c(
+    -Inf,
+    10,
+    25,
+    100,
+    200,
+    500,
+    1000,
+    5000,
+    10000,
+    Inf
+  )
+
+
+tm_shape(munic.pop) +
+  tm_fill("dens",
+    breaks = br,
+    alpha = 0.9,
+    title = "Pop. per km2",
+    palette = c("black", hcl.colors(100,"Spectral")),
+    showNA = FALSE,
+    colorNA = "black"
+  ) +
+ tm_layout(bg.color = "black",
+           main.title = "Population density in Spain (2019)",
+           main.title.color = "white",
+           main.title.fontface = "bold",
+           outer.bg.color = "black",
+           legend.title.color = "white",
+           legend.text.color = "white",
+           legend.text.fontface = "bold",
+           legend.text.size = 1,
+           legend.position = c("LEFT","center")
+)
+
+
+## ----giscoR, fig.asp=1-----------------------------------------------------------------------
+
+library(giscoR)
+
+# Set the same resolution for a perfect fit
+
+res <- "03"
+
+# Same crs
+target_crs <- 3035
+
+all_countries <- gisco_get_countries(
+  resolution = res,
+  epsg = target_crs
+)
+eu_countries <- gisco_get_countries(
+  resolution = res, region = "EU",
+  epsg = target_crs
+)
+ccaa <- esp_get_ccaa(
+  moveCAN = FALSE, resolution = res,
+  epsg = target_crs
+)
+
+# Plot
+library(tmap)
+
+tm_shape(all_countries, bbox = c(23, 14, 67, 54) * 10e4) +
+  tm_graticules(col = "#DFDFDF", alpha = 0.7) +
+  tm_fill("#DFDFDF") +
+  tm_shape(eu_countries) +
+  tm_polygons("#FDFBEA", border.col = "#656565") +
+  tm_shape(ccaa) +
+  tm_polygons("#C12838", border.col = "grey80", lwd = 0.1)
+
+
+
+## ----tile------------------------------------------------------------------------------------
+
+# Get Deltebre - Municipality
+delt <- esp_get_munic(munic = "Deltebre")
+
+# Base PNOA - Satellite imagery
+PNOA <- esp_getTiles(delt,
+  type = "PNOA",
+  zoom = 11,
+  bbox_expand = 1.5
+)
+
+tm_shape(PNOA) +
+  tm_rgb() +
+  # Mix with shape
+  tm_shape(delt) +
+  tm_fill("green3", alpha = 0.5)
+
