@@ -10,7 +10,7 @@
 [![r-universe](https://ropenspain.r-universe.dev/badges/mapSpain)](https://ropenspain.r-universe.dev/)
 [![R-CMD-check](https://github.com/rOpenSpain/mapSpain/workflows/R-CMD-check/badge.svg)](https://github.com/rOpenSpain/mapSpain/actions?query=workflow%3AR-CMD-check)
 [![codecov](https://codecov.io/gh/rOpenSpain/mapSpain/branch/master/graph/badge.svg?token=6L01BKLL85)](https://codecov.io/gh/rOpenSpain/mapSpain)
-[![DOI](https://img.shields.io/badge/DOI-10.5281/zenodo.4318024-blue)](https://doi.org/10.5281/zenodo.4318024)
+[![DOI](https://img.shields.io/badge/DOI-10.5281/zenodo.5366622-blue)](https://doi.org/10.5281/zenodo.5366622)
 [![Project-Status:Active](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 
 <!-- badges: end -->
@@ -181,7 +181,7 @@ tm_shape(tile, raster.downsample = FALSE) +
 ## mapSpain and giscoR
 
 If you need to plot Spain along with another countries, consider using
-[**giscoR**](https://dieghernan.github.io/giscoR/) package, that is
+[**giscoR**](https://ropengov.github.io/giscoR/) package, that is
 installed as a dependency when you installed **mapSpain**. A basic
 example:
 
@@ -239,7 +239,7 @@ it will load it, speeding up the process.
 
 Some packages recommended for visualization are:
 
--   [**tmap**](https://mtennekes.github.io/tmap/)
+-   [**tmap**](https://github.com/r-tmap/tmap)
 -   [**mapsf**](https://riatelab.github.io/mapsf/)
 -   [**ggplot2**](https://github.com/tidyverse/ggplot2) +
     [**ggspatial**](https://github.com/paleolimbot/ggspatial)
@@ -254,8 +254,8 @@ citation("mapSpain")
 #> 
 #> To cite the 'mapSpain' package in publications use:
 #> 
-#>   Hernangómez, D. (2021). mapSpain: Administrative Boundaries of Spain.
-#>   R package. http://doi.org/10.5281/zenodo.4318024
+#>   Hernangómez, D. (2021). mapSpain: Administrative Boundaries of Spain
+#>   R package. http://doi.org/10.5281/zenodo.5366622
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
@@ -263,8 +263,9 @@ citation("mapSpain")
 #>     title = {mapSpain: Administrative Boundaries of Spain},
 #>     author = {Diego Hernangómez},
 #>     year = {2021},
+#>     note = {R package version 0.3.1},
 #>     url = {https://ropenspain.github.io/mapSpain/},
-#>     doi = {10.5281/zenodo.4318024},
+#>     doi = {10.5281/zenodo.5366622},
 #>   }
 ```
 

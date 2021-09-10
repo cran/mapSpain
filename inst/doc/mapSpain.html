@@ -156,7 +156,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><strong>mapSpain</strong> provides a dataset and tile caching capability, that could be set as:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">esp_set_cache_dir</span>(<span class="st">&quot;./path/to/location&quot;</span>)</span></code></pre></div>
-<p><strong>mapSpain</strong> relies on <a href="https://dieghernan.github.io/giscoR/"><strong>giscoR</strong></a> for downloading some files, and both packages are well synchronized. Setting the same caching directory on both would speed up the data load on your session.</p>
+<p><strong>mapSpain</strong> relies on <a href="https://ropengov.github.io/giscoR/"><strong>giscoR</strong></a> for downloading some files, and both packages are well synchronized. Setting the same caching directory on both would speed up the data load on your session.</p>
 </div>
 <div id="basic-example" class="section level2">
 <h2>Basic example</h2>
@@ -269,7 +269,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="thematic-maps" class="section level2">
 <h2>Thematic maps</h2>
-<p>This is an example on how <strong>mapSpain</strong> can be used to beautiful thematic maps. For plotting purposes we would use the <a href="https://mtennekes.github.io/tmap/"><strong>tmap</strong></a> package, however any package that handles <code>sf</code> objects (e.g. <code>ggplot2</code>, <code>mapsf</code>, <code>leaflet</code>, etc. could be used).</p>
+<p>This is an example on how <strong>mapSpain</strong> can be used to beautiful thematic maps. For plotting purposes we would use the <a href="https://github.com/r-tmap/tmap"><strong>tmap</strong></a> package, however any package that handles <code>sf</code> objects (e.g. <code>ggplot2</code>, <code>mapsf</code>, <code>leaflet</code>, etc. could be used).</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Population density of Spain</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -325,7 +325,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="mapspain-and-giscor" class="section level2">
 <h2>mapSpain and giscoR</h2>
-<p>If you need to plot Spain along with another countries, consider using <a href="https://dieghernan.github.io/giscoR/"><strong>giscoR</strong></a> package, that is installed as a dependency when you installed <strong>mapSpain</strong>. A basic example:</p>
+<p>If you need to plot Spain along with another countries, consider using <a href="https://ropengov.github.io/giscoR/"><strong>giscoR</strong></a> package, that is installed as a dependency when you installed <strong>mapSpain</strong>. A basic example:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(giscoR)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>

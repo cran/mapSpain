@@ -3,7 +3,7 @@
 \name{addProviderEspTiles}
 \alias{addProviderEspTiles}
 \alias{providerEspTileOptions}
-\title{Include base tiles of Spanish public administrations on a \code{leaflet} map}
+\title{Include base tiles of Spanish public administrations on a \strong{leaflet} map}
 \source{
 \url{https://dieghernan.github.io/leaflet-providersESP/} leaflet plugin,
 \strong{v1.2.0}.
@@ -79,9 +79,12 @@ PuertadelSol <-
 PuertadelSol
 }
 \seealso{
-\link{leaflet.providersESP.df}, \code{\link[=esp_getTiles]{esp_getTiles()}},
 \code{\link[leaflet:leaflet]{leaflet::leaflet()}}, \code{\link[leaflet:map-layers]{leaflet::addTiles()}}
 
 \code{\link[leaflet:addProviderTiles]{leaflet::providerTileOptions()}}, \code{\link[leaflet:map-options]{leaflet::tileOptions()}}
+
+Other imagery utilities: 
+\code{\link{esp_getTiles}()},
+\code{\link{leaflet.providersESP.df}}
 }
-\concept{imagery}
+\concept{imagery utilities}

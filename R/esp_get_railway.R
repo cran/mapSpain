@@ -4,21 +4,20 @@
 #' Loads a `sf` lines or point object representing the nodes and railway
 #' lines of Spain.
 #'
-#' @concept infrastructure
+#' @family infrastructure
 #'
 #' @return A `sf` line or point object.
 #'
 #' @source IGN data via a custom CDN (see
 #' <https://github.com/rOpenSpain/mapSpain/tree/sianedata>).
 #'
-#' @seealso [esp_get_roads()]
-#'
 #' @export
 #'
 #' @param year Release year.
 #'
 #' @param spatialtype Spatial type of the output. Use `"line"`
-#'   for extracting the railway as lines and `"point"for extracting for the stations.
+#'   for extracting the railway as lines and `"point"` for extracting
+#'   stations.
 #'
 #' @inheritParams esp_get_roads
 #'

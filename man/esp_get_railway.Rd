@@ -42,7 +42,8 @@ When set to \code{TRUE} it would force a fresh download of the source file.}
 default is \code{FALSE}.}
 
 \item{spatialtype}{Spatial type of the output. Use \code{"line"}
-for extracting the railway as lines and `"point"for extracting for the stations.}
+for extracting the railway as lines and \code{"point"} for extracting
+stations.}
 }
 \value{
 A \code{sf} line or point object.
@@ -92,6 +93,7 @@ tm_shape(provs, bbox = c(-7.5, 38, -2.5, 41)) +
 }
 }
 \seealso{
-\code{\link[=esp_get_roads]{esp_get_roads()}}
+Other infrastructure: 
+\code{\link{esp_get_roads}()}
 }
 \concept{infrastructure}

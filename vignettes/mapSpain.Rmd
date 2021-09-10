@@ -45,7 +45,7 @@ agency of Spain.
 esp_set_cache_dir("./path/to/location")
 ```
 
-**mapSpain** relies on [**giscoR**](https://dieghernan.github.io/giscoR/) for
+**mapSpain** relies on [**giscoR**](https://ropengov.github.io/giscoR/) for
 downloading some files, and both packages are well synchronized. Setting the
 same caching directory on both would speed up the data load on your session.
 
@@ -182,7 +182,7 @@ tm_shape(CCAA_sf) +
 
 This is an example on how **mapSpain** can be used to beautiful thematic maps.
 For plotting purposes we would use the
-[**tmap**](https://mtennekes.github.io/tmap/)
+[**tmap**](https://github.com/r-tmap/tmap)
 package, however any package that handles `sf` objects (e.g. `ggplot2`, `mapsf`,
 `leaflet`, etc. could be used).
 
@@ -246,7 +246,7 @@ tm_shape(munic.pop) +
 ## mapSpain and giscoR
 
 If you need to plot Spain along with another countries, consider using
-[**giscoR**](https://dieghernan.github.io/giscoR/) package, that is installed
+[**giscoR**](https://ropengov.github.io/giscoR/) package, that is installed
 as a dependency when you installed **mapSpain**. A basic example:
 
 

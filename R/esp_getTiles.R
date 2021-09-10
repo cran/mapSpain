@@ -8,7 +8,8 @@
 #' [leaflet-providersESP](https://dieghernan.github.io/leaflet-providersESP/)
 #' **v1.2.0**.
 #'
-#' @concept imagery
+#' @family imagery utilities
+#' @seealso [raster::brick()].
 #'
 #' @return
 #' A `RasterBrick` is returned, with 3 (RGB) or 4 (RGBA) layers, depending on
@@ -19,9 +20,6 @@
 #'  **v1.2.0**.
 #'
 #'
-#' @seealso
-#' [leaflet.providersESP.df], [raster::brick()]
-#' [addProviderEspTiles()].
 #'
 #' For plotting, you can use [raster::plotRGB()], [tmap::tm_rgb()].
 #'
@@ -164,7 +162,7 @@ esp_getTiles <- function(x,
 
   if (provs[provs$field == "type", "value"] == "WMS") {
     rout <-
-      getWMS(
+      getwms(
         x,
         provs,
         update_cache,
@@ -176,7 +174,7 @@ esp_getTiles <- function(x,
       )
   } else {
     rout <-
-      getWMTS(
+      getwmts(
         x,
         provs,
         update_cache,

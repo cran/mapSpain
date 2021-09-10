@@ -1,10 +1,11 @@
-#' Include base tiles of Spanish public administrations on a `leaflet` map
+#' Include base tiles of Spanish public administrations on a **leaflet** map
 #'
 #' @description
 #' Include tiles of public Spanish organisms to a
 #' [leaflet::leaflet()] map.
 #'
-#' @concept imagery
+#' @family imagery utilities
+#' @seealso [leaflet::leaflet()], [leaflet::addTiles()]
 #'
 #' @rdname addProviderEspTiles
 #' @name addProviderEspTiles
@@ -16,8 +17,6 @@
 #' @return A map object generated with [leaflet::leaflet()].
 #'
 #'
-#' @seealso [leaflet.providersESP.df], [esp_getTiles()],
-#' [leaflet::leaflet()], [leaflet::addTiles()]
 #'
 #' @export
 #'
@@ -73,10 +72,10 @@ addProviderEspTiles <- function(map,
   templurl <- provs[provs$field == "url", "value"]
   attribution <- provs[provs$field == "attribution", "value"]
 
-  isWMTS <- provs[provs$field == "type", "value"] == "WMTS"
+  iswmts <- provs[provs$field == "type", "value"] == "WMTS"
 
   # Work with options
-  if (isFALSE(isWMTS)) {
+  if (isFALSE(iswmts)) {
     layers <- provs[provs$field == "layers", "value"]
   }
 
@@ -132,7 +131,7 @@ addProviderEspTiles <- function(map,
 
 
 
-  if (isWMTS) {
+  if (iswmts) {
     optionend <- do.call(leaflet::tileOptions, optionend)
 
     leaflet::addTiles(
@@ -160,8 +159,6 @@ addProviderEspTiles <- function(map,
 
 #' @rdname addProviderEspTiles
 #' @name providerEspTileOptions
-#'
-#' @concept imagery
 #'
 #' @details
 #' [providerEspTileOptions()] is a wrapper of

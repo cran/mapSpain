@@ -3,14 +3,13 @@
 #' @description
 #' Loads a `sf` line object representing the main roads of Spain.
 #'
-#' @concept infrastructure
+#' @family infrastructure
 #'
 #' @return A `sf` line object.
 #'
 #' @source IGN data via a custom CDN (see
 #' <https://github.com/rOpenSpain/mapSpain/tree/sianedata>).
 #'
-#' @seealso [esp_get_railway()]
 #'
 #' @param year Release year. See **Details** for years available.
 #' @inheritParams esp_get_nuts
@@ -75,17 +74,17 @@ esp_get_roads <- function(year = Sys.Date(),
 
   # Buffer around Canary Island to identify roads
   data_sf2 <- sf::st_transform(data_sf, 3857)
-  CanBuff <- sf::st_transform(esp_get_ccaa("Canarias", moveCAN = FALSE), 3857)
-  CanBuff <- sf::st_buffer(sf::st_union(CanBuff), 20000)
+  canbuff <- sf::st_transform(esp_get_ccaa("Canarias", moveCAN = FALSE), 3857)
+  canbuff <- sf::st_buffer(sf::st_union(canbuff), 20000)
 
-  can_logic <- sf::st_intersects(data_sf2, CanBuff, sparse = FALSE)
+  can_logic <- sf::st_intersects(data_sf2, canbuff, sparse = FALSE)
   data_sf$codauto <- "XX"
   data_sf[can_logic, ]$codauto <- "05"
 
 
 
 
-  # Move CAN
+  # Move can
   # Checks
   moving <- FALSE
   moving <- isTRUE(moveCAN) | length(moveCAN) > 1
@@ -103,25 +102,25 @@ esp_get_roads <- function(year = Sys.Date(),
       }
 
       data_sf <- sf::st_transform(data_sf, 3857)
-      PENIN <- data_sf[-grep("05", data_sf$codauto), ]
-      CAN <- data_sf[grep("05", data_sf$codauto), ]
+      penin <- data_sf[-grep("05", data_sf$codauto), ]
+      can <- data_sf[grep("05", data_sf$codauto), ]
 
-      # Change geometry name on PENIN
-      PENIN <- sf::st_sf(
-        sf::st_drop_geometry(PENIN),
-        geometry = sf::st_geometry(PENIN),
-        crs = sf::st_crs(PENIN)
+      # Change geometry name on penin
+      penin <- sf::st_sf(
+        sf::st_drop_geometry(penin),
+        geometry = sf::st_geometry(penin),
+        crs = sf::st_crs(penin)
       )
 
-      # Move CAN
-      CAN <- sf::st_sf(
-        sf::st_drop_geometry(CAN),
-        geometry = sf::st_geometry(CAN) + offset,
-        crs = sf::st_crs(CAN)
+      # Move can
+      can <- sf::st_sf(
+        sf::st_drop_geometry(can),
+        geometry = sf::st_geometry(can) + offset,
+        crs = sf::st_crs(can)
       )
 
       # Regenerate
-      data_sf <- rbind(PENIN, CAN)
+      data_sf <- rbind(penin, can)
     }
   }
 

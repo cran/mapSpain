@@ -1,3 +1,9 @@
+# mapSpain 0.3.1
+
+-   Fix an error on CRAN related with the cache folder [#52](https://github.com/rOpenSpain/mapSpain/issues/52):
+    - Add `mapSpain::esp_clear_cache()`
+-   Update docs with `@family` tag.
+
 # mapSpain 0.3.0
 
 -   Caching improvements: new function `esp_set_cache_dir()` based on 
