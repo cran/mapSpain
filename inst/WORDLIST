@@ -48,6 +48,7 @@ España
 Estaciones
 EstacionesFerroviario
 Estadistica
+EuroGeographics
 Eurostat
 FID
 Ferroviario
@@ -131,6 +132,7 @@ WaterWet
 YYYY
 ZonasPerifericas
 administratives
+aes
 basemaps
 bathymetry
 bezüglich
@@ -172,8 +174,10 @@ lang
 les
 limites
 mapsf
+natively
 providersESP
 rOS
+rasterVis
 ropenspain
 roxygen
 shortname

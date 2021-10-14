@@ -9,23 +9,19 @@
 #' **v1.2.0**.
 #'
 #' @family imagery utilities
-#' @seealso [raster::brick()].
+#' @seealso [terra::rast()].
 #'
 #' @return
-#' A `RasterBrick` is returned, with 3 (RGB) or 4 (RGBA) layers, depending on
-#' the provider. See [raster::brick()].
+#' A `SpatRaster` is returned, with 3 (RGB) or 4 (RGBA) layers, depending on
+#' the provider. See [terra::rast()].
 #' .
 #' @source
 #' <https://dieghernan.github.io/leaflet-providersESP/> leaflet plugin,
 #'  **v1.2.0**.
 #'
-#'
-#'
-#' For plotting, you can use [raster::plotRGB()], [tmap::tm_rgb()].
-#'
 #' @export
 #'
-#' @param x An `sf` object.
+#' @param x An `sf` or `sfc` object.
 #'
 #' @param type Name of the provider. See [leaflet.providersESP.df].
 #' @param zoom Zoom level. If `NULL`, it is determined automatically. If set,
@@ -55,20 +51,27 @@
 #'
 #' ```{r, echo=FALSE}
 #'
-#' t <- tibble::tribble(
-#'  ~zoom, ~"area to represent",
-#'  0, "whole world",
-#'  3, "large country",
-#'  5, "state",
-#'  8, "county",
-#'  10, "metropolitan area",
-#'  11, "city",
-#'  13, "village or suburb",
-#'  16, "streets",
-#'  18, "some buildings, trees"
-#'  )
 #'
-#' knitr::kable(t)
+#' df <- data.frame(
+#'   zoom = c(0, 3, 5, 8, 10, 11, 13, 16, 18),
+#'   represents = c(
+#'     "whole world",
+#'     "large country",
+#'     "state",
+#'     "county",
+#'     "metropolitan area",
+#'     "city",
+#'     "village or suburb",
+#'     "streets",
+#'     "some buildings, trees"
+#'   )
+#' )
+#'
+#'
+#' knitr::kable(df,
+#'              col.names = c("zoom",
+#'                            "area to represent")
+#'                            )
 #'
 #'
 #' ```
@@ -89,12 +92,11 @@
 #' Murcia <- esp_get_ccaa_siane("Murcia", epsg = 3857)
 #' Tile <- esp_getTiles(Murcia)
 #'
-#' library(tmap)
+#' library(ggplot2)
 #'
-#' tm_shape(Tile, raster.downsample = FALSE) +
-#'   tm_rgb(interpolate = FALSE) +
-#'   tm_shape(Murcia) +
-#'   tm_borders()
+#' ggplot(Murcia) +
+#'   layer_spatraster(Tile) +
+#'   geom_sf(fill = NA)
 #' }
 esp_getTiles <- function(x,
                          type = "IDErioja",
@@ -109,14 +111,33 @@ esp_getTiles <- function(x,
                          cache_dir = NULL,
                          verbose = FALSE) {
   # nocov start
-  if (isFALSE(requireNamespace("rgdal", quietly = TRUE))) {
-    stop("`rgdal` package required for esp_getTiles()")
+
+  if (!requireNamespace("slippymath", quietly = TRUE)) {
+    stop("slippymath package required for using this function")
+  }
+  if (!requireNamespace("terra", quietly = TRUE)) {
+    stop("terra package required for using this function")
+  }
+  if (!requireNamespace("png", quietly = TRUE)) {
+    stop("png package required for using this function")
+  }
+  # nocov end
+  # Only sf and sfc objects allowed
+
+  if (!inherits(x, "sf") && !inherits(x, "sfc")) {
+    stop(
+      "Only sf and sfc ",
+      "objects allowed"
+    )
   }
 
-
-  # Disable warnings related with crs
-  oldw <- getOption("warn")
-  options(warn = -1)
+  # If sfc convert to sf
+  if (inherits(x, "sfc")) {
+    x <- sf::st_as_sf(
+      data.frame(x = 1),
+      x
+    )
+  }
 
   # A. Check providers
   leafletProvidersESP <- mapSpain::leaflet.providersESP.df
@@ -144,13 +165,13 @@ esp_getTiles <- function(x,
   x <- sf::st_transform(x, 3857)
 
   # Buffer if single point
-  if (length(x) & "POINT" %in% sf::st_geometry_type(x)) {
+  if (length(x) == 1 && "POINT" %in% sf::st_geometry_type(x)) {
     x <- sf::st_buffer(sf::st_geometry(x), 50)
     crop <- FALSE
-    # Auto zoom = 18 if not set
+    # Auto zoom = 15 if not set
     if (is.null(zoom)) {
-      zoom <- 18
-      if (verbose) message("Auto zoom on point set to 18")
+      zoom <- 15
+      if (verbose) message("Auto zoom on point set to 15")
     }
   }
 
@@ -159,23 +180,26 @@ esp_getTiles <- function(x,
   cache_dir <- esp_hlp_cachedir(cache_dir)
   cache_dir <- esp_hlp_cachedir(paste0(cache_dir, "/", type))
 
+  typeprov <- provs[provs$field == "type", "value"]
 
-  if (provs[provs$field == "type", "value"] == "WMS") {
+  newbbox <- esp_hlp_get_bbox(x, bbox_expand, typeprov)
+
+
+  if (typeprov == "WMS") {
     rout <-
       getwms(
-        x,
+        newbbox,
         provs,
         update_cache,
         cache_dir,
         verbose,
         res,
-        transparent,
-        bbox_expand
+        transparent
       )
   } else {
     rout <-
       getwmts(
-        x,
+        newbbox,
         provs,
         update_cache,
         cache_dir,
@@ -201,37 +225,77 @@ esp_getTiles <- function(x,
   x <- xinit
 
   # reproject rout
+  x_terra <- terra::vect(x)
+  rout <- terra::project(
+    rout,
+    terra::crs(x_terra)
+  )
 
-  rout <-
-    raster::projectRaster(from = rout, crs = sf::st_crs(x)$proj4string)
 
-  rout <- raster::clamp(rout,
+  rout <- terra::clamp(rout,
     lower = 0,
     upper = 255,
-    useValues = TRUE
+    values = TRUE
   )
 
 
   # crop management
   if (crop == TRUE) {
-    cb <- sf::st_bbox(x)
+    newbbox <- sf::st_transform(newbbox, sf::st_crs(x))
+    cb <- sf::st_bbox(newbbox)
 
-    k <-
-      min(c(bbox_expand * (cb[4] - cb[2]), bbox_expand * (cb[3] - cb[1])))
-    cb <- cb + c(-k, -k, k, k)
-    rout <- raster::crop(rout, cb[c(1, 3, 2, 4)])
+    rout <- terra::crop(rout, cb[c(1, 3, 2, 4)])
   }
 
   # Mask
-  if (mask & class(x)[1] != "RasterBrick") {
-    rout <- raster::mask(rout, x)
+  if (mask) {
+    rout <- terra::mask(rout, x_terra)
   }
 
-  # Restore warnings
-  options(warn = oldw)
-  on.exit(options(warn = oldw))
+  # Manage transparency
+
+  if (!transparent && terra::nlyr(rout) == 4) {
+    rout <- rout[[-4]]
+  }
+
 
   # Result
   return(rout)
-  # nocov end
+}
+
+#' Helper to get bboxes
+#' @noRd
+esp_hlp_get_bbox <- function(x, bbox_expand = 0.05, typeprov = "WMS") {
+  # Get bbox, this works with CRS 3857
+
+  stopifnot(identical(sf::st_crs(3857), sf::st_crs(x)))
+
+  bbox <- as.double(sf::st_bbox(x))
+  dimx <- (bbox[3] - bbox[1])
+  dimy <- (bbox[4] - bbox[2])
+  center <- c(bbox[1] + dimx / 2, bbox[2] + dimy / 2)
+
+  bbox_expand <- 1 + bbox_expand
+
+
+  if (typeprov == "WMS") {
+    maxdist <- max(dimx, dimy)
+    dimy <- maxdist
+    dimx <- dimy
+  }
+
+  newbbox <- c(
+    center[1] - bbox_expand * dimx / 2,
+    center[2] - bbox_expand * dimy / 2,
+    center[1] + bbox_expand * dimx / 2,
+    center[2] + bbox_expand * dimy / 2
+  )
+
+  class(newbbox) <- "bbox"
+
+  newbbox <- sf::st_as_sfc(newbbox)
+
+  sf::st_crs(newbbox) <- sf::st_crs(x)
+
+  return(newbbox)
 }

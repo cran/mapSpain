@@ -44,7 +44,6 @@ esp_set_cache_dir <- function(cache_dir,
                               install = FALSE,
                               verbose = TRUE) {
 
-  # nocov start
 
   # Default if not provided
   if (missing(cache_dir) || cache_dir == "") {
@@ -70,6 +69,8 @@ esp_set_cache_dir <- function(cache_dir,
     is.logical(install)
   )
 
+  # Expand
+  cache_dir <- path.expand(cache_dir)
 
   # Create cache dir if it doesn't exists
   if (!dir.exists(cache_dir)) {
@@ -85,6 +86,8 @@ esp_set_cache_dir <- function(cache_dir,
 
 
   # Install path on environ var.
+
+  # nocov start
 
   if (install) {
     config_dir <- rappdirs::user_config_dir("mapSpain", "R")
@@ -105,6 +108,7 @@ esp_set_cache_dir <- function(cache_dir,
         call. = FALSE
       )
     }
+    # nocov end
   } else {
     if (verbose && !is_temp) {
       message(
@@ -116,7 +120,6 @@ esp_set_cache_dir <- function(cache_dir,
 
   Sys.setenv(MAPSPAIN_CACHE_DIR = cache_dir)
   return(invisible(cache_dir))
-  # nocov end
 }
 
 esp_clear_cache <- function(config = TRUE,
@@ -150,14 +153,15 @@ esp_hlp_detect_cache_dir <- function() {
 
 
   # 1. Get from option - This is from backwards compatibility only
-  # nocov start
+
   from_option <- getOption("mapSpain_cache_dir", NULL)
 
+  # nocov start
   if (!is.null(from_option) && (is.null(getvar) || getvar == "")) {
     cache_dir <- esp_set_cache_dir(from_option, install = FALSE)
     return(cache_dir)
   }
-
+  # nocov end
 
 
 
@@ -168,6 +172,7 @@ esp_hlp_detect_cache_dir <- function() {
       "mapSpain_cache_dir"
     )
 
+    # nocov start
     if (file.exists(cache_config)) {
       cached_path <- readLines(cache_config)
 
@@ -184,6 +189,7 @@ esp_hlp_detect_cache_dir <- function() {
       # 3. Return from cached path
       Sys.setenv(MAPSPAIN_CACHE_DIR = cached_path)
       return(cached_path)
+      # nocov end
     } else {
       # 4. Default cache location
 
@@ -196,7 +202,6 @@ esp_hlp_detect_cache_dir <- function() {
   } else {
     return(getvar)
   }
-  # nocov end
 }
 
 #' Creates `cache_dir`
@@ -208,11 +213,6 @@ esp_hlp_cachedir <- function(cache_dir = NULL) {
   # Check cache dir from options if not set
   if (is.null(cache_dir)) {
     cache_dir <- esp_hlp_detect_cache_dir()
-  }
-
-  # Reevaluate
-  if (is.null(cache_dir)) {
-    cache_dir <- file.path(tempdir(), "mapSpain")
   }
 
   # Create cache dir if needed

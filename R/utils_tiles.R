@@ -15,16 +15,13 @@ getwms <- function(x,
                    cache_dir,
                    verbose,
                    res,
-                   transparent,
-                   bbox_expand) { # nocov start
-
-  bbox_expand <- max(1 + bbox_expand, 1.1)
+                   transparent) {
 
   # Get squared bbox
   bbox <- as.double(sf::st_bbox(x))
   dimx <- (bbox[3] - bbox[1])
   dimy <- (bbox[4] - bbox[2])
-  maxdist <- max(dimx, dimy) * bbox_expand # Expand bbox
+  maxdist <- max(dimx, dimy)
   center <- c(bbox[1] + dimx / 2, bbox[2] + dimy / 2)
 
   bboxsquare <- c(
@@ -91,7 +88,7 @@ getwms <- function(x,
 
   img <- png::readPNG(filename) * 255
   # Give transparency if available
-  if (dim(img)[3] == 4 & transparent) {
+  if (dim(img)[3] == 4 && transparent) {
     nrow <- dim(img)[1]
 
     for (i in seq_len(nrow)) {
@@ -104,16 +101,20 @@ getwms <- function(x,
 
 
   # compose brick raster
-  rout <-
-    raster::brick(img, crs = sf::st_crs(3857)$proj4string)
+  r_img <- suppressWarnings(terra::rast(img))
 
-  raster::extent(rout) <-
-    raster::extent(bboxsquare[c(1, 3, 2, 4)])
 
+  if (is.null(terra::RGB(r_img))) {
+    terra::RGB(r_img) <- c(1, 2, 3)
+  }
+
+  terra::ext(r_img) <- terra::ext(bboxsquare[c(1, 3, 2, 4)])
+
+
+  terra::crs(r_img) <- "epsg:3857"
   # End WMS
 
-  return(rout)
-  # nocov end
+  return(r_img)
 }
 
 #' Get tiles from WMTS
@@ -133,7 +134,6 @@ getwmts <- function(x,
                     zoommin,
                     type,
                     transparent) {
-  # nocov start
   # New fun
 
   x <- sf::st_transform(x, 4326)
@@ -198,29 +198,31 @@ getwmts <- function(x,
 
   rout <- compose_tile_grid(tile_grid, ext, images, transparent)
   return(rout)
-  # nocov end
 }
 
 
 #' @name compose_tile_grid
 #' @noRd
 compose_tile_grid <- function(tile_grid, ext, images, transparent) {
-  # nocov start
+
+  # Based on https://github.com/riatelab/maptiles/blob/main/R/get_tiles.R
+
   bricks <- vector("list", nrow(tile_grid$tiles))
+
+
   for (i in seq_along(bricks)) {
-    bbox <-
-      slippymath::tile_bbox(
-        tile_grid$tiles$x[i], tile_grid$tiles$y[i],
-        tile_grid$zoom
-      )
+    bbox <- slippymath::tile_bbox(
+      tile_grid$tiles$x[i], tile_grid$tiles$y[i],
+      tile_grid$zoom
+    )
     img <- images[i]
     # special for png tiles
     if (ext == "png") {
       img <- png::readPNG(img) * 255
 
-      if (dim(img)[3] == 4 & transparent) {
+      # Give transparency
+      if (dim(img)[3] == 4 && transparent) {
         nrow <- dim(img)[1]
-
         for (j in seq_len(nrow)) {
           row <- img[j, , ]
           alpha <- row[, 4] == 0
@@ -231,23 +233,35 @@ compose_tile_grid <- function(tile_grid, ext, images, transparent) {
     }
 
     # compose brick raster
-    r_img <-
-      raster::brick(img, crs = sf::st_crs(3857)$proj4string)
-    raster::extent(r_img) <-
-      raster::extent(bbox[c(
-        "xmin", "xmax",
-        "ymin", "ymax"
-      )])
+    r_img <- suppressWarnings(terra::rast(img))
+
+    # compose brick raster
+    r_img <- suppressWarnings(terra::rast(img))
+
+    if (is.null(terra::RGB(r_img))) {
+      terra::RGB(r_img) <- c(1, 2, 3)
+    }
+
+    terra::ext(r_img) <- terra::ext(bbox[c(
+      "xmin", "xmax",
+      "ymin", "ymax"
+    )])
     bricks[[i]] <- r_img
   }
+
   # if only one tile is needed
   if (length(bricks) == 1) {
-    return(bricks[[1]])
+    rout <- bricks[[1]]
+    rout <- terra::merge(rout, rout)
+  } else {
+    # all tiles together
+    rout <- do.call(terra::merge, bricks)
   }
-  # all tiles together
-  rout <- do.call(raster::merge, bricks)
+
+  terra::RGB(rout) <- c(1, 2, 3)
+  terra::crs(rout) <- "epsg:3857"
+
   return(rout)
-  # nocov end
 }
 
 
@@ -262,7 +276,6 @@ dl_t <-
            verbose,
            cache_dir,
            update_cache) {
-    # nocov start
     outfile <-
       paste0(cache_dir, "/", src, "_", z, "_", x[1], "_", x[2], ".", ext)
 
@@ -301,5 +314,4 @@ dl_t <-
       message("Tile cached on ", outfile)
     }
     return(outfile)
-    # nocov end
   }

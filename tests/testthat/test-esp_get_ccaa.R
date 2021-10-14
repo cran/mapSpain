@@ -1,9 +1,9 @@
 test_that("CCAA", {
-  expect_error(esp_get_ccaa("FFF"))
+  expect_warning(expect_error(esp_get_ccaa("FFF")))
   expect_silent(esp_get_ccaa())
   expect_silent(esp_get_ccaa(ccaa = c("Galicia", "ES7", "Centro")))
   expect_warning(esp_get_ccaa(ccaa = "Zamora"))
-  expect_error(esp_get_ccaa(ccaa = "ES6x"))
+  expect_warning(expect_error(esp_get_ccaa(ccaa = "ES6x")))
   expect_warning(esp_get_ccaa(ccaa = "Barcelona"))
 
   # Test all
@@ -34,17 +34,18 @@ test_that("CCAA", {
 
 # Test siane
 test_that("ccaa online", {
-  expect_warning(expect_error(esp_get_ccaa_siane("FFF")))
+  skip_on_cran()
+  skip_if_siane_offline()
+  skip_if_gisco_offline()
+  skip_on_os("mac")
+
   expect_error(esp_get_ccaa_siane(epsg = "FFF"))
 
-  skip_if_not(
-    giscoR::gisco_check_access(),
-    "Skipping... GISCO not reachable."
-  )
-
-
-
   expect_silent(esp_get_ccaa_siane())
+
+  expect_message(esp_get_ccaa_siane(cache = FALSE, verbose = TRUE))
+
+
   expect_silent(esp_get_ccaa_siane("Canarias"))
   expect_silent(esp_get_ccaa_siane(rawcols = TRUE))
   expect_silent(esp_get_ccaa_siane(ccaa = c("Galicia", "ES7", "Centro")))

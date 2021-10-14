@@ -64,6 +64,7 @@ corresponding .geojson file by any other method and save it on your
 }
 
 \examples{
+\dontshow{if (esp_check_access()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 \donttest{
 
 provs <- esp_get_prov()
@@ -77,20 +78,29 @@ stations <- esp_get_railway(spatialtype = "point")
 
 # Map
 
-library(tmap)
+library(ggplot2)
 
-tm_shape(provs, bbox = c(-7.5, 38, -2.5, 41)) +
-  tm_polygons(col = "grey99", border.col = "grey50") +
-  tm_shape(ccaa) +
-  tm_borders("black") +
-  tm_shape(rails) +
-  tm_lines("tipo",
-    legend.col.show = FALSE, lwd = 3,
-    palette = "viridis"
+ggplot(provs) +
+  geom_sf(fill = "grey99", color = "grey50") +
+  geom_sf(data = ccaa, fill = NA) +
+  geom_sf(
+    data = rails, aes(color = tipo),
+    show.legend = FALSE, lwd = 1.5
   ) +
-  tm_shape(stations) +
-  tm_symbols("red", size = .3, alpha = 0.5, shape = 19)
+  geom_sf(
+    data = stations,
+    color = "red", alpha = 0.5
+  ) +
+  coord_sf(
+    xlim = c(-7.5, -2.5),
+    ylim = c(38, 41)
+  ) +
+  scale_color_manual(values = hcl.colors(
+    length(unique(rails$tipo)), "viridis"
+  )) +
+  theme_minimal()
 }
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 Other infrastructure: 

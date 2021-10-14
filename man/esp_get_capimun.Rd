@@ -47,8 +47,8 @@ default is \code{FALSE}.}
 \item{region}{A vector of names and/or codes for provinces
 or \code{NULL} to get all the municipalities. See \strong{Details}.}
 
-\item{munic}{A name or \code{\link[base:grep]{regex}} expression with the names of the
-required municipalities. \code{NULL} would not produce any filtering.}
+\item{munic}{A name or \code{\link[base:grep]{regex}} expression with the names of
+the required municipalities. \code{NULL} would not produce any filtering.}
 
 \item{moveCAN}{A logical \code{TRUE/FALSE} or a vector of coordinates
 \code{c(lat, lon)}. It places the Canary Islands close to Spain's mainland.
@@ -129,21 +129,17 @@ points <- rbind(
   capimun[, "type"]
 )
 
-# Check on plot
-library(tmap)
 
-tm_shape(tile, raster.downsample = FALSE) +
-  tm_rgb() +
-  tm_shape(area) +
-  tm_borders(col = "grey40") +
-  tm_shape(points) +
-  tm_symbols(col = "type", alpha = 0.8, pal = "RdBu") +
-  tm_layout(
-    main.title = "Centroid vs. capimun",
-    legend.outside = TRUE,
-    legend.outside.size = 0.3,
-    legend.text.size = 1
-  )
+# Check on plot
+library(ggplot2)
+
+ggplot(points) +
+  layer_spatraster(tile) +
+  geom_sf(data = area, fill = NA, color = "blue") +
+  geom_sf(data = points, aes(fill = type), size = 5, shape = 21) +
+  scale_fill_manual(values = c("green", "red")) +
+  theme_void() +
+  labs(title = "Centroid vs. capimun")
 }
 }
 \seealso{

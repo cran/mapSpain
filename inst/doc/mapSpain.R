@@ -1,4 +1,4 @@
-## ---- include = FALSE----------------------------------------------------------------
+## ---- include = FALSE---------------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -11,34 +11,42 @@ knitr::opts_chunk$set(
 )
 
 
-## ---- eval=FALSE---------------------------------------------------------------------
+## ---- eval=FALSE--------------------------------------------------------------------
 ## 
 ## esp_set_cache_dir("./path/to/location")
 
 
-## ----basic---------------------------------------------------------------------------
+## ----basic--------------------------------------------------------------------------
 
 library(mapSpain)
-library(tmap)
+library(ggplot2)
 
 country <- esp_get_country()
 lines <- esp_get_can_box()
 
-tm_shape(country) +
-  tm_polygons() +
-  tm_shape(lines) +
-  tm_lines() +
-  tm_graticules(lines = FALSE) +
-  tm_style("classic") +
-  tm_layout(main.title = "Map of Spain")
+ggplot(country) +
+  geom_sf(fill = "cornsilk", color = "#887e6a") +
+  labs(title = "Map of Spain") +
+  theme(
+    panel.background = element_rect(fill = "#fffff3"),
+    panel.border = element_rect(
+      colour = "#887e6a",
+      fill = NA,
+    ),
+    text = element_text(
+      family = "serif",
+      face = "bold"
+    )
+  )
 
 # Plot provinces
 
 Andalucia <- esp_get_prov("Andalucia")
 
-tm_shape(Andalucia) +
-  tm_polygons(col = "darkgreen", border.col = "white") +
-  tm_graticules(lines = FALSE)
+ggplot(Andalucia) +
+  geom_sf(fill = "darkgreen", color = "white") +
+  theme_bw()
+
 
 # Plot municipalities
 
@@ -49,25 +57,23 @@ Euskadi <- esp_get_munic(region = "Euskadi")
 
 Euskadi$name_eu <- esp_dict_translate(Euskadi$ine.prov.name, lang = "eu")
 
-tm_shape(Euskadi_CCAA) +
-  tm_fill("grey50") +
-  tm_shape(Euskadi) +
-  tm_polygons("name_eu",
-    palette = c("red2", "darkgreen", "ivory2"),
-    title = ""
+ggplot(Euskadi_CCAA) +
+  geom_sf(fill = "grey50") +
+  geom_sf(data = Euskadi, aes(fill = name_eu)) +
+  scale_fill_manual(values = c("red2", "darkgreen", "ivory2")) +
+  labs(
+    fill = "",
+    title = "Euskal Autonomia Erkidegoko",
+    subtitle = "Probintziak"
   ) +
-  tm_layout(
-    main.title = paste0(
-      "Euskal Autonomia Erkidegoko",
-      "\n",
-      "Probintziak"
-    ),
-    main.title.size = 0.8,
-    main.title.fontface = "bold"
+  theme_void() +
+  theme(
+    plot.title = element_text(face = "bold"),
+    plot.subtitle = element_text(face = "italic")
   )
 
 
-## ----choro---------------------------------------------------------------------------
+## ----choro--------------------------------------------------------------------------
 
 census <- mapSpain::pobmun19
 
@@ -76,8 +82,7 @@ census <- mapSpain::pobmun19
 codelist <- mapSpain::esp_codelist
 
 census <-
-  unique(merge(census, codelist[, c("cpro", "codauto")],
-               all.x = TRUE))
+  unique(merge(census, codelist[, c("cpro", "codauto")], all.x = TRUE))
 
 # Summarize by CCAA
 census_ccaa <-
@@ -93,30 +98,30 @@ CCAA_sf <- esp_get_ccaa()
 CCAA_sf <- merge(CCAA_sf, census_ccaa)
 Can <- esp_get_can_box()
 
-
-# Plot with tmap
-tm_shape(CCAA_sf) +
-  tm_polygons(
-    "porc_women",
-    border.col = "grey70",
-    title = "Porc. women",
-    palette = "Blues",
-    alpha = 0.7,
-    legend.format = list(
-      fun = function(x) {
-        sprintf("%1.1f%%", 100 * x)
-      }
-    )
+ggplot(CCAA_sf) +
+  geom_sf(aes(fill = porc_women),
+    color = "grey70",
+    lwd = .3
   ) +
-  tm_shape(CCAA_sf, point.per = "feature") +
-  tm_text("porc_women_lab", remove.overlap = TRUE, shadow = TRUE) +
-  tm_shape(Can) +
-  tm_lines(col = "grey70") +
-  tm_layout(legend.position = c("LEFT", "center"),
-            frame = FALSE)
+  geom_sf(data = Can, color = "grey70") +
+  geom_sf_label(aes(label = porc_women_lab),
+    fill = "white", alpha = 0.5,
+    size = 3,
+    label.size = 0
+  ) +
+  scale_fill_gradientn(
+    colors = hcl.colors(10, "Blues", rev = TRUE),
+    n.breaks = 10,
+    labels = function(x) {
+      sprintf("%1.1f%%", 100 * x)
+    },
+    guide = guide_legend(title = "Porc. women")
+  ) +
+  theme_void() +
+  theme(legend.position = c(0.1, 0.6))
 
 
-## ----thematic, fig.asp=0.7-----------------------------------------------------------
+## ----thematic-----------------------------------------------------------------------
 
 # Population density of Spain
 
@@ -147,29 +152,36 @@ br <-
   )
 
 
-tm_shape(munic.pop) +
-  tm_fill("dens",
-    breaks = br,
-    alpha = 0.9,
-    title = "Pop. per km2",
-    palette = c("black", hcl.colors(100,"Spectral")),
-    showNA = FALSE,
-    colorNA = "black"
+munic.pop$cuts <- cut(munic.pop$dens, br)
+
+ggplot(munic.pop) +
+  geom_sf(aes(fill = cuts), color = NA, lwd = 0) +
+  scale_fill_manual(
+    values = c("grey5", hcl.colors(
+      length(br) - 2,
+      "Spectral"
+    )),
+    labels = prettyNum(c(0, br[-1]), big.mark = ","),
+    guide = guide_legend(
+      title = "Pop. per km2",
+      direction = "horizontal",
+      nrow = 1,
+      keywidth = 2,
+      title.position = "top",
+      label.position = "bottom"
+    )
   ) +
- tm_layout(bg.color = "black",
-           main.title = "Population density in Spain (2019)",
-           main.title.color = "white",
-           main.title.fontface = "bold",
-           outer.bg.color = "black",
-           legend.title.color = "white",
-           legend.text.color = "white",
-           legend.text.fontface = "bold",
-           legend.text.size = 1,
-           legend.position = c("LEFT","center")
-)
+  labs(title = "Population density in Spain (2019)") +
+  theme_void() +
+  theme(
+    plot.title = element_text(hjust = .5),
+    plot.background = element_rect(fill = "black"),
+    text = element_text(colour = "white"),
+    legend.position = "bottom"
+  )
 
 
-## ----giscoR, fig.asp=1---------------------------------------------------------------
+## ----giscoR-------------------------------------------------------------------------
 
 library(giscoR)
 
@@ -193,20 +205,26 @@ ccaa <- esp_get_ccaa(
   epsg = target_crs
 )
 
-# Plot
-library(tmap)
+ggplot(all_countries) +
+  geom_sf(fill = "#DFDFDF", color = "#656565") +
+  geom_sf(data = eu_countries, fill = "#FDFBEA", color = "#656565") +
+  geom_sf(data = ccaa, fill = "#C12838", color = "grey80", lwd = .1) +
+  # Center in Europe: EPSG 3035
+  coord_sf(
+    xlim = c(2377294, 7453440),
+    ylim = c(1313597, 5628510)
+  ) +
+  theme(
+    panel.background = element_blank(),
+    panel.grid = element_line(
+      colour = "#DFDFDF",
+      linetype = "dotted"
+    )
+  )
 
-tm_shape(all_countries, bbox = c(23, 14, 67, 54) * 10e4) +
-  tm_graticules(col = "#DFDFDF", alpha = 0.7) +
-  tm_fill("#DFDFDF") +
-  tm_shape(eu_countries) +
-  tm_polygons("#FDFBEA", border.col = "#656565") +
-  tm_shape(ccaa) +
-  tm_polygons("#C12838", border.col = "grey80", lwd = 0.1)
 
 
-
-## ----tile----------------------------------------------------------------------------
+## ----tile---------------------------------------------------------------------------
 
 # Get Deltebre - Municipality
 delt <- esp_get_munic(munic = "Deltebre")
@@ -218,9 +236,9 @@ PNOA <- esp_getTiles(delt,
   bbox_expand = 1.5
 )
 
-tm_shape(PNOA) +
-  tm_rgb() +
-  # Mix with shape
-  tm_shape(delt) +
-  tm_fill("green3", alpha = 0.5)
+ggplot(delt) +
+  layer_spatraster(PNOA) +
+  geom_sf(fill = "green", alpha = 0.5) +
+  coord_sf(expand = FALSE) +
+  theme_void()
 

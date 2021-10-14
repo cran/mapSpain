@@ -24,8 +24,8 @@
 #' @param region A vector of names and/or codes for provinces
 #'  or `NULL` to get all the municipalities. See **Details**.
 #'
-#' @param munic A name or [`regex`][base::grep()] expression with the names of the
-#'   required municipalities. `NULL` would not produce any filtering.
+#' @param munic A name or [`regex`][base::grep()] expression with the names of
+#'   the required municipalities. `NULL` would not produce any filtering.
 #'
 #' @inheritParams esp_get_nuts
 #'
@@ -52,6 +52,7 @@
 #' all the municipalities of that level would be added.
 #'
 #' @examples
+#' \donttest{
 #' # Get munics
 #' Base <- esp_get_munic(year = "2019", region = "Castilla y Leon")
 #'
@@ -71,25 +72,26 @@
 #' br <- sort(c(
 #'   0, 50, 100, 200, 500,
 #'   1000, 5000, 50000, 100000,
-#'   max(Base_pop$pob19)
+#'   Inf
 #' ))
 #'
+#' Base_pop$cuts <- cut(Base_pop$pob19, br, dig.lab = 20)
+#'
 #' # Plot
-#' library(tmap)
-#' tm_shape(Base_pop) +
-#'   tm_fill(
-#'     col = "pob19", palette = "cividis",
-#'     breaks = br,
-#'     title = "Persons"
+#' library(ggplot2)
+#'
+#'
+#' ggplot(Base_pop) +
+#'   geom_sf(aes(fill = cuts), color = NA) +
+#'   geom_sf(data = provs, fill = NA, color = "grey70") +
+#'   scale_fill_manual(values = hcl.colors(length(br), "cividis")) +
+#'   labs(
+#'     title = "Population in Castilla y Leon",
+#'     subtitle = "INE, 2019",
+#'     fill = "Persons"
 #'   ) +
-#'   tm_shape(provs) +
-#'   tm_borders(col = "white", alpha = 0.25) +
-#'   tm_layout(
-#'     legend.outside = TRUE,
-#'     legend.position = c("right", "center"),
-#'     main.title = "Population in Castilla y Leon (2019)",
-#'     frame = FALSE
-#'   )
+#'   theme_void()
+#' }
 esp_get_munic <- function(year = "2019",
                           epsg = "4258",
                           cache = TRUE,
@@ -145,8 +147,6 @@ esp_get_munic <- function(year = "2019",
 
     dwnload <- FALSE
   }
-
-  # nocov start
 
   if (dwnload) {
     if (year >= "2016") {
@@ -237,8 +237,6 @@ esp_get_munic <- function(year = "2019",
 
     data_sf <- df2
   }
-
-  # nocov end
 
   if (!is.null(munic)) {
     munic <- paste(munic, collapse = "|")

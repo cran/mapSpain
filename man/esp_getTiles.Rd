@@ -6,8 +6,6 @@
 \source{
 \url{https://dieghernan.github.io/leaflet-providersESP/} leaflet plugin,
 \strong{v1.2.0}.
-
-For plotting, you can use \code{\link[raster:plotRGB]{raster::plotRGB()}}, \code{\link[tmap:tm_raster]{tmap::tm_rgb()}}.
 }
 \usage{
 esp_getTiles(
@@ -26,7 +24,7 @@ esp_getTiles(
 )
 }
 \arguments{
-\item{x}{An \code{sf} object.}
+\item{x}{An \code{sf} or \code{sfc} object.}
 
 \item{type}{Name of the provider. See \link{leaflet.providersESP.df}.}
 
@@ -62,8 +60,8 @@ When set to \code{TRUE} it would force a fresh download of the source file.}
 default is \code{FALSE}.}
 }
 \value{
-A \code{RasterBrick} is returned, with 3 (RGB) or 4 (RGBA) layers, depending on
-the provider. See \code{\link[raster:brick]{raster::brick()}}.
+A \code{SpatRaster} is returned, with 3 (RGB) or 4 (RGBA) layers, depending on
+the provider. See \code{\link[terra:rast]{terra::rast()}}.
 .
 }
 \description{
@@ -116,19 +114,19 @@ corresponding .geojson file by any other method and save it on your
 Murcia <- esp_get_ccaa_siane("Murcia", epsg = 3857)
 Tile <- esp_getTiles(Murcia)
 
-library(tmap)
+library(ggplot2)
 
-tm_shape(Tile, raster.downsample = FALSE) +
-  tm_rgb(interpolate = FALSE) +
-  tm_shape(Murcia) +
-  tm_borders()
+ggplot(Murcia) +
+  layer_spatraster(Tile) +
+  geom_sf(fill = NA)
 }
 }
 \seealso{
-\code{\link[raster:brick]{raster::brick()}}.
+\code{\link[terra:rast]{terra::rast()}}.
 
 Other imagery utilities: 
 \code{\link{addProviderEspTiles}()},
+\code{\link{layer_spatraster}()},
 \code{\link{leaflet.providersESP.df}}
 }
 \concept{imagery utilities}

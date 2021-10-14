@@ -63,8 +63,8 @@ default is \code{FALSE}.}
 \item{region}{A vector of names and/or codes for provinces
 or \code{NULL} to get all the municipalities. See \strong{Details}.}
 
-\item{munic}{A name or \code{\link[base:grep]{regex}} expression with the names of the
-required municipalities. \code{NULL} would not produce any filtering.}
+\item{munic}{A name or \code{\link[base:grep]{regex}} expression with the names of
+the required municipalities. \code{NULL} would not produce any filtering.}
 
 \item{moveCAN}{A logical \code{TRUE/FALSE} or a vector of coordinates
 \code{c(lat, lon)}. It places the Canary Islands close to Spain's mainland.
@@ -98,7 +98,7 @@ The years available are:
 \itemize{
 \item \code{\link[=esp_get_munic]{esp_get_munic()}}:  \code{year} could be one of "2001", "2004", "2006", "2008",
 "2010", "2013" and any year between 2016 and 2019.
-See \code{\link[giscoR:gisco_get]{giscoR::gisco_get_lau()}}, \code{\link[giscoR:gisco_get]{giscoR::gisco_get_communes()}}.
+See \code{\link[giscoR:gisco_get_lau]{giscoR::gisco_get_lau()}}, \code{\link[giscoR:gisco_get_lau]{giscoR::gisco_get_communes()}}.
 \item \code{\link[=esp_get_munic_siane]{esp_get_munic_siane()}}: \code{year} could be passed as a single year ("YYYY"
 format, as end of year) or as a specific date ("YYYY-MM-DD" format).
 Historical information starts as of 2005.
@@ -131,6 +131,7 @@ get the actual coordinates, instead of the modified ones.
 }
 
 \examples{
+\donttest{
 # Get munics
 Base <- esp_get_munic(year = "2019", region = "Castilla y Leon")
 
@@ -150,28 +151,29 @@ Base_pop <- merge(Base, pobmun19,
 br <- sort(c(
   0, 50, 100, 200, 500,
   1000, 5000, 50000, 100000,
-  max(Base_pop$pob19)
+  Inf
 ))
 
+Base_pop$cuts <- cut(Base_pop$pob19, br, dig.lab = 20)
+
 # Plot
-library(tmap)
-tm_shape(Base_pop) +
-  tm_fill(
-    col = "pob19", palette = "cividis",
-    breaks = br,
-    title = "Persons"
+library(ggplot2)
+
+
+ggplot(Base_pop) +
+  geom_sf(aes(fill = cuts), color = NA) +
+  geom_sf(data = provs, fill = NA, color = "grey70") +
+  scale_fill_manual(values = hcl.colors(length(br), "cividis")) +
+  labs(
+    title = "Population in Castilla y Leon",
+    subtitle = "INE, 2019",
+    fill = "Persons"
   ) +
-  tm_shape(provs) +
-  tm_borders(col = "white", alpha = 0.25) +
-  tm_layout(
-    legend.outside = TRUE,
-    legend.position = c("right", "center"),
-    main.title = "Population in Castilla y Leon (2019)",
-    frame = FALSE
-  )
+  theme_void()
+}
 }
 \seealso{
-\code{\link[giscoR:gisco_get]{giscoR::gisco_get_lau()}}, \code{\link[base:regex]{base::regex()}}.
+\code{\link[giscoR:gisco_get_lau]{giscoR::gisco_get_lau()}}, \code{\link[base:regex]{base::regex()}}.
 
 Other political: 
 \code{\link{esp_codelist}},

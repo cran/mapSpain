@@ -1,9 +1,8 @@
 
 test_that("capimun online", {
-  skip_if_not(
-    giscoR::gisco_check_access(),
-    "Skipping... GISCO not reachable."
-  )
+  skip_on_cran()
+  skip_if_siane_offline()
+  skip_if_gisco_offline()
 
   expect_silent(esp_get_capimun())
   expect_silent(esp_get_capimun(rawcols = TRUE))

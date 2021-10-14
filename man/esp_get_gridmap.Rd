@@ -46,75 +46,66 @@ provided (in this case , all the provinces of Andalucia).
 Results are provided in \strong{EPSG:4258}, use \code{\link[sf:st_transform]{sf::st_transform()}}
 to change the projection.
 }
-\section{About caching}{
-You can set your \code{cache_dir} with \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.
-
-Sometimes cached files may be corrupt. On that case, try re-downloading
-the data setting \code{update_cache = TRUE}.
-
-If you experience any problem on download, try to download the
-corresponding .geojson file by any other method and save it on your
-\code{cache_dir}. Use the option \code{verbose = TRUE} for debugging the API query.
-}
-
-\section{Displacing the Canary Islands}{
-While \code{moveCAN} is useful for visualization, it would alter the actual
-geographic position of the Canary Islands. When using the output for
-spatial analysis or using tiles (e.g. with \code{\link[=esp_getTiles]{esp_getTiles()}} or
-\code{\link[=addProviderEspTiles]{addProviderEspTiles()}})  this option should be set to \code{FALSE} in order to
-get the actual coordinates, instead of the modified ones.
-}
-
 \examples{
 
 
 esp <- esp_get_country()
 hexccaa <- esp_get_hex_ccaa()
 
-library(tmap)
+library(ggplot2)
+
+ggplot(hexccaa) +
+  geom_sf(data = esp) +
+  geom_sf(aes(fill = codauto),
+    alpha = 0.3,
+    show.legend = FALSE
+  ) +
+  geom_sf_text(aes(label = label), check_overlap = TRUE) +
+  theme_void() +
+  labs(title = "Hexbin: CCAA")
 
 
-tm_shape(esp, bbox = c(-13.5, 32, 7, 45)) +
-  tm_polygons() +
-  tm_shape(hexccaa) +
-  tm_polygons("codauto", alpha = 0.6, legend.show = FALSE) +
-  tm_shape(hexccaa) +
-  tm_text("label") +
-  tm_layout(main.title = "Hexbin: CCAA")
 
 
 
 hexprov <- esp_get_hex_prov()
 
-tm_shape(esp, bbox = c(-13.5, 32, 7, 45)) +
-  tm_polygons() +
-  tm_shape(hexprov) +
-  tm_polygons("cpro", alpha = 0.6, legend.show = FALSE) +
-  tm_shape(hexprov) +
-  tm_text("label") +
-  tm_layout(main.title = "Hexbin: Provinces")
+ggplot(hexprov) +
+  geom_sf(data = esp) +
+  geom_sf(aes(fill = codauto),
+    alpha = 0.3,
+    show.legend = FALSE
+  ) +
+  geom_sf_text(aes(label = label), check_overlap = TRUE) +
+  theme_void() +
+  labs(title = "Hexbin: Provinces")
 
 
 
 gridccaa <- esp_get_grid_ccaa()
 
-tm_shape(esp, bbox = c(-13.5, 32, 7, 45)) +
-  tm_polygons() +
-  tm_shape(gridccaa) +
-  tm_polygons("codauto", alpha = 0.6, legend.show = FALSE) +
-  tm_shape(gridccaa) +
-  tm_text("label") +
-  tm_layout(main.title = "Grid: CCAA")
+ggplot(gridccaa) +
+  geom_sf(data = esp) +
+  geom_sf(aes(fill = codauto),
+    alpha = 0.3,
+    show.legend = FALSE
+  ) +
+  geom_sf_text(aes(label = label), check_overlap = TRUE) +
+  theme_void() +
+  labs(title = "Grid: CCAA")
+
 
 gridprov <- esp_get_grid_prov()
 
-tm_shape(esp, bbox = c(-13.5, 32, 7, 45)) +
-  tm_polygons() +
-  tm_shape(gridprov) +
-  tm_polygons("cpro", alpha = 0.6, legend.show = FALSE) +
-  tm_shape(gridprov) +
-  tm_text("label") +
-  tm_layout(main.title = "Grid: Provinces")
+ggplot(gridprov) +
+  geom_sf(data = esp) +
+  geom_sf(aes(fill = codauto),
+    alpha = 0.3,
+    show.legend = FALSE
+  ) +
+  geom_sf_text(aes(label = label), check_overlap = TRUE) +
+  theme_void() +
+  labs(title = "Grid: Provinces")
 }
 \seealso{
 Other political: 

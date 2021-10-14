@@ -1,6 +1,5 @@
 #' Clear your **mapSpain** cache dir
 #'
-#' @name esp_clear_cache
 #' @family cache utilities
 #'
 #' @return Invisible. This function is called for its side effects.
@@ -34,16 +33,18 @@
 #'
 #' Sys.getenv("MAPSPAIN_CACHE_DIR")
 #' @export
-esp_clear_cache <- function(config = TRUE,
+esp_clear_cache <- function(config = FALSE,
                             cached_data = TRUE,
                             verbose = FALSE) {
-  # nocov start
   config_dir <- rappdirs::user_config_dir("mapSpain", "R")
   data_dir <- esp_hlp_detect_cache_dir()
+
+  # nocov start
   if (config && dir.exists(config_dir)) {
     unlink(config_dir, recursive = TRUE, force = TRUE)
     if (verbose) message("mapSpain cache config deleted")
   }
+  # nocov end
 
   if (cached_data && dir.exists(data_dir)) {
     unlink(data_dir, recursive = TRUE, force = TRUE)
@@ -56,5 +57,4 @@ esp_clear_cache <- function(config = TRUE,
 
   # Reset cache dir
   return(invisible())
-  # nocov end
 }
