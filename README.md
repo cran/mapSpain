@@ -9,9 +9,10 @@
 [![Downloads](https://cranlogs.r-pkg.org/badges/mapSpain)](https://CRAN.R-project.org/package=mapSpain)
 [![r-universe](https://ropenspain.r-universe.dev/badges/mapSpain)](https://ropenspain.r-universe.dev/)
 [![R-CMD-check](https://github.com/rOpenSpain/mapSpain/workflows/R-CMD-check/badge.svg)](https://github.com/rOpenSpain/mapSpain/actions?query=workflow%3AR-CMD-check)
-[![codecov](https://app.codecov.io/gh/rOpenSpain/mapSpain/branch/main/graph/badge.svg?token=6L01BKLL85)](https://app.codecov.io/gh/rOpenSpain/mapSpain)
+[![codecov](https://codecov.io/gh/rOpenSpain/mapSpain/branch/main/graph/badge.svg?token=6L01BKLL85)](https://app.codecov.io/gh/rOpenSpain/mapSpain)
 [![DOI](https://img.shields.io/badge/DOI-10.5281/zenodo.5366622-blue)](https://doi.org/10.5281/zenodo.5366622)
 [![Project-Status:Active](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![status](https://tinyverse.netlify.com/badge/mapSpain)](https://CRAN.R-project.org/package=mapSpain)
 
 <!-- badges: end -->
 
@@ -33,7 +34,7 @@ Install **mapSpain** from
 [**CRAN**](https://CRAN.R-project.org/package=mapSpain):
 
 ``` r
-install.packages("mapSpain")
+install.packages("mapSpain", dependencies = TRUE)
 ```
 
 You can install the developing version of **mapSpain** using the
@@ -46,7 +47,7 @@ options(repos = c(
   CRAN = "https://cloud.r-project.org"
 ))
 
-install.packages("mapSpain")
+install.packages("mapSpain", dependencies = TRUE)
 ```
 
 Alternatively, you can install the developing version of **mapSpain**
@@ -54,7 +55,7 @@ with:
 
 ``` r
 library(remotes)
-install_github("rOpenSpain/mapSpain")
+install_github("rOpenSpain/mapSpain", dependencies = TRUE)
 ```
 
 ## Usage
@@ -62,7 +63,6 @@ install_github("rOpenSpain/mapSpain")
 This script highlights some features of **mapSpain** :
 
 ``` r
-
 library(mapSpain)
 
 census <- mapSpain::pobmun19
@@ -121,7 +121,6 @@ ggplot(CCAA_sf) +
 You can combine `sf` objects with static tiles
 
 ``` r
-
 # Get census
 census <- mapSpain::pobmun19
 census$porc_women <- census$women / census$pob19
@@ -187,7 +186,6 @@ installed as a dependency when you installed **mapSpain**. A basic
 example:
 
 ``` r
-
 library(giscoR)
 
 # Set the same resolution for a perfect fit
@@ -249,36 +247,32 @@ it will load it, speeding up the process.
 
 Some packages recommended for visualization are:
 
-  - [**tmap**](https://github.com/r-tmap/tmap)
-  - [**mapsf**](https://riatelab.github.io/mapsf/)
-  - [**ggplot2**](https://github.com/tidyverse/ggplot2) +
+-   [**tmap**](https://github.com/r-tmap/tmap)
+-   [**mapsf**](https://riatelab.github.io/mapsf/)
+-   [**ggplot2**](https://github.com/tidyverse/ggplot2) +
     [**ggspatial**](https://github.com/paleolimbot/ggspatial)
-  - [**leaflet**](https://rstudio.github.io/leaflet/)
+-   [**leaflet**](https://rstudio.github.io/leaflet/)
 
 ## Citation
 
-Please use the following when citing **mapSpain**:
+To cite the ‘mapSpain’ package in publications use:
 
-``` r
+Hernangómez D (2022). *mapSpain: Administrative Boundaries of Spain*.
+doi: 10.5281/zenodo.5366622 (URL:
+<https://doi.org/10.5281/zenodo.5366622>), \<URL:
+<https://ropenspain.github.io/mapSpain/>\>.
 
-citation("mapSpain")
-#> 
-#> To cite the 'mapSpain' package in publications use:
-#> 
-#>   Hernangómez, D. (2021). mapSpain: Administrative Boundaries of Spain
-#>   R package. http://doi.org/10.5281/zenodo.5366622
-#> 
-#> A BibTeX entry for LaTeX users is
-#> 
-#>   @Manual{,
-#>     title = {mapSpain: Administrative Boundaries of Spain},
-#>     author = {Diego Hernangómez},
-#>     year = {2021},
-#>     note = {R package version 0.4.0},
-#>     url = {https://ropenspain.github.io/mapSpain/},
-#>     doi = {10.5281/zenodo.5366622},
-#>   }
-```
+A BibTeX entry for LaTeX users is:
+
+    @Manual{,
+      title = {mapSpain: Administrative Boundaries of Spain},
+      year = {2022},
+      version = {0.5.0},
+      author = {Diego Hernangómez},
+      doi = {10.5281/zenodo.5366622},
+      url = {https://ropenspain.github.io/mapSpain/},
+      abstract = {Administrative Boundaries of Spain at several levels (Autonomous Communities, Provinces, Municipalities) based on the 'GISCO' 'Eurostat' database <https://ec.europa.eu/eurostat/web/gisco> and 'CartoBase SIANE' from 'Instituto Geografico Nacional' <https://www.ign.es/>. It also provides a 'leaflet' plugin and the ability of downloading and processing static tiles.},
+    }
 
 ## Contribute
 
@@ -309,13 +303,13 @@ Statistical Units*
 > to the whole Eurostat website, data source will have to be
 > acknowledged in the legend of the map and in the introductory page of
 > the publication with the following copyright notice:
-> 
+>
 > EN: © EuroGeographics for the administrative boundaries
-> 
+>
 > FR: © EuroGeographics pour les limites administratives
-> 
+>
 > DE: © EuroGeographics bezüglich der Verwaltungsgrenzen
-> 
+>
 > For publications in languages other than English, French or German,
 > the translation of the copyright notice in the language of the
 > publication shall be used.

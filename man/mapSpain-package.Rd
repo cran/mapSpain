@@ -20,8 +20,8 @@ Instituto Geográfico Nacional.
     \tab  \cr
    \strong{Package} \tab mapSpain \cr
    \strong{Type} \tab Package \cr
-   \strong{Version} \tab 0.4.0 \cr
-   \strong{Date} \tab 2021 \cr
+   \strong{Version} \tab 0.5.0 \cr
+   \strong{Date} \tab 2022 \cr
    \strong{License} \tab GPL-3 \cr
    \strong{LazyLoad} \tab yes \cr
 }
