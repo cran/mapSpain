@@ -1,14 +1,29 @@
+# mapSpain 0.6.0
+
+-   Upgrade `leaflet.providersESP.df` to
+    <https://dieghernan.github.io/leaflet-providersESP/> v1.3.0. New providers:
+
+    -   `Catastro.BuildingPart`
+    -   `Catastro.AdministrativeBoundary`
+    -   `Catastro.AdministrativeUnit`
+
+-   Add new param `options` to `esp_getTiles()`.
+
+-   Improve regex search on municipalities: Now the casing of the word is
+    ignored.
+
 # mapSpain 0.5.0
 
 -   Rebuild coding database to avoid errors due to encoding.
+
 -   Fix translations on Galician.
+
 -   New grid functions (#61):
-    -  `esp_get_grid_MTN()`
-    -  `esp_get_grid_BDN()`
-    -  `esp_get_grid_EEA()`
-    -  `esp_get_grid_ESDAC()`
 
-
+    -   `esp_get_grid_MTN()`
+    -   `esp_get_grid_BDN()`
+    -   `esp_get_grid_EEA()`
+    -   `esp_get_grid_ESDAC()`
 
 # mapSpain 0.4.0
 
@@ -20,7 +35,9 @@
 # mapSpain 0.3.1
 
 -   Fix an error on CRAN related with the cache folder #52:
+
     -   Add `mapSpain::esp_clear_cache()`
+
 -   Update docs with `@family` tag.
 
 # mapSpain 0.3.0
@@ -36,12 +53,18 @@
 # mapSpain 0.2.3
 
 -   Move minimum version of `giscoR` to v0.2.4
+
 -   Fix typos on `esp_dict_translate()` #36.
+
 -   Not run examples on tiles, as the server sometimes doesn't respond.
+
 -   Refactor `sysdata.rda`.
+
 -   CRAN fixes:
+
     -   Removed broken link on `addProviderEspTiles()`.
     -   Vignette removed (CRAN warning).
+
 -   Now the `cache` directory is created recursively.
 
 # mapSpain 0.2.2
@@ -59,9 +82,12 @@
 # mapSpain 0.2.0
 
 -   Fix DOI <https://doi.org/10.5281/zenodo.4318024>
+
 -   Documentation ported to roxygen2/markdown.
+
 -   Include CartoBase ANE data
     <https://github.com/rOpenSpain/mapSpain/tree/sianedata>:
+
     -   `mapSpain::esp_get_munic_siane()`
     -   `mapSpain::esp_get_prov_siane()`
     -   `mapSpain::esp_get_ccaa_siane()`
@@ -71,6 +97,7 @@
     -   `mapSpain::esp_get_capimun()`
     -   `mapSpain::esp_get_roads()`
     -   `mapSpain::esp_get_railway()`
+
 -   Mute warnings from `rgdal`.
 
 # mapSpain 0.1.2
