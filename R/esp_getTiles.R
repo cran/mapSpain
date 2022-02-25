@@ -227,10 +227,10 @@ esp_getTiles <- function(x,
   }
 
   x <- xinit
+  x_terra <- terra::vect(x)
 
   # reproject rout if needed
   if (!sf::st_crs(x) == sf::st_crs(rout)) {
-    x_terra <- terra::vect(x)
 
     # Sometimes it gets an error
 
