@@ -132,9 +132,10 @@ points <- rbind(
 
 # Check on plot
 library(ggplot2)
+library(tidyterra)
 
 ggplot(points) +
-  layer_spatraster(tile) +
+  geom_spatraster_rgb(data = tile) +
   geom_sf(data = area, fill = NA, color = "blue") +
   geom_sf(data = points, aes(fill = type), size = 5, shape = 21) +
   scale_fill_manual(values = c("green", "red")) +
@@ -147,11 +148,13 @@ Other political:
 \code{\link{esp_codelist}},
 \code{\link{esp_get_can_box}()},
 \code{\link{esp_get_ccaa}()},
+\code{\link{esp_get_comarca}()},
 \code{\link{esp_get_country}()},
 \code{\link{esp_get_gridmap}},
 \code{\link{esp_get_munic}()},
 \code{\link{esp_get_nuts}()},
-\code{\link{esp_get_prov}()}
+\code{\link{esp_get_prov}()},
+\code{\link{esp_get_simpl_prov}()}
 
 Other municipalities: 
 \code{\link{esp_get_munic}()},

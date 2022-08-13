@@ -1,3 +1,20 @@
+# mapSpain 0.6.2
+
+-   Now `moveCAN` is a explicit parameter in the relevant functions.
+
+-   Deprecate `layer_spatraster().` Use `tidyterra::geom_spatraster_rgb()`
+    instead.
+
+-   Fix geometries on `esp_get_hex_prov()` and `esp_get_hex_ccaa()`.
+
+-   Add new function to get comarcas from INE: `esp_get_comarca()`.
+
+-   Add new functions to get simplified maps from INE:
+
+    -   `esp_get_simpl_prov()`
+
+    -   `esp_get_simpl_ccaa()`
+
 # mapSpain 0.6.1
 
 -   HOTFIX: Bug on `esp_getTiles()` when `mask = TRUE`.
