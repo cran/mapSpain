@@ -8,17 +8,17 @@
 \format{
 A \code{POLYGON} data frame (resolution: 1:1million, EPSG:4258) object with
 86 rows and fields:
-\itemize{
-\item COAST_TYPE: COAST_TYPE
-\item FID: FID
-\item NUTS_NAME: NUTS name on local alphabet
-\item MOUNT_TYPE: MOUNT_TYPE
-\item NAME_LATN: Name on Latin characters
-\item CNTR_CODE: Eurostat Country code
-\item URBN_TYPE: URBN_TYPE
-\item NUTS_ID: NUTS identifier
-\item LEVL_CODE: NUTS level code (0,1,2,3)
-\item geometry: geometry field
+\describe{
+\item{COAST_TYPE}{COAST_TYPE}
+\item{FID}{FID}
+\item{NUTS_NAME}{NUTS name on local alphabet}
+\item{MOUNT_TYPE}{MOUNT_TYPE}
+\item{NAME_LATN}{Name on Latin characters}
+\item{CNTR_CODE}{Eurostat Country code}
+\item{URBN_TYPE}{URBN_TYPE}
+\item{NUTS_ID}{NUTS identifier}
+\item{LEVL_CODE}{NUTS level code (0,1,2,3)}
+\item{geometry}{geometry field}
 }
 }
 \source{
@@ -26,7 +26,7 @@ A \code{POLYGON} data frame (resolution: 1:1million, EPSG:4258) object with
 \code{NUTS_RG_20M_2016_4326.geojson}.
 }
 \description{
-A \code{sf} object including all NUTS levels of Spain as provided by
+A \pkg{sf} object including all NUTS levels of Spain as provided by
 GISCO (2016 version).
 }
 \examples{
@@ -52,7 +52,7 @@ levels(nuts3$URBN_TYPE_cat)
 levels(nuts3$URBN_TYPE_cat) <- c("Urban", "Intermediate", "Rural")
 
 ggplot(nuts3) +
-  geom_sf(aes(fill = URBN_TYPE_cat), lwd = .1) +
+  geom_sf(aes(fill = URBN_TYPE_cat), linewidth = .1) +
   scale_fill_manual(values = c("grey80", "#FFC183", "#68AC20")) +
   labs(
     title = "NUTS3 levels of Spain",
@@ -67,7 +67,7 @@ ggplot(nuts3) +
 Other datasets: 
 \code{\link{esp_codelist}},
 \code{\link{esp_munic.sf}},
-\code{\link{leaflet.providersESP.df}},
+\code{\link{esp_tiles_providers}},
 \code{\link{pobmun19}}
 
 Other nuts: 

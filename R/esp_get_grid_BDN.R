@@ -1,7 +1,7 @@
-#' Get `sf` polygons of the national geographic grids provided by BDN
+#' Get \pkg{sf} polygons of the national geographic grids provided by BDN
 #'
 #' @description
-#' Loads a `sf` polygon with the geographic grids of Spain as provided on
+#' Loads a \pkg{sf} polygon with the geographic grids of Spain as provided on
 #' the Banco de Datos de la Naturaleza (Nature Data Bank), by the
 #' Ministry of Environment (MITECO):
 #'   * [esp_get_grid_BDN()] extracts country-wide grids with resolutions
@@ -11,7 +11,7 @@
 #'
 #' @family grids
 #'
-#' @return A `sf` polygon
+#' @return A \pkg{sf} polygon
 #'
 #'
 #' @source BDN data via a custom CDN (see
@@ -45,7 +45,6 @@ esp_get_grid_BDN <- function(resolution = 10,
                              update_cache = FALSE,
                              cache_dir = NULL,
                              verbose = FALSE) {
-
   # Check grid
   res <- as.numeric(resolution)
 
@@ -101,8 +100,6 @@ esp_get_grid_BDN_ccaa <- function(ccaa,
                                   update_cache = FALSE,
                                   cache_dir = NULL,
                                   verbose = FALSE) {
-
-
   # Get region id
 
   ccaa <- ccaa[!is.na(ccaa)]

@@ -63,6 +63,7 @@ install_github("rOpenSpain/mapSpain", dependencies = TRUE)
 This script highlights some features of **mapSpain** :
 
 ``` r
+
 library(mapSpain)
 
 census <- mapSpain::pobmun19
@@ -96,7 +97,7 @@ library(ggplot2)
 ggplot(CCAA_sf) +
   geom_sf(aes(fill = porc_women),
     color = "grey70",
-    lwd = .3
+    linewidth = .3
   ) +
   geom_sf(data = Can, color = "grey70") +
   geom_sf_label(aes(label = porc_women_lab),
@@ -121,6 +122,7 @@ ggplot(CCAA_sf) +
 You can combine `sf` objects with static tiles
 
 ``` r
+
 # Get census
 census <- mapSpain::pobmun19
 census$porc_women <- census$women / census$pob19
@@ -139,8 +141,7 @@ shape_pop <- merge(shape,
 tile <-
   esp_getTiles(shape_pop,
     type = "IGNBase.Todo",
-    zoom = 10,
-    bbox_expand = .1
+    zoommin = 1
   )
 
 # Plot
@@ -187,6 +188,7 @@ installed as a dependency when you installed **mapSpain**. A basic
 example:
 
 ``` r
+
 library(giscoR)
 
 # Set the same resolution for a perfect fit
@@ -214,7 +216,7 @@ library(ggplot2)
 ggplot(all_countries) +
   geom_sf(fill = "#DFDFDF", color = "#656565") +
   geom_sf(data = eu_countries, fill = "#FDFBEA", color = "#656565") +
-  geom_sf(data = ccaa, fill = "#C12838", color = "grey80", lwd = .1) +
+  geom_sf(data = ccaa, fill = "#C12838", color = "grey80", linewidth = .1) +
   # Center in Europe: EPSG 3035
   coord_sf(
     xlim = c(2377294, 7453440),
@@ -248,11 +250,11 @@ it will load it, speeding up the process.
 
 Some packages recommended for visualization are:
 
--   [**tmap**](https://github.com/r-tmap/tmap)
--   [**mapsf**](https://riatelab.github.io/mapsf/)
--   [**ggplot2**](https://github.com/tidyverse/ggplot2) +
-    [**ggspatial**](https://github.com/paleolimbot/ggspatial)
--   [**leaflet**](https://rstudio.github.io/leaflet/)
+- [**tmap**](https://github.com/r-tmap/tmap)
+- [**mapsf**](https://riatelab.github.io/mapsf/)
+- [**ggplot2**](https://github.com/tidyverse/ggplot2) +
+  [**tidyterra**](https://github.com/dieghernan/tidyterra).
+- [**leaflet**](https://rstudio.github.io/leaflet/)
 
 ## Citation
 
@@ -267,7 +269,7 @@ A BibTeX entry for LaTeX users is:
     @Manual{R-mapspain,
       title = {{mapSpain}: Administrative Boundaries of Spain},
       year = {2022},
-      version = {0.6.2},
+      version = {0.7.0},
       author = {Diego Hernangómez},
       doi = {10.5281/zenodo.5366622},
       url = {https://ropenspain.github.io/mapSpain/},

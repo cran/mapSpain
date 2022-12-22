@@ -5,7 +5,7 @@
 \title{Get static tiles from public administrations of Spanish.}
 \source{
 \url{https://dieghernan.github.io/leaflet-providersESP/} leaflet plugin,
-\strong{v1.3.0}.
+\strong{v1.3.2}.
 }
 \usage{
 esp_getTiles(
@@ -25,9 +25,15 @@ esp_getTiles(
 )
 }
 \arguments{
-\item{x}{An \code{sf} or \code{sfc} object.}
+\item{x}{An \pkg{sf} or \code{sfc} object.}
 
-\item{type}{Name of the provider. See \link{leaflet.providersESP.df}.}
+\item{type}{This parameter could be either:
+\itemize{
+\item The name of one of the  pre-defined providers
+(see \code{\link[=esp_tiles_providers]{esp_tiles_providers()}}).
+\item A list with two named elements \code{id} and \code{q} with your own parameters.
+See \code{\link[=esp_make_provider]{esp_make_provider()}} and examples.
+}}
 
 \item{zoom}{Zoom level. If \code{NULL}, it is determined automatically. If set,
 it overrides \code{zoommin}. Only valid for WMTS tiles. On a single point it
@@ -39,7 +45,7 @@ download fewer tiles than you probably want. Use \code{1} or \code{2} to
 increase the resolution.}
 
 \item{crop}{\code{TRUE} if results should be cropped to the specified \code{x} extent,
-\code{FALSE} otherwise. If \code{x} is an \code{sf} object with one \code{POINT}, crop is set
+\code{FALSE} otherwise. If \code{x} is an \pkg{sf} object with one \code{POINT}, crop is set
 to \code{FALSE}.}
 
 \item{res}{Resolution (in pixels) of the final tile. Only valid for WMS.}
@@ -74,7 +80,7 @@ various open map servers.
 
 This function is a implementation of the javascript plugin
 \href{https://dieghernan.github.io/leaflet-providersESP/}{leaflet-providersESP}
-\strong{v1.3.0}.
+\strong{v1.3.2}.
 }
 \details{
 Zoom levels are described on the
@@ -92,7 +98,7 @@ Zoom levels are described on the
 }
 
 
-For a complete list of providers see \link{leaflet.providersESP.df}.
+For a complete list of providers see \link{esp_tiles_providers}.
 
 Most WMS/WMTS providers provide tiles on "EPSG:3857". In case that the tile
 looks deformed, try projecting first \code{x}:
@@ -115,15 +121,53 @@ corresponding .geojson file by any other method and save it on your
 # This script downloads tiles to your local machine
 # Run only if you are online
 
-Murcia <- esp_get_ccaa_siane("Murcia", epsg = 3857)
-Tile <- esp_getTiles(Murcia)
+segovia <- esp_get_prov_siane("segovia", epsg = 3857)
+tile <- esp_getTiles(segovia)
 
 library(ggplot2)
 library(tidyterra)
 
-ggplot(Murcia) +
-  geom_spatraster_rgb(data = Tile) +
+ggplot(segovia) +
+  geom_spatraster_rgb(data = tile) +
   geom_sf(fill = NA)
+
+# Another provider
+
+tile2 <- esp_getTiles(segovia, type = "MDT")
+
+ggplot(segovia) +
+  geom_spatraster_rgb(data = tile2) +
+  geom_sf(fill = NA)
+
+# A custom WMS provided
+
+custom_wms <- esp_make_provider(
+  id = "an_id_for_caching",
+  q = "https://idecyl.jcyl.es/geoserver/ge/wms?",
+  service = "WMS",
+  version = "1.3.0",
+  format = "image/png",
+  layers = "geolog_cyl_litologia"
+)
+
+custom_wms_tile <- esp_getTiles(segovia, custom_wms)
+
+autoplot(custom_wms_tile) +
+  geom_sf(data = segovia, fill = NA, color = "red")
+
+# A custom WMTS provider
+
+custom_wmts <- esp_make_provider(
+  id = "cyl_wmts",
+  q = "https://www.ign.es/wmts/pnoa-ma?",
+  service = "WMTS",
+  layer = "OI.OrthoimageCoverage"
+)
+
+custom_wmts_tile <- esp_getTiles(segovia, custom_wmts)
+
+autoplot(custom_wmts_tile) +
+  geom_sf(data = segovia, fill = NA, color = "white", linewidth = 2)
 }
 }
 \seealso{
@@ -131,6 +175,7 @@ ggplot(Murcia) +
 
 Other imagery utilities: 
 \code{\link{addProviderEspTiles}()},
-\code{\link{leaflet.providersESP.df}}
+\code{\link{esp_make_provider}()},
+\code{\link{esp_tiles_providers}}
 }
 \concept{imagery utilities}

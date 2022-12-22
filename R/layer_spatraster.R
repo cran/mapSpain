@@ -2,6 +2,8 @@
 #'
 #' @description
 #'
+#' `r lifecycle::badge("deprecated")`
+#'
 #' This function is deprecated. Use [tidyterra::geom_spatraster_rgb()] for
 #' plot tiles with ggplot2.
 #'
@@ -21,7 +23,7 @@
 #'
 #' # Get a SpatRaster
 #'
-#' x <- esp_get_ccaa("Galicia")
+#' x <- esp_get_ccaa("Galicia", epsg = 3857)
 #'
 #' tile <- esp_getTiles(x, "IDErioja")
 #'

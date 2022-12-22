@@ -1,3 +1,17 @@
+# mapSpain 0.7.0
+
+-   Upgrade `leaflet.providersESP.df` to
+    <https://dieghernan.github.io/leaflet-providersESP/> v1.3.2.
+
+-   Changes on how to package manages tiles providers:
+
+    -   `leaflet.providersESP.df` is superseded in favor of
+        `esp_tiles_providers`.
+    -   You can use a custom url with the `type` argument in `esp_getTiles()`
+        #88 .
+    -   Add new function `esp_make_provider()` that helps to create custom
+        providers.
+
 # mapSpain 0.6.2
 
 -   Now `moveCAN` is a explicit parameter in the relevant functions.

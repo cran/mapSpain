@@ -5,6 +5,11 @@ test_that("tiles error", {
   df <- data.frame(a = 1, b = 2)
 
   expect_error(esp_getTiles(df), "Only sf and sfc objects allowed")
+
+  ff <- esp_get_prov("La Rioja")
+
+  expect_error(esp_getTiles(ff, options = list(format = "image/aabbcc")))
+  expect_error(esp_getTiles(ff, type = list(format = "image/aabbcc")))
 })
 
 
@@ -12,8 +17,6 @@ test_that("tiles online", {
   skip_if_not_installed("slippymath")
   skip_if_not_installed("terra")
   skip_if_not_installed("png")
-  # Skip on windows (CI)
-  skip_on_os("windows")
 
 
   poly <- esp_get_ccaa("La Rioja")
@@ -22,6 +25,7 @@ test_that("tiles online", {
 
   # Skip test as tiles sometimes are not available
   skip_on_cran()
+  skip_on_os(c("mac", "linux"))
   skip_if_offline()
 
   save_png <- function(code, width = 200, height = 200) {
@@ -70,26 +74,6 @@ test_that("tiles online", {
     type = "IGNBase.Orto"
   ))
 
-  # Single point
-  point <- esp_get_ccaa("Madrid")
-  point <- sf::st_transform(point, 3857)
-
-  point <- sf::st_centroid(
-    sf::st_geometry(point),
-    of_largest_polygon = TRUE
-  )
-
-  expect_length(point, 1)
-  expect_s3_class(point, "sfc_POINT")
-
-  expect_message(esp_getTiles(point,
-    verbose = TRUE
-  ))
-
-  p <- esp_getTiles(point, verbose = TRUE)
-
-
-
   expect_message(esp_getTiles(poly,
     type = "RedTransporte.Carreteras",
     verbose = TRUE, mask = TRUE
@@ -133,6 +117,26 @@ test_that("tiles online", {
   # Run only locally
   skip_on_ci()
 
+  # Single point
+  point <- esp_get_ccaa("Madrid")
+  point <- sf::st_transform(point, 3857)
+
+  point <- sf::st_centroid(
+    sf::st_geometry(point),
+    of_largest_polygon = TRUE
+  )
+
+  expect_length(point, 1)
+  expect_s3_class(point, "sfc_POINT")
+
+  expect_message(esp_getTiles(point,
+    verbose = TRUE
+  ))
+
+  p <- esp_getTiles(point, verbose = TRUE)
+
+
+
   expect_snapshot_file(save_png(opaque), "opaque.png")
   expect_snapshot_file(save_png(n), "transp.png")
   expect_snapshot_file(save_png(s), "silent.png")
@@ -147,15 +151,11 @@ test_that("tiles masks and crops", {
   skip_if_not_installed("terra")
   skip_if_not_installed("png")
 
-  skip_on_os("linux")
-  # Skip on windows (CI)
-  skip_on_os("windows")
-
 
   # Skip test as tiles sometimes are not available
   skip_on_cran()
+  skip_on_os(c("mac", "linux"))
   skip_if_offline()
-
 
   poly <- esp_get_ccaa("La Rioja", epsg = 4326)
   tile <- esp_getTiles(poly, crop = FALSE)
@@ -185,13 +185,11 @@ test_that("tiles options", {
   skip_if_not_installed("slippymath")
   skip_if_not_installed("terra")
   skip_if_not_installed("png")
-  skip_on_os("linux")
 
-  # Skip on windows (CI)
-  skip_on_os("windows")
 
   # Skip test as tiles sometimes are not available
   skip_on_cran()
+  skip_on_os(c("mac", "linux"))
   skip_if_offline()
 
   poly <- esp_get_capimun(munic = "^Toledo", epsg = 3857)
@@ -200,5 +198,71 @@ test_that("tiles options", {
     type = "Catastro.Building",
     options = list(styles = "elfcadastre")
   )
+  expect_s4_class(tile, "SpatRaster")
+
+  tile2 <- esp_getTiles(poly,
+    type = "RedTransporte.Carreteras",
+    options = list(
+      version = "1.3.0",
+      crs = "EPSG:25830",
+      format = "image/jpeg"
+    )
+  )
+
+  expect_s4_class(tile, "SpatRaster")
+})
+
+test_that("Custom WMS", {
+  skip_if_not_installed("slippymath")
+  skip_if_not_installed("terra")
+  skip_if_not_installed("png")
+
+
+  # Skip test as tiles sometimes are not available
+  skip_on_cran()
+  skip_if_offline()
+
+  segovia <- esp_get_prov_siane("segovia", epsg = 3857)
+  custom_wms <- list(
+    id = "an_id_for_caching",
+    q = paste0(
+      "https://idecyl.jcyl.es/geoserver/ge/wms?request=GetMap",
+      "&service=WMS&version=1.3.0",
+      "&format=image/png",
+      "&CRS=epsg:3857",
+      "&layers=geolog_cyl_litologia",
+      "&styles="
+    )
+  )
+
+  tile <- esp_getTiles(segovia, type = custom_wms)
+  expect_s4_class(tile, "SpatRaster")
+})
+
+
+test_that("Custom WMTS", {
+  skip_if_not_installed("slippymath")
+  skip_if_not_installed("terra")
+  skip_if_not_installed("png")
+
+
+  # Skip test as tiles sometimes are not available
+  skip_on_cran()
+  skip_if_offline()
+
+  segovia <- esp_get_prov_siane("segovia", epsg = 3857)
+  custom_wmts <- list(
+    id = "cyl_wmts",
+    q = paste0(
+      "https://www.ign.es/wmts/ign-base?",
+      "request=GetTile&service=WMTS&version=1.0.0",
+      "&format=image/png",
+      "&tilematrixset=GoogleMapsCompatible",
+      "&layer=IGNBaseTodo-nofondo&style=default"
+    )
+  )
+
+
+  tile <- esp_getTiles(segovia, type = custom_wmts)
   expect_s4_class(tile, "SpatRaster")
 })
