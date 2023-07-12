@@ -5,9 +5,9 @@
 
 [![rOS-badge](https://ropenspain.github.io/rostemplate/reference/figures/ropenspain-badge.svg)](https://ropenspain.es/)
 [![CRAN-status](https://www.r-pkg.org/badges/version/mapSpain)](https://CRAN.R-project.org/package=mapSpain)
-[![CRAN-results](https://cranchecks.info/badges/worst/mapSpain)](https://cran.r-project.org/web/checks/check_results_mapSpain.html)
+[![CRAN-results](https://badges.cranchecks.info/worst/mapSpain.svg)](https://cran.r-project.org/web/checks/check_results_mapSpain.html)
 [![Downloads](https://cranlogs.r-pkg.org/badges/mapSpain)](https://CRAN.R-project.org/package=mapSpain)
-[![r-universe](https://ropenspain.r-universe.dev/badges/mapSpain)](https://ropenspain.r-universe.dev/)
+[![r-universe](https://ropenspain.r-universe.dev/badges/mapSpain)](https://ropenspain.r-universe.dev/mapSpain)
 [![R-CMD-check](https://github.com/rOpenSpain/mapSpain/workflows/R-CMD-check/badge.svg)](https://github.com/rOpenSpain/mapSpain/actions?query=workflow%3AR-CMD-check)
 [![codecov](https://codecov.io/gh/rOpenSpain/mapSpain/branch/main/graph/badge.svg?token=6L01BKLL85)](https://app.codecov.io/gh/rOpenSpain/mapSpain)
 [![DOI](https://img.shields.io/badge/DOI-10.5281/zenodo.5366622-blue)](https://doi.org/10.5281/zenodo.5366622)
@@ -38,16 +38,17 @@ install.packages("mapSpain", dependencies = TRUE)
 ```
 
 You can install the developing version of **mapSpain** using the
-[r-universe](https://ropenspain.r-universe.dev/ui#builds):
+[r-universe](https://ropenspain.r-universe.dev/mapSpain):
 
 ``` r
-# Enable this universe
-options(repos = c(
-  ropenspain = "https://ropenspain.r-universe.dev",
-  CRAN = "https://cloud.r-project.org"
-))
-
-install.packages("mapSpain", dependencies = TRUE)
+# Install mapSpain in R:
+install.packages("mapSpain",
+  repos = c(
+    "https://ropenspain.r-universe.dev",
+    "https://cloud.r-project.org"
+  ),
+  dependencies = TRUE
+)
 ```
 
 Alternatively, you can install the developing version of **mapSpain**
@@ -63,9 +64,8 @@ install_github("rOpenSpain/mapSpain", dependencies = TRUE)
 This script highlights some features of **mapSpain** :
 
 ``` r
-
 library(mapSpain)
-
+library(sf)
 census <- mapSpain::pobmun19
 
 # Extract CCAA from base dataset
@@ -122,7 +122,6 @@ ggplot(CCAA_sf) +
 You can combine `sf` objects with static tiles
 
 ``` r
-
 # Get census
 census <- mapSpain::pobmun19
 census$porc_women <- census$women / census$pob19
@@ -188,28 +187,26 @@ installed as a dependency when you installed **mapSpain**. A basic
 example:
 
 ``` r
-
 library(giscoR)
 
 # Set the same resolution for a perfect fit
 
-res <- "03"
-
-# Same crs
-target_crs <- 3035
+res <- "20"
 
 all_countries <- gisco_get_countries(
-  resolution = res,
-  epsg = target_crs
-)
+  resolution = res
+) |>
+  st_transform(3035)
+
 eu_countries <- gisco_get_countries(
-  resolution = res, region = "EU",
-  epsg = target_crs
-)
+  resolution = res, region = "EU"
+) |>
+  st_transform(3035)
+
 ccaa <- esp_get_ccaa(
-  moveCAN = FALSE, resolution = res,
-  epsg = target_crs
-)
+  moveCAN = FALSE, resolution = res
+) |>
+  st_transform(3035)
 
 library(ggplot2)
 
@@ -258,18 +255,19 @@ Some packages recommended for visualization are:
 
 ## Citation
 
-To cite the ‘mapSpain’ package in publications use:
-
-Hernangomez D (2022). *mapSpain: Administrative Boundaries of Spain*.
-<https://doi.org/10.5281/zenodo.5366622>,
-<https://ropenspain.github.io/mapSpain/>
+<p>
+Hernangómez D (2023). <em>mapSpain: Administrative Boundaries of
+Spain</em>.
+<a href="https://doi.org/10.5281/zenodo.5366622">doi:10.5281/zenodo.5366622</a>,
+<a href="https://ropenspain.github.io/mapSpain/">https://ropenspain.github.io/mapSpain/</a>.
+</p>
 
 A BibTeX entry for LaTeX users is:
 
     @Manual{R-mapspain,
       title = {{mapSpain}: Administrative Boundaries of Spain},
-      year = {2022},
-      version = {0.7.0},
+      year = {2023},
+      version = {0.8.0},
       author = {Diego Hernangómez},
       doi = {10.5281/zenodo.5366622},
       url = {https://ropenspain.github.io/mapSpain/},

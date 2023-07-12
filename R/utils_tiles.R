@@ -175,11 +175,21 @@ getwmts <- function(newbbox,
   }
 
   # get tile list
-  tile_grid <-
-    slippymath::bbox_to_tile_grid(bbox = bbx, zoom = as.numeric(zoom))
+  tile_grid <- slippymath::bbox_to_tile_grid(
+    bbox = bbx,
+    zoom = as.numeric(zoom)
+  )
 
   # Compose
-  ext <- tolower(gsub("image/", "", url_pieces$format))
+  # Special case for non INSPIRE serves
+  if (is.null(url_pieces$format)) {
+    ext <- tools::file_ext(url_pieces$q)
+  } else {
+    ext <- tolower(gsub("image/", "", url_pieces$format))
+  }
+
+
+
   if (!ext %in% c(
     "png", "jpeg", "jpg", "tiff",
     "geotiff"
@@ -190,7 +200,6 @@ getwmts <- function(newbbox,
     )
   }
 
-
   url_pieces$tilematrixset <- "GoogleMapsCompatible"
   url_pieces$tilematrix <- "{z}"
   url_pieces$tilerow <- "{y}"
@@ -198,11 +207,13 @@ getwmts <- function(newbbox,
 
   q <- url_pieces$q
   rest <- url_pieces[names(url_pieces) != "q"]
-  q <- paste0(q, paste0(names(rest), "=", rest, collapse = "&"))
 
-
-  crs <- unlist(url_pieces[names(url_pieces) %in% c("crs", "srs", "tilematrixset")])
-
+  # Special case WMTS
+  if (isFALSE(grepl("?", url_pieces$q, fixed = TRUE))) {
+    q <- url_pieces$q
+  } else {
+    q <- paste0(q, paste0(names(rest), "=", rest, collapse = "&"))
+  }
 
   if (verbose) {
     message("Caching tiles on ", cache_dir)

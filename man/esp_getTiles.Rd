@@ -5,7 +5,7 @@
 \title{Get static tiles from public administrations of Spanish.}
 \source{
 \url{https://dieghernan.github.io/leaflet-providersESP/} leaflet plugin,
-\strong{v1.3.2}.
+\strong{v1.3.3}.
 }
 \usage{
 esp_getTiles(
@@ -80,7 +80,7 @@ various open map servers.
 
 This function is a implementation of the javascript plugin
 \href{https://dieghernan.github.io/leaflet-providersESP/}{leaflet-providersESP}
-\strong{v1.3.2}.
+\strong{v1.3.3}.
 }
 \details{
 Zoom levels are described on the
@@ -122,7 +122,7 @@ corresponding .geojson file by any other method and save it on your
 # Run only if you are online
 
 segovia <- esp_get_prov_siane("segovia", epsg = 3857)
-tile <- esp_getTiles(segovia)
+tile <- esp_getTiles(segovia, "IGNBase.Todo")
 
 library(ggplot2)
 library(tidyterra)
@@ -168,6 +168,17 @@ custom_wmts_tile <- esp_getTiles(segovia, custom_wmts)
 
 autoplot(custom_wmts_tile) +
   geom_sf(data = segovia, fill = NA, color = "white", linewidth = 2)
+
+# Example from https://leaflet-extras.github.io/leaflet-providers/preview/
+stamen_water <- list(
+  id = "Stamen_Water",
+  q = "https://stamen-tiles-b.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg"
+)
+
+stamen <- esp_getTiles(segovia, stamen_water, zoommin = 1)
+
+autoplot(stamen) +
+  geom_sf(data = segovia, fill = NA, color = "white", linewidth = 1)
 }
 }
 \seealso{

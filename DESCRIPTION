@@ -1,7 +1,7 @@
 Type: Package
 Package: mapSpain
 Title: Administrative Boundaries of Spain
-Version: 0.7.0
+Version: 0.8.0
 Authors@R: 
     person("Diego", "Hernangómez", , "diego.hernangomezherrero@gmail.com", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0001-8457-4658", affiliation = "rOpenSpain"))
@@ -40,9 +40,9 @@ X-schema.org-keywords: rOpenSpain, tiles, r, maps, spatial, rstats,
         r-package, municipalities, Spain, gisco, provinces, ign,
         administrative-boundaries, ccaa, static-tiles
 NeedsCompilation: no
-Packaged: 2022-12-22 21:13:18 UTC; diego
+Packaged: 2023-07-10 20:18:05 UTC; diego
 Author: Diego Hernangómez [aut, cre, cph]
     (<https://orcid.org/0000-0001-8457-4658>, rOpenSpain)
 Maintainer: Diego Hernangómez <diego.hernangomezherrero@gmail.com>
 Repository: CRAN
-Date/Publication: 2022-12-22 21:40:02 UTC
+Date/Publication: 2023-07-12 18:30:08 UTC
