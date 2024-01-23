@@ -3,7 +3,7 @@
 \name{esp_get_ccaa}
 \alias{esp_get_ccaa}
 \alias{esp_get_ccaa_siane}
-\title{Get Autonomous Communities of Spain as \pkg{sf} polygons and points}
+\title{Get Autonomous Communities of Spain as \CRANpkg{sf} polygons and points}
 \source{
 IGN data via a custom CDN (see
 \url{https://github.com/rOpenSpain/mapSpain/tree/sianedata}).
@@ -67,18 +67,18 @@ When set to \code{TRUE} it would force a fresh download of the source file.}
 default is \code{FALSE}.}
 
 \item{resolution}{Resolution of the polygon. Values available are
-"3", "6.5" or "10".}
+\code{3}, \code{6.5} or \code{10}.}
 
 \item{rawcols}{Logical. Setting this to \code{TRUE} would add the raw columns of
 the dataset provided by IGN.}
 }
 \value{
-A \pkg{sf} object specified by \code{spatialtype}.
+A \CRANpkg{sf} object specified by \code{spatialtype}.
 }
 \description{
 Returns
-\href{https://en.wikipedia.org/wiki/Autonomous_communities_of_Spain}{Autonomous Communities of Spain}
-as polygons and points at a specified scale.
+\href{https://en.wikipedia.org/wiki/Autonomous_communities_of_Spain}{Autonomous Communities of Spain} as
+polygons and points at a specified scale.
 \itemize{
 \item \code{\link[=esp_get_ccaa]{esp_get_ccaa()}} uses GISCO (Eurostat) as source. Please use
 \code{\link[giscoR:gisco_attributions]{giscoR::gisco_attributions()}}
@@ -92,14 +92,14 @@ Years available are 2005 up to today.
 }
 \details{
 When using \code{ccaa} you can use and mix names and NUTS codes (levels 1 or 2),
-ISO codes (corresponding to level 2) or "codauto" (see \link{esp_codelist}).
+ISO codes (corresponding to level 2) or \code{codauto} (see \link{esp_codelist}).
 Ceuta and Melilla are considered as Autonomous Communities on this function.
 
 When calling a NUTS1 level, all the Autonomous Communities of that level
 would be added.
 
-On \code{\link[=esp_get_ccaa_siane]{esp_get_ccaa_siane()}}, \code{year} could be passed as a single year ("YYYY"
-format, as end of year) or as a specific date ("YYYY-MM-DD" format).
+On \code{\link[=esp_get_ccaa_siane]{esp_get_ccaa_siane()}}, \code{year} could be passed as a single year (\code{YYYY}
+format, as end of year) or as a specific date (\code{YYYY-MM-DD} format).
 Historical information starts as of 2005.
 }
 \section{About caching}{
@@ -118,7 +118,8 @@ While \code{moveCAN} is useful for visualization, it would alter the actual
 geographic position of the Canary Islands. When using the output for
 spatial analysis or using tiles (e.g. with \code{\link[=esp_getTiles]{esp_getTiles()}} or
 \code{\link[=addProviderEspTiles]{addProviderEspTiles()}})  this option should be set to \code{FALSE} in order to
-get the actual coordinates, instead of the modified ones.
+get the actual coordinates, instead of the modified ones. See also
+\code{\link[=esp_move_can]{esp_move_can()}} for displacing stand-alone \CRANpkg{sf} objects.
 }
 
 \examples{

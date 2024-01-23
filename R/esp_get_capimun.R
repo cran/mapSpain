@@ -1,7 +1,7 @@
-#' Get \pkg{sf} points of the municipalities of Spain
+#' Get \CRANpkg{sf} points of the municipalities of Spain
 #'
 #' @description
-#' Get a \pkg{sf} point with the location of the political powers for
+#' Get a \CRANpkg{sf} point with the location of the political powers for
 #' each municipality (possibly the center of the municipality).
 #'
 #' Note that this differs of the centroid of the boundaries of the
@@ -10,7 +10,7 @@
 #' @family political
 #' @family municipalities
 #'
-#' @return A \pkg{sf} point object.
+#' @return A \CRANpkg{sf} point object.
 #'
 #' @source IGN data via a custom CDN (see
 #' <https://github.com/rOpenSpain/mapSpain/tree/sianedata>).
@@ -28,12 +28,12 @@
 #' @inheritSection  esp_get_nuts  Displacing the Canary Islands
 #'
 #' @details
-#' `year` could be passed as a single year ("YYYY" format, as end of year) or
-#' as a specific date ("YYYY-MM-DD" format). Historical information starts as
+#' `year` could be passed as a single year (`YYYY` format, as end of year) or
+#' as a specific date (`YYYY-MM-DD` format). Historical information starts as
 #' of 2005.
 #'
 #' When using `region` you can use and mix names and NUTS codes (levels 1,
-#' 2 or 3), ISO codes (corresponding to level 2 or 3) or "cpro". See
+#' 2 or 3), ISO codes (corresponding to level 2 or 3) or `cpro`. See
 #' [esp_codelist]
 #'
 #' When calling a superior level (Province, Autonomous Community or NUTS1) ,
@@ -77,7 +77,7 @@
 #' library(tidyterra)
 #'
 #' ggplot(points) +
-#'   geom_spatraster_rgb(data = tile) +
+#'   geom_spatraster_rgb(data = tile, maxcell = Inf) +
 #'   geom_sf(data = area, fill = NA, color = "blue") +
 #'   geom_sf(data = points, aes(fill = type), size = 5, shape = 21) +
 #'   scale_fill_manual(values = c("green", "red")) +
@@ -103,13 +103,8 @@ esp_get_capimun <- function(year = Sys.Date(),
 
   # Get Data from SIANE
   data_sf <- esp_hlp_get_siane(
-    "capimun",
-    3,
-    cache,
-    cache_dir,
-    update_cache,
-    verbose,
-    year
+    "capimun", 3, cache, cache_dir,
+    update_cache, verbose, year
   )
 
   colnames_init <- colnames(sf::st_drop_geometry(data_sf))
@@ -126,19 +121,14 @@ esp_get_capimun <- function(year = Sys.Date(),
     NA
   )
 
-  cod <-
-    unique(mapSpain::esp_codelist[, c(
+  cod <- unique(
+    mapSpain::esp_codelist[, c(
       "codauto",
-      "ine.ccaa.name",
-      "cpro", "ine.prov.name"
-    )])
-
-  df2 <- merge(df,
-    cod,
-    by = "cpro",
-    all.x = TRUE,
-    no.dups = TRUE
+      "ine.ccaa.name", "cpro", "ine.prov.name"
+    )]
   )
+
+  df2 <- merge(df, cod, by = "cpro", all.x = TRUE, no.dups = TRUE)
 
   data_sf <- df2
 
@@ -170,26 +160,10 @@ esp_get_capimun <- function(year = Sys.Date(),
 
   if (moving) {
     if (length(grep("05", data_sf$codauto)) > 0) {
-      offset <- c(550000, 920000)
-
-      if (length(moveCAN) > 1) {
-        coords <- sf::st_point(moveCAN)
-        coords <- sf::st_sfc(coords, crs = sf::st_crs(4326))
-        coords <- sf::st_transform(coords, 3857)
-        coords <- sf::st_coordinates(coords)
-        offset <- offset + as.double(coords)
-      }
-
-      data_sf <- sf::st_transform(data_sf, 3857)
       penin <- data_sf[-grep("05", data_sf$codauto), ]
       can <- data_sf[grep("05", data_sf$codauto), ]
 
-      # Move CAN
-      can <- sf::st_sf(
-        sf::st_drop_geometry(can),
-        geometry = sf::st_geometry(can) + offset,
-        crs = sf::st_crs(can)
-      )
+      can <- esp_move_can(can, moveCAN = moveCAN)
 
       # Regenerate
       if (nrow(penin) > 0) {
@@ -201,19 +175,13 @@ esp_get_capimun <- function(year = Sys.Date(),
   }
 
   data_sf <- sf::st_transform(data_sf, as.double(init_epsg))
-  data_sf <-
-    data_sf[order(data_sf$codauto, data_sf$cpro, data_sf$cmun), ]
+  data_sf <- data_sf[order(data_sf$codauto, data_sf$cpro, data_sf$cmun), ]
 
   namesend <- unique(c(
     colnames_init,
     c(
-      "codauto",
-      "ine.ccaa.name",
-      "cpro",
-      "ine.prov.name",
-      "cmun",
-      "name",
-      "LAU_CODE"
+      "codauto", "ine.ccaa.name", "cpro", "ine.prov.name",
+      "cmun", "name", "LAU_CODE"
     ),
     colnames(data_sf)
   ))
@@ -222,13 +190,8 @@ esp_get_capimun <- function(year = Sys.Date(),
 
   if (isFALSE(rawcols)) {
     data_sf <- data_sf[, c(
-      "codauto",
-      "ine.ccaa.name",
-      "cpro",
-      "ine.prov.name",
-      "cmun",
-      "name",
-      "LAU_CODE"
+      "codauto", "ine.ccaa.name", "cpro",
+      "ine.prov.name", "cmun", "name", "LAU_CODE"
     )]
   }
   return(data_sf)

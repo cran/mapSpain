@@ -8,7 +8,10 @@ test_that("tiles error", {
 
   ff <- esp_get_prov("La Rioja")
 
-  expect_error(esp_getTiles(ff, type = "IGNBase", options = list(format = "image/aabbcc")))
+  expect_error(esp_getTiles(ff,
+    type = "IGNBase",
+    options = list(format = "image/aabbcc")
+  ))
   expect_error(esp_getTiles(ff, type = list(format = "image/aabbcc")))
 })
 
@@ -289,11 +292,14 @@ test_that("Custom WMTS", {
   expect_s4_class(tile2, "SpatRaster")
 
   # With another extension
-  stamen_water <- list(
-    id = "Stamen_Water",
-    q = "https://stamen-tiles-b.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg"
+  esri_wsm <- list(
+    id = "ESRI_WorldStreetMap",
+    q = paste0(
+      "https://server.arcgisonline.com/ArcGIS/rest/services/",
+      "World_Street_Map/MapServer/tile/{z}/{y}/{x}.jpg"
+    )
   )
 
-  tile3 <- esp_getTiles(segovia, type = stamen_water)
+  tile3 <- esp_getTiles(segovia, type = esri_wsm)
   expect_s4_class(tile3, "SpatRaster")
 })

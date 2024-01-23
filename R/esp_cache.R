@@ -1,4 +1,4 @@
-#' Set your \pkg{mapSpain} cache dir
+#' Set your \CRANpkg{mapSpain} cache dir
 #'
 #' @family cache utilities
 #' @seealso [rappdirs::user_config_dir()]
@@ -61,11 +61,7 @@ esp_set_cache_dir <- function(cache_dir,
 
 
   # Validate
-  stopifnot(
-    is.character(cache_dir),
-    is.logical(overwrite),
-    is.logical(install)
-  )
+  stopifnot(is.character(cache_dir), is.logical(overwrite), is.logical(install))
 
   # Expand
   cache_dir <- path.expand(cache_dir)
@@ -76,15 +72,10 @@ esp_set_cache_dir <- function(cache_dir,
   }
 
   if (verbose) {
-    message(
-      "mapSpain cache dir is: ",
-      cache_dir
-    )
+    message("mapSpain cache dir is: ", cache_dir)
   }
 
-
   # Install path on environ var.
-
   # nocov start
 
   if (install) {
@@ -120,8 +111,7 @@ esp_set_cache_dir <- function(cache_dir,
   return(invisible(cache_dir))
 }
 
-esp_clear_cache <- function(config = TRUE,
-                            cached_data = TRUE,
+esp_clear_cache <- function(config = TRUE, cached_data = TRUE,
                             verbose = FALSE) {
   config_dir <- rappdirs::user_config_dir("mapSpain", "R")
   data_dir <- esp_hlp_detect_cache_dir()
@@ -160,8 +150,6 @@ esp_hlp_detect_cache_dir <- function() {
   }
   # nocov end
 
-
-
   if (is.null(getvar) || is.na(getvar) || getvar == "") {
     # Not set - tries to retrieve from cache
     cache_config <- file.path(
@@ -174,12 +162,8 @@ esp_hlp_detect_cache_dir <- function() {
       cached_path <- readLines(cache_config)
 
       # Case on empty cached path - would default
-      if (is.null(cached_path) ||
-        is.na(cached_path) || cached_path == "") {
-        cache_dir <- esp_set_cache_dir(
-          overwrite = TRUE,
-          verbose = FALSE
-        )
+      if (any(is.null(cached_path), is.na(cached_path), cached_path == "")) {
+        cache_dir <- esp_set_cache_dir(overwrite = TRUE, verbose = FALSE)
         return(cache_dir)
       }
 
@@ -190,10 +174,7 @@ esp_hlp_detect_cache_dir <- function() {
     } else {
       # 4. Default cache location
 
-      cache_dir <- esp_set_cache_dir(
-        overwrite = TRUE,
-        verbose = FALSE
-      )
+      cache_dir <- esp_set_cache_dir(overwrite = TRUE, verbose = FALSE)
       return(cache_dir)
     }
   } else {
@@ -217,4 +198,30 @@ esp_hlp_cachedir <- function(cache_dir = NULL) {
     dir.create(cache_dir, recursive = TRUE)
   }
   return(cache_dir)
+}
+
+#' Detect cache dir for \CRANpkg{mapSpain}
+#'
+#' @description
+#'
+#' Helper function to detect the current cache folder. See
+#' [esp_set_cache_dir()]
+#'
+#'
+#' @param x Ignored
+#'
+#' @return A character with the path to your `cache_dir`.
+#'
+#' @export
+#'
+#' @rdname esp_detect_cache_dir
+#' @family cache utilities
+#' @examples
+#' esp_detect_cache_dir()
+#'
+esp_detect_cache_dir <- function(x = NULL) {
+  # Cheat linters
+  cd <- x
+  cd <- esp_hlp_detect_cache_dir()
+  cd
 }

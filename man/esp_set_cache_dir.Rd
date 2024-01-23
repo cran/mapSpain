@@ -2,7 +2,7 @@
 % Please edit documentation in R/esp_cache.R
 \name{esp_set_cache_dir}
 \alias{esp_set_cache_dir}
-\title{Set your \pkg{mapSpain} cache dir}
+\title{Set your \CRANpkg{mapSpain} cache dir}
 \usage{
 esp_set_cache_dir(
   cache_dir,
@@ -59,6 +59,7 @@ Sys.getenv("MAPSPAIN_CACHE_DIR")
 \code{\link[rappdirs:user_data_dir]{rappdirs::user_config_dir()}}
 
 Other cache utilities: 
-\code{\link{esp_clear_cache}()}
+\code{\link{esp_clear_cache}()},
+\code{\link{esp_detect_cache_dir}()}
 }
 \concept{cache utilities}

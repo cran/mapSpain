@@ -2,7 +2,7 @@
 % Please edit documentation in R/esp_get_comarca.R
 \name{esp_get_comarca}
 \alias{esp_get_comarca}
-\title{Get 'comarcas' of Spain as \pkg{sf} polygons}
+\title{Get 'comarcas' of Spain as \CRANpkg{sf} polygons}
 \source{
 INE: PC_Axis files.
 }
@@ -46,6 +46,9 @@ When set to \code{TRUE} it would force a fresh download of the source file.}
 \item{verbose}{Logical, displays information. Useful for debugging,
 default is \code{FALSE}.}
 }
+\value{
+A \CRANpkg{sf} polygon object.
+}
 \description{
 Returns 'comarcas' of Spain as polygons,as provided by the
 \strong{INE} (Instituto Nacional de Estadistica).
@@ -87,7 +90,8 @@ While \code{moveCAN} is useful for visualization, it would alter the actual
 geographic position of the Canary Islands. When using the output for
 spatial analysis or using tiles (e.g. with \code{\link[=esp_getTiles]{esp_getTiles()}} or
 \code{\link[=addProviderEspTiles]{addProviderEspTiles()}})  this option should be set to \code{FALSE} in order to
-get the actual coordinates, instead of the modified ones.
+get the actual coordinates, instead of the modified ones. See also
+\code{\link[=esp_move_can]{esp_move_can()}} for displacing stand-alone \CRANpkg{sf} objects.
 }
 
 \examples{

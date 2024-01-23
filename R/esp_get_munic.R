@@ -1,4 +1,4 @@
-#' Get municipalities of Spain as \pkg{sf} polygons
+#' Get municipalities of Spain as \CRANpkg{sf} polygons
 #'
 #' @description
 #' Returns municipalities of Spain as polygons at a specified scale.
@@ -10,7 +10,7 @@
 #' @family municipalities
 #' @seealso [giscoR::gisco_get_lau()], [base::regex()].
 #'
-#' @return A \pkg{sf} polygon
+#' @return A \CRANpkg{sf} polygon
 #'
 #' @export
 #'
@@ -136,9 +136,7 @@ esp_get_munic <- function(year = "2019",
   dwnload <- TRUE
 
 
-  if (year == "2019" &&
-    epsg == "4326" &&
-    isFALSE(update_cache)) {
+  if (all(year == "2019", epsg == "4326", isFALSE(update_cache))) {
     if (verbose) {
       message("Reading from esp_munic.sf")
     }
@@ -275,26 +273,11 @@ esp_get_munic <- function(year = "2019",
 
   if (moving) {
     if (length(grep("05", data_sf$codauto)) > 0) {
-      offset <- c(550000, 920000)
-
-      if (length(moveCAN) > 1) {
-        coords <- sf::st_point(moveCAN)
-        coords <- sf::st_sfc(coords, crs = sf::st_crs(4326))
-        coords <- sf::st_transform(coords, 3857)
-        coords <- sf::st_coordinates(coords)
-        offset <- offset + as.double(coords)
-      }
-
-      data_sf <- sf::st_transform(data_sf, 3857)
       penin <- data_sf[-grep("05", data_sf$codauto), ]
       can <- data_sf[grep("05", data_sf$codauto), ]
 
       # Move CAN
-      can <- sf::st_sf(
-        sf::st_drop_geometry(can),
-        geometry = sf::st_geometry(can) + offset,
-        crs = sf::st_crs(can)
-      )
+      can <- esp_move_can(can, moveCAN = moveCAN)
 
       # Regenerate
       if (nrow(penin) > 0) {
@@ -419,27 +402,11 @@ esp_get_munic_siane <- function(year = Sys.Date(),
 
   if (moving) {
     if (length(grep("05", data_sf$codauto)) > 0) {
-      offset <- c(550000, 920000)
-
-      if (length(moveCAN) > 1) {
-        coords <- sf::st_point(moveCAN)
-        coords <- sf::st_sfc(coords, crs = sf::st_crs(4326))
-        coords <- sf::st_transform(coords, 3857)
-        coords <- sf::st_coordinates(coords)
-        offset <- offset + as.double(coords)
-      }
-
-      data_sf <- sf::st_transform(data_sf, 3857)
       penin <- data_sf[-grep("05", data_sf$codauto), ]
       can <- data_sf[grep("05", data_sf$codauto), ]
 
       # Move CAN
-      can <- sf::st_sf(
-        sf::st_drop_geometry(can),
-        geometry = sf::st_geometry(can) + offset,
-        crs = sf::st_crs(can)
-      )
-
+      can <- esp_move_can(can, moveCAN = moveCAN)
       # Regenerate
       if (nrow(penin) > 0) {
         data_sf <- rbind(penin, can)

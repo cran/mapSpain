@@ -25,7 +25,7 @@ esp_getTiles(
 )
 }
 \arguments{
-\item{x}{An \pkg{sf} or \code{sfc} object.}
+\item{x}{An \CRANpkg{sf} or \code{sfc} object.}
 
 \item{type}{This parameter could be either:
 \itemize{
@@ -45,8 +45,8 @@ download fewer tiles than you probably want. Use \code{1} or \code{2} to
 increase the resolution.}
 
 \item{crop}{\code{TRUE} if results should be cropped to the specified \code{x} extent,
-\code{FALSE} otherwise. If \code{x} is an \pkg{sf} object with one \code{POINT}, crop is set
-to \code{FALSE}.}
+\code{FALSE} otherwise. If \code{x} is an \CRANpkg{sf} object with one \code{POINT}, crop
+is set to \code{FALSE}.}
 
 \item{res}{Resolution (in pixels) of the final tile. Only valid for WMS.}
 
@@ -128,7 +128,7 @@ library(ggplot2)
 library(tidyterra)
 
 ggplot(segovia) +
-  geom_spatraster_rgb(data = tile) +
+  geom_spatraster_rgb(data = tile, maxcell = Inf) +
   geom_sf(fill = NA)
 
 # Another provider
@@ -136,7 +136,7 @@ ggplot(segovia) +
 tile2 <- esp_getTiles(segovia, type = "MDT")
 
 ggplot(segovia) +
-  geom_spatraster_rgb(data = tile2) +
+  geom_spatraster_rgb(data = tile2, maxcell = Inf) +
   geom_sf(fill = NA)
 
 # A custom WMS provided
@@ -152,7 +152,7 @@ custom_wms <- esp_make_provider(
 
 custom_wms_tile <- esp_getTiles(segovia, custom_wms)
 
-autoplot(custom_wms_tile) +
+autoplot(custom_wms_tile, maxcell = Inf) +
   geom_sf(data = segovia, fill = NA, color = "red")
 
 # A custom WMTS provider
@@ -166,19 +166,18 @@ custom_wmts <- esp_make_provider(
 
 custom_wmts_tile <- esp_getTiles(segovia, custom_wmts)
 
-autoplot(custom_wmts_tile) +
+autoplot(custom_wmts_tile, maxcell = Inf) +
   geom_sf(data = segovia, fill = NA, color = "white", linewidth = 2)
 
 # Example from https://leaflet-extras.github.io/leaflet-providers/preview/
-stamen_water <- list(
-  id = "Stamen_Water",
-  q = "https://stamen-tiles-b.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg"
+cartodb_voyager <- list(
+  id = "CartoDB_Voyager",
+  q = "https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png"
 )
+cartodb <- esp_getTiles(segovia, cartodb_voyager, zoommin = 1)
 
-stamen <- esp_getTiles(segovia, stamen_water, zoommin = 1)
-
-autoplot(stamen) +
-  geom_sf(data = segovia, fill = NA, color = "white", linewidth = 1)
+autoplot(cartodb, maxcell = Inf) +
+  geom_sf(data = segovia, fill = NA, color = "black", linewidth = 1)
 }
 }
 \seealso{

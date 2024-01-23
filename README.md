@@ -148,7 +148,7 @@ tile <-
 library(ggplot2)
 library(tidyterra)
 
-lims <- as.double(terra::ext(tile)@ptr$vector)
+lims <- as.vector(terra::ext(tile))
 
 ggplot(remove_missing(shape_pop, na.rm = TRUE)) +
   geom_spatraster_rgb(data = tile, maxcell = 10e6) +
@@ -256,7 +256,7 @@ Some packages recommended for visualization are:
 ## Citation
 
 <p>
-Hernangómez D (2023). <em>mapSpain: Administrative Boundaries of
+Hernangómez D (2024). <em>mapSpain: Administrative Boundaries of
 Spain</em>.
 <a href="https://doi.org/10.5281/zenodo.5366622">doi:10.5281/zenodo.5366622</a>,
 <a href="https://ropenspain.github.io/mapSpain/">https://ropenspain.github.io/mapSpain/</a>.
@@ -266,8 +266,8 @@ A BibTeX entry for LaTeX users is:
 
     @Manual{R-mapspain,
       title = {{mapSpain}: Administrative Boundaries of Spain},
-      year = {2023},
-      version = {0.8.0},
+      year = {2024},
+      version = {0.9.0},
       author = {Diego Hernangómez},
       doi = {10.5281/zenodo.5366622},
       url = {https://ropenspain.github.io/mapSpain/},
@@ -291,8 +291,8 @@ Geográfico Nacional:
 See <https://github.com/rOpenSpain/mapSpain/tree/sianedata>
 
 This package uses data from **GISCO**. GISCO
-[(FAQ)](https://ec.europa.eu/eurostat/web/gisco/faq) is a geospatial
-open data repository including several data sets at several resolution
+[(FAQ)](https://ec.europa.eu/eurostat/web/gisco) is a geospatial open
+data repository including several data sets at several resolution
 levels.
 
 *From GISCO \> Geodata \> Reference data \> Administrative Units /

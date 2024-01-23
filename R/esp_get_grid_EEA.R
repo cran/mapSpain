@@ -1,16 +1,17 @@
-#' Get \pkg{sf} polygons of the national geographic grids provided by EEA
+#' Get \CRANpkg{sf} polygons of the national geographic grids provided by EEA
 #'
 #' @description
-#' Loads a \pkg{sf} polygon with the geographic grids of Spain as provided by the
-#' European Environment Agency (EEA).
+#' Loads a \CRANpkg{sf} polygon with the geographic grids of Spain as provided
+#' by the European Environment Agency (EEA).
 #'
 #' @family grids
 #'
-#' @return A \pkg{sf} polygon
+#' @return A \CRANpkg{sf} polygon
 #'
 #'
 #' @source
-#' [EEA reference grid](https://www.eea.europa.eu/data-and-maps/data/eea-reference-grids-2).
+#' [EEA reference
+#' grid](https://www.eea.europa.eu/en/datahub/datahubitem-view/3c362237-daa4-45e2-8c16-aaadfb1a003b).
 #'
 #' @export
 #' @param resolution Resolution of the grid in kms. Could be `1`, `10` or `100`.
@@ -43,15 +44,11 @@ esp_get_grid_EEA <- function(resolution = 100,
   res <- as.numeric(resolution)
 
   if (!res %in% c(1, 10, 100)) {
-    stop(
-      "resolution should be one of 1, 10 or 100"
-    )
+    stop("resolution should be one of 1, 10 or 100")
   }
 
   if (!type %in% c("main", "canary")) {
-    stop(
-      "type should be one of 'main', 'canary'"
-    )
+    stop("type should be one of 'main', 'canary'")
   }
 
   newtype <- switch(type,
@@ -60,7 +57,10 @@ esp_get_grid_EEA <- function(resolution = 100,
   )
 
   # Url
-  url <- "https://www.eea.europa.eu/data-and-maps/data/eea-reference-grids-2/gis-files/spain-shapefile/at_download/file"
+  url <- paste0(
+    "https://www.eea.europa.eu/data-and-maps/data/",
+    "eea-reference-grids-2/gis-files/spain-shapefile/at_download/file"
+  )
   cache_dir <- esp_hlp_cachedir(cache_dir)
 
   # Create filepath
@@ -68,12 +68,7 @@ esp_get_grid_EEA <- function(resolution = 100,
 
   filepath <- file.path(cache_dir, filename)
 
-
-  init_grid <- paste0(
-    newtype, "_",
-    resolution,
-    "km.shp"
-  )
+  init_grid <- paste0(newtype, "_", resolution, "km.shp")
 
   init_grid <- file.path(cache_dir, init_grid)
 
@@ -84,10 +79,7 @@ esp_get_grid_EEA <- function(resolution = 100,
   if (update_cache || isFALSE(localfile)) {
     dwnload <- TRUE
     if (verbose) {
-      message(
-        "Downloading file from ",
-        url
-      )
+      message("Downloading file from ", url)
     }
     if (verbose && update_cache) {
       message("\nUpdating cache")
@@ -101,17 +93,17 @@ esp_get_grid_EEA <- function(resolution = 100,
 
   # Downloading
   if (dwnload) {
-    err_dwnload <- try(download.file(url, filepath,
-      quiet = isFALSE(verbose),
-      mode = "wb"
-    ), silent = TRUE)
+    err_dwnload <- try(
+      download.file(url, filepath, quiet = isFALSE(verbose), mode = "wb"),
+      silent = TRUE
+    )
     # nocov start
     if (inherits(err_dwnload, "try-error")) {
       if (verbose) message("Retrying query")
-      err_dwnload <- try(download.file(url, filepath,
-        quiet = isFALSE(verbose),
-        mode = "wb"
-      ), silent = TRUE)
+      err_dwnload <- try(
+        download.file(url, filepath, quiet = isFALSE(verbose), mode = "wb"),
+        silent = TRUE
+      )
     }
 
     # If not then message
@@ -138,11 +130,7 @@ esp_get_grid_EEA <- function(resolution = 100,
   }
 
   err_onload <- try(
-    sf::st_read(
-      init_grid,
-      quiet = isFALSE(verbose),
-      stringsAsFactors = FALSE
-    ),
+    sf::st_read(init_grid, quiet = isFALSE(verbose), stringsAsFactors = FALSE),
     silent = TRUE
   )
   # nocov start

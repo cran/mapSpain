@@ -1,9 +1,9 @@
-#' Get \pkg{sf} polygons of the national geographic grids provided by BDN
+#' Get \CRANpkg{sf} polygons of the national geographic grids provided by BDN
 #'
 #' @description
-#' Loads a \pkg{sf} polygon with the geographic grids of Spain as provided on
-#' the Banco de Datos de la Naturaleza (Nature Data Bank), by the
-#' Ministry of Environment (MITECO):
+#' Loads a \CRANpkg{sf} polygon with the geographic grids of Spain as provided
+#' on the Banco de Datos de la Naturaleza (Nature Data Bank), by the Ministry
+#' of Environment (MITECO):
 #'   * [esp_get_grid_BDN()] extracts country-wide grids with resolutions
 #'     5x5 or 10x10 kms.
 #'   * [esp_get_grid_BDN_ccaa()] extracts grids by Autonomous Community with
@@ -11,14 +11,14 @@
 #'
 #' @family grids
 #'
-#' @return A \pkg{sf} polygon
+#' @return A \CRANpkg{sf} polygon
 #'
 #'
 #' @source BDN data via a custom CDN (see
 #' <https://github.com/rOpenSpain/mapSpain/tree/sianedata/MTN>).
 #'
 #' See original metadata and source on
-#' <https://www.miteco.gob.es/es/biodiversidad/servicios/banco-datos-naturaleza/informacion-disponible/bdn-cart-aux-descargas-ccaa.aspx>
+#' <https://www.miteco.gob.es/es/biodiversidad/servicios/banco-datos-naturaleza/informacion-disponible/bdn-cart-aux-descargas-ccaa.html>
 #'
 #' @export
 #'
@@ -49,22 +49,19 @@ esp_get_grid_BDN <- function(resolution = 10,
   res <- as.numeric(resolution)
 
   if (!res %in% c(5, 10)) {
-    stop(
-      "resolution should be one of 5, 10"
-    )
+    stop("resolution should be one of 5, 10")
   }
 
   if (!type %in% c("main", "canary")) {
-    stop(
-      "type should be one of 'main', 'canary'"
-    )
+    stop("type should be one of 'main', 'canary'")
   }
 
 
-
-
   # Url
-  api_entry <- "https://github.com/rOpenSpain/mapSpain/raw/sianedata/MITECO/dist/"
+  api_entry <- paste0(
+    "https://github.com/rOpenSpain/mapSpain/raw/",
+    "sianedata/MITECO/dist/"
+  )
 
   # Filename
   if (res == 10) {
@@ -125,7 +122,10 @@ esp_get_grid_BDN_ccaa <- function(ccaa,
   id <- gsub("ES", "", nuts_id)
 
 
-  api_entry <- "https://github.com/rOpenSpain/mapSpain/raw/sianedata/MITECO/dist/"
+  api_entry <- paste0(
+    "https://github.com/rOpenSpain/mapSpain/",
+    "raw/sianedata/MITECO/dist/"
+  )
   filename <- paste0("malla1x1_", id, ".gpkg")
 
   result <- esp_hlp_dwnload_sianedata(

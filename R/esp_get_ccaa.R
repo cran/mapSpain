@@ -1,9 +1,10 @@
-#' Get Autonomous Communities of Spain as \pkg{sf} polygons and points
+#' Get Autonomous Communities of Spain as \CRANpkg{sf} polygons and points
 #'
 #' @description
 #' Returns
-#' [Autonomous Communities of Spain](https://en.wikipedia.org/wiki/Autonomous_communities_of_Spain)
-#' as polygons and points at a specified scale.
+#' [Autonomous Communities of
+#' Spain](https://en.wikipedia.org/wiki/Autonomous_communities_of_Spain) as
+#' polygons and points at a specified scale.
 #'
 #' * [esp_get_ccaa()] uses GISCO (Eurostat) as source. Please use
 #'   [giscoR::gisco_attributions()]
@@ -14,7 +15,7 @@
 #'
 #' @name esp_get_ccaa
 #'
-#' @return A \pkg{sf} object specified by `spatialtype`.
+#' @return A \CRANpkg{sf} object specified by `spatialtype`.
 #'
 #'
 #' @export
@@ -26,7 +27,7 @@
 #'
 #' @details
 #' When using `ccaa` you can use and mix names and NUTS codes (levels 1 or 2),
-#' ISO codes (corresponding to level 2) or "codauto" (see [esp_codelist]).
+#' ISO codes (corresponding to level 2) or `codauto` (see [esp_codelist]).
 #' Ceuta and Melilla are considered as Autonomous Communities on this function.
 #'
 #' When calling a NUTS1 level, all the Autonomous Communities of that level
@@ -128,8 +129,7 @@ esp_get_ccaa <- function(ccaa = NULL, moveCAN = TRUE, ...) {
 
   # Paste nuts1
   dfnuts <- mapSpain::esp_codelist
-  dfnuts <-
-    unique(dfnuts[, c("nuts2.code", "nuts1.code", "nuts1.name")])
+  dfnuts <- unique(dfnuts[, c("nuts2.code", "nuts1.code", "nuts1.name")])
 
   data_sf <- merge(data_sf, dfnuts, all.x = TRUE)
 
@@ -161,7 +161,7 @@ esp_get_ccaa <- function(ccaa = NULL, moveCAN = TRUE, ...) {
 #'   **Details** for [esp_get_ccaa_siane()]
 #'
 #' @param resolution Resolution of the polygon. Values available are
-#'   "3", "6.5" or "10".
+#'   `3`, `6.5` or `10`.
 #'
 #' @param rawcols Logical. Setting this to `TRUE` would add the raw columns of
 #'   the dataset provided by IGN.
@@ -169,8 +169,8 @@ esp_get_ccaa <- function(ccaa = NULL, moveCAN = TRUE, ...) {
 #' @inheritParams esp_get_nuts
 #'
 #' @details
-#' On [esp_get_ccaa_siane()], `year` could be passed as a single year ("YYYY"
-#' format, as end of year) or as a specific date ("YYYY-MM-DD" format).
+#' On [esp_get_ccaa_siane()], `year` could be passed as a single year (`YYYY`
+#' format, as end of year) or as a specific date (`YYYY-MM-DD` format).
 #' Historical information starts as of 2005.
 
 esp_get_ccaa_siane <- function(ccaa = NULL,
@@ -193,13 +193,8 @@ esp_get_ccaa_siane <- function(ccaa = NULL,
 
   # Get Data from SIANE
   data_sf <- esp_hlp_get_siane(
-    "ccaa",
-    resolution,
-    cache,
-    cache_dir,
-    update_cache,
-    verbose,
-    year
+    "ccaa", resolution, cache, cache_dir,
+    update_cache, verbose, year
   )
 
   initcols <- colnames(sf::st_drop_geometry(data_sf))
@@ -210,9 +205,7 @@ esp_get_ccaa_siane <- function(ccaa = NULL,
   data_sf$lab <- gsub("Ciudad de ", "", data_sf$lab, fixed = TRUE)
   data_sf$lab <- gsub("/Catalunya", "", data_sf$lab)
   data_sf$lab <- gsub("/Euskadi", "", data_sf$lab)
-  data_sf$codauto <- esp_dict_region_code(data_sf$lab,
-    destination = "codauto"
-  )
+  data_sf$codauto <- esp_dict_region_code(data_sf$lab, destination = "codauto")
 
   # Filter CCAA
 
@@ -244,8 +237,7 @@ esp_get_ccaa_siane <- function(ccaa = NULL,
 
   # Paste nuts1
   dfnuts <- mapSpain::esp_codelist
-  dfnuts <-
-    unique(dfnuts[, c("nuts2.code", "nuts1.code", "nuts1.name")])
+  dfnuts <- unique(dfnuts[, c("nuts2.code", "nuts1.code", "nuts1.name")])
   data_sf <- merge(data_sf, dfnuts, all.x = TRUE)
 
   # Move CAN
@@ -256,26 +248,11 @@ esp_get_ccaa_siane <- function(ccaa = NULL,
 
   if (moving) {
     if (length(grep("05", data_sf$codauto)) > 0) {
-      offset <- c(550000, 920000)
-
-      if (length(moveCAN) > 1) {
-        coords <- sf::st_point(moveCAN)
-        coords <- sf::st_sfc(coords, crs = sf::st_crs(4326))
-        coords <- sf::st_transform(coords, 3857)
-        coords <- sf::st_coordinates(coords)
-        offset <- offset + as.double(coords)
-      }
-
-      data_sf <- sf::st_transform(data_sf, 3857)
       penin <- data_sf[-grep("05", data_sf$codauto), ]
       can <- data_sf[grep("05", data_sf$codauto), ]
 
       # Move CAN
-      can <- sf::st_sf(
-        sf::st_drop_geometry(can),
-        geometry = sf::st_geometry(can) + offset,
-        crs = sf::st_crs(can)
-      )
+      can <- esp_move_can(can, moveCAN = moveCAN)
 
       # Regenerate
       if (nrow(penin) > 0) {
@@ -295,11 +272,15 @@ esp_get_ccaa_siane <- function(ccaa = NULL,
 
   # Select columns
   if (rawcols) {
-    data_sf <-
-      data_sf[, unique(c(initcols, colnames(df), "nuts1.code", "nuts1.name"))]
+    data_sf <- data_sf[
+      ,
+      unique(c(
+        initcols, colnames(df), "nuts1.code",
+        "nuts1.name"
+      ))
+    ]
   } else {
-    data_sf <-
-      data_sf[, unique(c(colnames(df), "nuts1.code", "nuts1.name"))]
+    data_sf <- data_sf[, unique(c(colnames(df), "nuts1.code", "nuts1.name"))]
   }
 
   return(data_sf)

@@ -21,7 +21,7 @@
 #'
 #' @export
 #'
-#' @param x An \pkg{sf} or `sfc` object.
+#' @param x An \CRANpkg{sf} or `sfc` object.
 #'
 #' @param type This parameter could be either:
 #'   - The name of one of the  pre-defined providers
@@ -36,8 +36,8 @@
 #'   download fewer tiles than you probably want. Use `1` or `2` to
 #'   increase the resolution.
 #' @param crop `TRUE` if results should be cropped to the specified `x` extent,
-#'   `FALSE` otherwise. If `x` is an \pkg{sf} object with one `POINT`, crop is set
-#'   to `FALSE`.
+#'   `FALSE` otherwise. If `x` is an \CRANpkg{sf} object with one `POINT`, crop
+#'   is set to `FALSE`.
 #' @param res Resolution (in pixels) of the final tile. Only valid for WMS.
 #' @param bbox_expand A numeric value that indicates the expansion percentage
 #' of the bounding box of `x`.
@@ -103,7 +103,7 @@
 #' library(tidyterra)
 #'
 #' ggplot(segovia) +
-#'   geom_spatraster_rgb(data = tile) +
+#'   geom_spatraster_rgb(data = tile, maxcell = Inf) +
 #'   geom_sf(fill = NA)
 #'
 #' # Another provider
@@ -111,7 +111,7 @@
 #' tile2 <- esp_getTiles(segovia, type = "MDT")
 #'
 #' ggplot(segovia) +
-#'   geom_spatraster_rgb(data = tile2) +
+#'   geom_spatraster_rgb(data = tile2, maxcell = Inf) +
 #'   geom_sf(fill = NA)
 #'
 #' # A custom WMS provided
@@ -127,7 +127,7 @@
 #'
 #' custom_wms_tile <- esp_getTiles(segovia, custom_wms)
 #'
-#' autoplot(custom_wms_tile) +
+#' autoplot(custom_wms_tile, maxcell = Inf) +
 #'   geom_sf(data = segovia, fill = NA, color = "red")
 #'
 #' # A custom WMTS provider
@@ -141,19 +141,18 @@
 #'
 #' custom_wmts_tile <- esp_getTiles(segovia, custom_wmts)
 #'
-#' autoplot(custom_wmts_tile) +
+#' autoplot(custom_wmts_tile, maxcell = Inf) +
 #'   geom_sf(data = segovia, fill = NA, color = "white", linewidth = 2)
 #'
 #' # Example from https://leaflet-extras.github.io/leaflet-providers/preview/
-#' stamen_water <- list(
-#'   id = "Stamen_Water",
-#'   q = "https://stamen-tiles-b.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg"
+#' cartodb_voyager <- list(
+#'   id = "CartoDB_Voyager",
+#'   q = "https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png"
 #' )
+#' cartodb <- esp_getTiles(segovia, cartodb_voyager, zoommin = 1)
 #'
-#' stamen <- esp_getTiles(segovia, stamen_water, zoommin = 1)
-#'
-#' autoplot(stamen) +
-#'   geom_sf(data = segovia, fill = NA, color = "white", linewidth = 1)
+#' autoplot(cartodb, maxcell = Inf) +
+#'   geom_sf(data = segovia, fill = NA, color = "black", linewidth = 1)
 #' }
 esp_getTiles <- function(x,
                          type = "IDErioja",
@@ -214,7 +213,10 @@ esp_getTiles <- function(x,
     type <- type$id
 
     if (any(is.null(url_pieces), is.null(type))) {
-      stop("Custom provider should be a named list with an 'id' and a 'q' field")
+      stop(
+        "Custom provider should be a named list with an 'id' ",
+        "and a 'q' field"
+      )
     }
 
     url_pieces <- esp_hlp_split_url(url_pieces)
@@ -282,7 +284,8 @@ esp_getTiles <- function(x,
 
     # Ignore TileMatrix fields in WMTS
     if (typeprov == "WMTS") {
-      options <- options[!grepl("tilematrix", names(options), ignore.case = TRUE)]
+      ig <- !grepl("tilematrix", names(options), ignore.case = TRUE)
+      options <- options[ig]
     }
 
 
@@ -299,7 +302,9 @@ esp_getTiles <- function(x,
   }
 
   # Get CRS of Tile
-  crs <- unlist(url_pieces[names(url_pieces) %in% c("crs", "srs", "tilematrixset")])
+  crs <- unlist(
+    url_pieces[names(url_pieces) %in% c("crs", "srs", "tilematrixset")]
+  )
   # Caso some WMTS
   if (is.null(crs)) crs <- "epsg:3857"
 

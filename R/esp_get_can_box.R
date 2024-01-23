@@ -1,4 +1,4 @@
-#' Get \pkg{sf} lines and polygons for insetting the Canary Islands
+#' Get \CRANpkg{sf} lines and polygons for insetting the Canary Islands
 #'
 #' @description
 #' When plotting Spain, it is usual to represent the Canary Islands as an inset
@@ -10,12 +10,13 @@
 #'   Islands.
 #'
 #' @family political
+#' @family Canary Islands
 #'
 #' @rdname esp_get_can_box
 #'
 #' @name esp_get_can_box
 #'
-#' @return A \pkg{sf} polygon or line depending of `style` parameter.
+#' @return A \CRANpkg{sf} polygon or line depending of `style` parameter.
 #'
 #'
 #' @export
@@ -112,16 +113,13 @@ esp_get_can_box <- function(style = "right",
     stop("style should be one of 'right','left','box'")
   }
 
-
   epsg <- as.character(epsg)
 
   if (!epsg %in% c("4258", "4326", "3035", "3857")) {
     stop("epsg should be one of '4258','4326','3035', '3857'")
   }
 
-
   can <- esp_get_ccaa("Canarias", epsg = "4326", moveCAN = FALSE)
-
   bbox <- sf::st_bbox(can)
 
 
@@ -161,20 +159,7 @@ esp_get_can_box <- function(style = "right",
   moving <- isTRUE(moveCAN) | length(moveCAN) > 1
 
   if (moving) {
-    offset <- c(550000, 920000)
-
-    if (length(moveCAN) > 1) {
-      coords <- sf::st_point(moveCAN)
-      coords <- sf::st_sfc(coords, crs = sf::st_crs(4326))
-      coords <- sf::st_transform(coords, 3857)
-      coords <- sf::st_coordinates(coords)
-      offset <- offset + as.double(coords)
-    }
-
-    can <- sf::st_transform(lall, 3857) + offset
-    can <- sf::st_sfc(can, crs = 3857)
-    can <- sf::st_transform(can, sf::st_crs(lall))
-    lall <- can
+    lall <- esp_move_can(lall, moveCAN = moveCAN)
   }
 
   # Transform
@@ -190,6 +175,9 @@ esp_get_can_box <- function(style = "right",
 #' @description
 #' * [esp_get_can_provinces()] is used to draw a separator line between the two
 #' provinces of the Canary Islands.
+#'
+#' See also [esp_move_can()] to displace stand-alone objects on the Canary
+#' Islands.
 #'
 #' @return `esp_get_can_provinces` returns a `LINESTRING` object.
 #'
@@ -219,20 +207,7 @@ esp_get_can_provinces <- function(moveCAN = TRUE,
   moving <- isTRUE(moveCAN) | length(moveCAN) > 1
 
   if (moving) {
-    offset <- c(550000, 920000)
-
-    if (length(moveCAN) > 1) {
-      coords <- sf::st_point(moveCAN)
-      coords <- sf::st_sfc(coords, crs = sf::st_crs(4326))
-      coords <- sf::st_transform(coords, 3857)
-      coords <- sf::st_coordinates(coords)
-      offset <- offset + as.double(coords)
-    }
-
-    can <- sf::st_transform(lall, 3857) + offset
-    can <- sf::st_sfc(can, crs = 3857)
-    can <- sf::st_transform(can, sf::st_crs(lall))
-    lall <- can
+    lall <- esp_move_can(lall, moveCAN = moveCAN)
   }
 
   # Transform

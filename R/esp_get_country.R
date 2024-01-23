@@ -1,12 +1,12 @@
-#' Get the borders of Spain as a \pkg{sf} polygon
+#' Get the borders of Spain as a \CRANpkg{sf} polygon
 #'
 #' @description
-#' Returns the boundaries of Spain as a single \pkg{sf} polygon at a
+#' Returns the boundaries of Spain as a single \CRANpkg{sf} polygon at a
 #' specified scale.
 #'
 #' @family political
 #'
-#' @return A \pkg{sf} polygon object.
+#' @return A \CRANpkg{sf} polygon object.
 #'
 #'
 #' @export
@@ -51,12 +51,13 @@ esp_get_country <- function(moveCAN = TRUE, ...) {
   # Extract geom column
   names <- names(data_sf)
 
-  which.geom <-
-    which(vapply(data_sf, function(f) {
+  which_geom <- which(
+    vapply(data_sf, function(f) {
       inherits(f, "sfc")
-    }, TRUE))
+    }, TRUE)
+  )
 
-  nm <- names(which.geom)
+  nm <- names(which_geom)
 
   # Join all
   init <- sf::st_crs(data_sf)

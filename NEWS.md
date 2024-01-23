@@ -1,3 +1,14 @@
+# mapSpain 0.9.0
+
+-   Changes on how to handle modifications on Canary Islands objects (#101):
+    -   Add a helper function for displace stand-alone **sf** objects in Canary
+        Islands: `esp_move_can()`.
+    -   `esp_move_can()` is used internally on all functions.
+-   Add a new function to show the current cache directory:
+    `esp_detect_cache_dir()`.
+-   `mapSpain::layer_spatraster()` removed (was deprecated in **mapSpain**
+    0.6.2).
+
 # mapSpain 0.8.0
 
 -   Improve download of NUTS data from **giscoR**.
@@ -69,9 +80,7 @@
 # mapSpain 0.3.1
 
 -   Fix an error on CRAN related with the cache folder #52:
-
     -   Add `mapSpain::esp_clear_cache()`
-
 -   Update docs with `@family` tag.
 
 # mapSpain 0.3.0
@@ -89,7 +98,7 @@
 -   Move minimum version of `giscoR` to v0.2.4
 -   Fix typos on `esp_dict_translate()` #36.
 -   Not run examples on tiles, as the server sometimes doesn't respond.
--   Refactor `sysdata.rda`.
+-   Re factor `sysdata.rda`.
 -   CRAN fixes:
     -   Removed broken link on `addProviderEspTiles()`.
     -   Vignette removed (CRAN warning).

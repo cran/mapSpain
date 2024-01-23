@@ -1,10 +1,12 @@
-#' Get 'comarcas' of Spain as \pkg{sf} polygons
+#' Get 'comarcas' of Spain as \CRANpkg{sf} polygons
 #'
 #' @description
 #' Returns 'comarcas' of Spain as polygons,as provided by the
 #' **INE** (Instituto Nacional de Estadistica).
 #'
 #' @source INE: PC_Axis files.
+#'
+#' @return A \CRANpkg{sf} polygon object.
 #'
 #' @family political
 #'
@@ -137,26 +139,11 @@ esp_get_comarca <- function(region = NULL,
 
   if (moving) {
     if (length(grep("05", data_sf$codauto)) > 0) {
-      offset <- c(550000, 920000)
-
-      if (length(moveCAN) > 1) {
-        coords <- sf::st_point(moveCAN)
-        coords <- sf::st_sfc(coords, crs = sf::st_crs(4326))
-        coords <- sf::st_transform(coords, 3857)
-        coords <- sf::st_coordinates(coords)
-        offset <- offset + as.double(coords)
-      }
-
-      data_sf <- sf::st_transform(data_sf, 3857)
       penin <- data_sf[-grep("05", data_sf$codauto), ]
       can <- data_sf[grep("05", data_sf$codauto), ]
 
       # Move CAN
-      can <- sf::st_sf(
-        sf::st_drop_geometry(can),
-        geom = sf::st_geometry(can) + offset,
-        crs = sf::st_crs(can)
-      )
+      can <- esp_move_can(can, moveCAN = moveCAN)
 
       # Regenerate
       if (nrow(penin) > 0) {
@@ -168,8 +155,7 @@ esp_get_comarca <- function(region = NULL,
   }
 
   data_sf <- sf::st_transform(data_sf, as.double(init_epsg))
-  data_sf <-
-    data_sf[order(data_sf$codauto, data_sf$cpro, data_sf$COMAGR), ]
+  data_sf <- data_sf[order(data_sf$codauto, data_sf$cpro, data_sf$COMAGR), ]
 
   return(data_sf)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/esp_get_capimun.R
 \name{esp_get_capimun}
 \alias{esp_get_capimun}
-\title{Get \pkg{sf} points of the municipalities of Spain}
+\title{Get \CRANpkg{sf} points of the municipalities of Spain}
 \source{
 IGN data via a custom CDN (see
 \url{https://github.com/rOpenSpain/mapSpain/tree/sianedata}).
@@ -59,22 +59,22 @@ Initial position can be adjusted using the vector of coordinates. See
 the dataset provided by IGN.}
 }
 \value{
-A \pkg{sf} point object.
+A \CRANpkg{sf} point object.
 }
 \description{
-Get a \pkg{sf} point with the location of the political powers for
+Get a \CRANpkg{sf} point with the location of the political powers for
 each municipality (possibly the center of the municipality).
 
 Note that this differs of the centroid of the boundaries of the
 municipality, returned by \code{\link[=esp_get_munic]{esp_get_munic()}}.
 }
 \details{
-\code{year} could be passed as a single year ("YYYY" format, as end of year) or
-as a specific date ("YYYY-MM-DD" format). Historical information starts as
+\code{year} could be passed as a single year (\code{YYYY} format, as end of year) or
+as a specific date (\code{YYYY-MM-DD} format). Historical information starts as
 of 2005.
 
 When using \code{region} you can use and mix names and NUTS codes (levels 1,
-2 or 3), ISO codes (corresponding to level 2 or 3) or "cpro". See
+2 or 3), ISO codes (corresponding to level 2 or 3) or \code{cpro}. See
 \link{esp_codelist}
 
 When calling a superior level (Province, Autonomous Community or NUTS1) ,
@@ -96,7 +96,8 @@ While \code{moveCAN} is useful for visualization, it would alter the actual
 geographic position of the Canary Islands. When using the output for
 spatial analysis or using tiles (e.g. with \code{\link[=esp_getTiles]{esp_getTiles()}} or
 \code{\link[=addProviderEspTiles]{addProviderEspTiles()}})  this option should be set to \code{FALSE} in order to
-get the actual coordinates, instead of the modified ones.
+get the actual coordinates, instead of the modified ones. See also
+\code{\link[=esp_move_can]{esp_move_can()}} for displacing stand-alone \CRANpkg{sf} objects.
 }
 
 \examples{
@@ -135,7 +136,7 @@ library(ggplot2)
 library(tidyterra)
 
 ggplot(points) +
-  geom_spatraster_rgb(data = tile) +
+  geom_spatraster_rgb(data = tile, maxcell = Inf) +
   geom_sf(data = area, fill = NA, color = "blue") +
   geom_sf(data = points, aes(fill = type), size = 5, shape = 21) +
   scale_fill_manual(values = c("green", "red")) +

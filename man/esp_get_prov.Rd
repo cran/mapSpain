@@ -3,7 +3,7 @@
 \name{esp_get_prov}
 \alias{esp_get_prov}
 \alias{esp_get_prov_siane}
-\title{Get Provinces of Spain as \pkg{sf} polygons and points}
+\title{Get Provinces of Spain as \CRANpkg{sf} polygons and points}
 \source{
 IGN data via a custom CDN (see
 \url{https://github.com/rOpenSpain/mapSpain/tree/sianedata}).
@@ -67,13 +67,13 @@ When set to \code{TRUE} it would force a fresh download of the source file.}
 default is \code{FALSE}.}
 
 \item{resolution}{Resolution of the polygon. Values available are
-"3", "6.5" or "10".}
+\code{3}, \code{6.5} or \code{10}.}
 
 \item{rawcols}{Logical. Setting this to \code{TRUE} would add the raw columns of
 the dataset provided by IGN.}
 }
 \value{
-A \pkg{sf} object specified by \code{spatialtype}.
+A \CRANpkg{sf} object specified by \code{spatialtype}.
 }
 \description{
 Returns
@@ -120,7 +120,8 @@ While \code{moveCAN} is useful for visualization, it would alter the actual
 geographic position of the Canary Islands. When using the output for
 spatial analysis or using tiles (e.g. with \code{\link[=esp_getTiles]{esp_getTiles()}} or
 \code{\link[=addProviderEspTiles]{addProviderEspTiles()}})  this option should be set to \code{FALSE} in order to
-get the actual coordinates, instead of the modified ones.
+get the actual coordinates, instead of the modified ones. See also
+\code{\link[=esp_move_can]{esp_move_can()}} for displacing stand-alone \CRANpkg{sf} objects.
 }
 
 \examples{

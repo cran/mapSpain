@@ -1,7 +1,7 @@
 Type: Package
 Package: mapSpain
 Title: Administrative Boundaries of Spain
-Version: 0.8.0
+Version: 0.9.0
 Authors@R: 
     person("Diego", "Hernangómez", , "diego.hernangomezherrero@gmail.com", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0001-8457-4658", affiliation = "rOpenSpain"))
@@ -24,8 +24,7 @@ Suggests: ggplot2 (>= 3.0.0), knitr, leaflet (>= 2.0.0), png (>=
 VignetteBuilder: knitr
 Config/Needs/coverage: covr
 Config/Needs/website: ragg, reactable, rnaturalearth, tidyverse,
-        ropenspain/rostemplate, ropensci/rnaturalearthhires,
-        IamKDO/GADMTools
+        ropenspain/rostemplate, ropensci/rnaturalearthhires, devtools
 Config/testthat/edition: 3
 Config/testthat/parallel: true
 Copyright: © EuroGeographics for the administrative boundaries. Atlas
@@ -33,16 +32,16 @@ Copyright: © EuroGeographics for the administrative boundaries. Atlas
         <https://www.ine.es/en/index.htm>
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 X-schema.org-applicationCategory: cartography
 X-schema.org-isPartOf: https://ropenspain.es/
 X-schema.org-keywords: rOpenSpain, tiles, r, maps, spatial, rstats,
         r-package, municipalities, Spain, gisco, provinces, ign,
         administrative-boundaries, ccaa, static-tiles
 NeedsCompilation: no
-Packaged: 2023-07-10 20:18:05 UTC; diego
+Packaged: 2024-01-23 20:20:23 UTC; diego
 Author: Diego Hernangómez [aut, cre, cph]
     (<https://orcid.org/0000-0001-8457-4658>, rOpenSpain)
 Maintainer: Diego Hernangómez <diego.hernangomezherrero@gmail.com>
 Repository: CRAN
-Date/Publication: 2023-07-12 18:30:08 UTC
+Date/Publication: 2024-01-23 20:50:02 UTC

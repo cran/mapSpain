@@ -1,4 +1,4 @@
-#' Get Provinces of Spain as \pkg{sf} polygons and points
+#' Get Provinces of Spain as \CRANpkg{sf} polygons and points
 #'
 #' @description
 #' Returns
@@ -14,7 +14,7 @@
 #' @rdname esp_get_prov
 #' @name esp_get_prov
 #'
-#' @return A \pkg{sf} object specified by `spatialtype`.
+#' @return A \CRANpkg{sf} object specified by `spatialtype`.
 #'
 #'
 #' @export
@@ -346,26 +346,10 @@ esp_get_prov_siane <- function(prov = NULL,
 
   if (moving) {
     if (length(grep("05", data_sf$codauto)) > 0) {
-      offset <- c(550000, 920000)
-
-      if (length(moveCAN) > 1) {
-        coords <- sf::st_point(moveCAN)
-        coords <- sf::st_sfc(coords, crs = sf::st_crs(4326))
-        coords <- sf::st_transform(coords, 3857)
-        coords <- sf::st_coordinates(coords)
-        offset <- offset + as.double(coords)
-      }
-
-      data_sf <- sf::st_transform(data_sf, 3857)
       penin <- data_sf[-grep("05", data_sf$codauto), ]
       can <- data_sf[grep("05", data_sf$codauto), ]
 
-      # Move can
-      can <- sf::st_sf(
-        sf::st_drop_geometry(can),
-        geometry = sf::st_geometry(can) + offset,
-        crs = sf::st_crs(can)
-      )
+      can <- esp_move_can(can, moveCAN = moveCAN)
 
       # Regenerate
       if (nrow(penin) > 0) {

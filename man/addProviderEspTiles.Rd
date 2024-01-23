@@ -3,7 +3,8 @@
 \name{addProviderEspTiles}
 \alias{addProviderEspTiles}
 \alias{providerEspTileOptions}
-\title{Include base tiles of Spanish public administrations on a \pkg{leaflet} map}
+\title{Include base tiles of Spanish public administrations on a \CRANpkg{leaflet}
+map}
 \source{
 \url{https://dieghernan.github.io/leaflet-providersESP/} leaflet plugin,
 \strong{v1.3.3}.
@@ -39,7 +40,7 @@ layers (e.g. markers and polygons) can share the same group name. See
 \item{...}{Arguments passed on to \code{\link[leaflet:addProviderTiles]{leaflet::providerTileOptions()}}.}
 }
 \value{
-A map object generated with \code{\link[leaflet:leaflet]{leaflet::leaflet()}}.
+A modified \code{\link[leaflet:leaflet]{leaflet::leaflet()}} \code{map} object.
 }
 \description{
 Include tiles of public Spanish organisms to a

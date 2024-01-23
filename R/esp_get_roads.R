@@ -1,11 +1,11 @@
-#' Get \pkg{sf} lines of the roads of Spain
+#' Get \CRANpkg{sf} lines of the roads of Spain
 #'
 #' @description
-#' Loads a \pkg{sf} line object representing the main roads of Spain.
+#' Loads a \CRANpkg{sf} line object representing the main roads of Spain.
 #'
 #' @family infrastructure
 #'
-#' @return A \pkg{sf} line object.
+#' @return A \CRANpkg{sf} line object.
 #'
 #' @source IGN data via a custom CDN (see
 #' <https://github.com/rOpenSpain/mapSpain/tree/sianedata>).
@@ -90,16 +90,6 @@ esp_get_roads <- function(year = Sys.Date(),
 
   if (moving) {
     if (length(grep("05", data_sf$codauto)) > 0) {
-      offset <- c(550000, 920000)
-
-      if (length(moveCAN) > 1) {
-        coords <- sf::st_point(moveCAN)
-        coords <- sf::st_sfc(coords, crs = sf::st_crs(4326))
-        coords <- sf::st_transform(coords, 3857)
-        coords <- sf::st_coordinates(coords)
-        offset <- offset + as.double(coords)
-      }
-
       data_sf <- sf::st_transform(data_sf, 3857)
       penin <- data_sf[-grep("05", data_sf$codauto), ]
       can <- data_sf[grep("05", data_sf$codauto), ]
@@ -112,11 +102,12 @@ esp_get_roads <- function(year = Sys.Date(),
       )
 
       # Move can
-      can <- sf::st_sf(
-        sf::st_drop_geometry(can),
-        geometry = sf::st_geometry(can) + offset,
-        crs = sf::st_crs(can)
+      can <- sf::st_sf(sf::st_drop_geometry(can),
+        geometry = sf::st_geometry(can), crs = sf::st_crs(can)
       )
+
+      can <- esp_move_can(can, moveCAN = moveCAN)
+
 
       # Regenerate
       data_sf <- rbind(penin, can)

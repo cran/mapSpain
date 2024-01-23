@@ -3,7 +3,7 @@
 \name{esp_get_can_box}
 \alias{esp_get_can_box}
 \alias{esp_get_can_provinces}
-\title{Get \pkg{sf} lines and polygons for insetting the Canary Islands}
+\title{Get \CRANpkg{sf} lines and polygons for insetting the Canary Islands}
 \source{
 \code{esp_get_can_provinces} extracted from CartoBase ANE,
 \code{se89_mult_admin_provcan_l.shp} file.
@@ -32,7 +32,7 @@ One of:
 }}
 }
 \value{
-A \pkg{sf} polygon or line depending of \code{style} parameter.
+A \CRANpkg{sf} polygon or line depending of \code{style} parameter.
 
 \code{esp_get_can_provinces} returns a \code{LINESTRING} object.
 }
@@ -50,13 +50,17 @@ Islands.
 \item \code{\link[=esp_get_can_provinces]{esp_get_can_provinces()}} is used to draw a separator line between the two
 provinces of the Canary Islands.
 }
+
+See also \code{\link[=esp_move_can]{esp_move_can()}} to displace stand-alone objects on the Canary
+Islands.
 }
 \section{Displacing the Canary Islands}{
 While \code{moveCAN} is useful for visualization, it would alter the actual
 geographic position of the Canary Islands. When using the output for
 spatial analysis or using tiles (e.g. with \code{\link[=esp_getTiles]{esp_getTiles()}} or
 \code{\link[=addProviderEspTiles]{addProviderEspTiles()}})  this option should be set to \code{FALSE} in order to
-get the actual coordinates, instead of the modified ones.
+get the actual coordinates, instead of the modified ones. See also
+\code{\link[=esp_move_can]{esp_move_can()}} for displacing stand-alone \CRANpkg{sf} objects.
 }
 
 \examples{
@@ -149,5 +153,9 @@ Other political:
 \code{\link{esp_get_nuts}()},
 \code{\link{esp_get_prov}()},
 \code{\link{esp_get_simpl_prov}()}
+
+Other Canary Islands: 
+\code{\link{esp_move_can}()}
 }
+\concept{Canary Islands}
 \concept{political}
