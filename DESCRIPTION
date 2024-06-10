@@ -1,7 +1,7 @@
 Type: Package
 Package: mapSpain
 Title: Administrative Boundaries of Spain
-Version: 0.9.0
+Version: 0.9.1
 Authors@R: 
     person("Diego", "Hernangómez", , "diego.hernangomezherrero@gmail.com", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0001-8457-4658", affiliation = "rOpenSpain"))
@@ -18,13 +18,16 @@ BugReports: https://github.com/rOpenSpain/mapSpain/issues
 Depends: R (>= 3.6.0)
 Imports: countrycode (>= 1.2.0), giscoR (>= 0.2.4), rappdirs (>=
         0.3.0), sf (>= 0.9.0), utils
-Suggests: ggplot2 (>= 3.0.0), knitr, leaflet (>= 2.0.0), png (>=
+Suggests: curl, ggplot2 (>= 3.0.0), knitr, leaflet (>= 2.0.0), png (>=
         0.1-5), rmarkdown, slippymath (>= 0.3.1), terra (>= 1.1-4),
         testthat (>= 3.0.0), tidyterra
 VignetteBuilder: knitr
+Config/Needs/check: curl
 Config/Needs/coverage: covr
 Config/Needs/website: ragg, reactable, rnaturalearth, tidyverse,
-        ropenspain/rostemplate, ropensci/rnaturalearthhires, devtools
+        devtools, remotes, ropenspain/rostemplate,
+        ropensci/rnaturalearthhires, rspatial/geodata, rgeoboundaries,
+        sessioninfo, sfheaders, rapidjsonr, jsonify, geometries
 Config/testthat/edition: 3
 Config/testthat/parallel: true
 Copyright: © EuroGeographics for the administrative boundaries. Atlas
@@ -39,9 +42,9 @@ X-schema.org-keywords: rOpenSpain, tiles, r, maps, spatial, rstats,
         r-package, municipalities, Spain, gisco, provinces, ign,
         administrative-boundaries, ccaa, static-tiles
 NeedsCompilation: no
-Packaged: 2024-01-23 20:20:23 UTC; diego
+Packaged: 2024-06-10 17:56:52 UTC; diego
 Author: Diego Hernangómez [aut, cre, cph]
     (<https://orcid.org/0000-0001-8457-4658>, rOpenSpain)
 Maintainer: Diego Hernangómez <diego.hernangomezherrero@gmail.com>
 Repository: CRAN
-Date/Publication: 2024-01-23 20:50:02 UTC
+Date/Publication: 2024-06-10 18:20:01 UTC

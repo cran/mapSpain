@@ -1,4 +1,4 @@
-#' Get static tiles from public administrations of Spanish.
+#' Get static tiles from public administrations of Spain
 #'
 #' @description
 #' Get static map tiles based on a spatial object. Maps can be fetched from
@@ -21,7 +21,7 @@
 #'
 #' @export
 #'
-#' @param x An \CRANpkg{sf} or `sfc` object.
+#' @param x An [`sf`][sf::st_sf] or [`sfc`][sf::st_sfc] object.
 #'
 #' @param type This parameter could be either:
 #'   - The name of one of the  pre-defined providers
@@ -36,8 +36,8 @@
 #'   download fewer tiles than you probably want. Use `1` or `2` to
 #'   increase the resolution.
 #' @param crop `TRUE` if results should be cropped to the specified `x` extent,
-#'   `FALSE` otherwise. If `x` is an \CRANpkg{sf} object with one `POINT`, crop
-#'   is set to `FALSE`.
+#'   `FALSE` otherwise. If `x` is an [`sf`][sf::st_sf] object with one `POINT`,
+#'   `crop` is set to `FALSE`.
 #' @param res Resolution (in pixels) of the final tile. Only valid for WMS.
 #' @param bbox_expand A numeric value that indicates the expansion percentage
 #' of the bounding box of `x`.
@@ -154,46 +154,19 @@
 #' autoplot(cartodb, maxcell = Inf) +
 #'   geom_sf(data = segovia, fill = NA, color = "black", linewidth = 1)
 #' }
-esp_getTiles <- function(x,
-                         type = "IDErioja",
-                         zoom = NULL,
-                         zoommin = 0,
-                         crop = TRUE,
-                         res = 512,
-                         bbox_expand = 0.05,
-                         transparent = TRUE,
-                         mask = FALSE,
-                         update_cache = FALSE,
-                         cache_dir = NULL,
-                         verbose = FALSE,
-                         options = NULL) {
-  # nocov start
-
-  if (!requireNamespace("slippymath", quietly = TRUE)) {
-    stop("slippymath package required for using this function")
-  }
-  if (!requireNamespace("terra", quietly = TRUE)) {
-    stop("terra package required for using this function")
-  }
-  if (!requireNamespace("png", quietly = TRUE)) {
-    stop("png package required for using this function")
-  }
-  # nocov end
+esp_getTiles <- function(x, type = "IDErioja", zoom = NULL, zoommin = 0,
+                         crop = TRUE, res = 512, bbox_expand = 0.05,
+                         transparent = TRUE, mask = FALSE, update_cache = FALSE,
+                         cache_dir = NULL, verbose = FALSE, options = NULL) {
   # Only sf and sfc objects allowed
 
   if (!inherits(x, "sf") && !inherits(x, "sfc")) {
-    stop(
-      "Only sf and sfc ",
-      "objects allowed"
-    )
+    stop("Only sf and sfc objects allowed")
   }
 
   # If sfc convert to sf
   if (inherits(x, "sfc")) {
-    x <- sf::st_as_sf(
-      data.frame(x = 1),
-      x
-    )
+    x <- sf::st_as_sf(data.frame(x = 1), x)
   }
 
 
@@ -288,8 +261,6 @@ esp_getTiles <- function(x,
       options <- options[ig]
     }
 
-
-
     url_pieces <- modifyList(url_pieces, options)
     # Create new cache dir
 
@@ -333,39 +304,22 @@ esp_getTiles <- function(x,
   newbbox <- esp_hlp_get_bbox(x, bbox_expand, typeprov)
 
   if (typeprov == "WMS") {
-    rout <-
-      getwms(
-        newbbox,
-        url_pieces,
-        update_cache,
-        cache_dir,
-        verbose,
-        res,
-        transparent
-      )
+    rout <- getwms(
+      newbbox, url_pieces, update_cache, cache_dir, verbose,
+      res, transparent
+    )
   } else {
-    rout <-
-      getwmts(
-        newbbox,
-        type,
-        url_pieces,
-        update_cache,
-        cache_dir,
-        verbose,
-        zoom,
-        zoommin,
-        transparent,
-        extra_opts
-      )
+    rout <- getwmts(
+      newbbox, type, url_pieces, update_cache, cache_dir, verbose,
+      zoom, zoommin, transparent, extra_opts
+    )
   }
 
   # Regenerate
   # Display attributions
 
   if (verbose && !is.null(attr)) {
-    message(
-      "\nData and map tiles sources:\n", attr
-    )
+    message("\nData and map tiles sources:\n", attr)
   }
 
   x <- xinit
@@ -375,10 +329,7 @@ esp_getTiles <- function(x,
   if (!sf::st_crs(x) == sf::st_crs(rout)) {
     # Sometimes it gets an error
 
-    rout_end <- try(terra::project(
-      rout,
-      terra::crs(x_terra)
-    ), silent = TRUE)
+    rout_end <- try(terra::project(rout, terra::crs(x_terra)), silent = TRUE)
 
     if (inherits(rout_end, "try-error")) {
       if (verbose) message("Tile not reprojected.")
@@ -388,11 +339,7 @@ esp_getTiles <- function(x,
     }
   }
 
-  rout <- terra::clamp(rout,
-    lower = 0,
-    upper = 255,
-    values = TRUE
-  )
+  rout <- terra::clamp(rout, lower = 0, upper = 255, values = TRUE)
 
 
   # crop management

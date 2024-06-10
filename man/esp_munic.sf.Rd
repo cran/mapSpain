@@ -4,9 +4,9 @@
 \encoding{UTF-8}
 \name{esp_munic.sf}
 \alias{esp_munic.sf}
-\title{All Municipalities \code{POLYGON} object of Spain (2019)}
+\title{\code{\link[sf:sf]{sf}} object with all the municipalities of Spain (2019)}
 \format{
-A \code{sf} object (resolution: 1:1million, EPSG:4258) object with
+A \code{\link[sf:sf]{sf}} object (resolution: 1:1 million, EPSG:4258) object with
 8,131 rows and columns:
 \describe{
 \item{codauto}{INE code of the autonomous community.}
@@ -16,17 +16,18 @@ A \code{sf} object (resolution: 1:1million, EPSG:4258) object with
 \item{cmun}{INE code of the municipality.}
 \item{name}{Name of the municipality.}
 \item{LAU_CODE}{LAU Code (GISCO) of the municipality. This is a
-combination of \strong{cpro} and \strong{cmun}, aligned with INE coding scheme.}
+combination of \strong{cpro} and \strong{cmun} fields, aligned with INE coding
+scheme.}
 \item{geometry}{geometry field.}
 }
 }
 \source{
-\url{https://ec.europa.eu/eurostat/web/gisco/geodata/reference-data/}, LAU 2019
-data.
+\url{https://ec.europa.eu/eurostat/web/gisco/geodata/statistical-units/local-administrative-units},
+LAU 2019 data.
 }
 \description{
-A \CRANpkg{sf} object including all municipalities of Spain as provided by
-GISCO (2019 version).
+A \code{\link[sf:sf]{sf}} object including all municipalities of Spain as provided
+by GISCO (2019 version).
 }
 \examples{
 data("esp_munic.sf")
@@ -47,6 +48,7 @@ ggplot(teruel_sf) +
     values = "#C12838",
     labels = "City of Teruel"
   ) +
+  guides(fill = guide_legend(position = "inside")) +
   labs(
     fill = "",
     title = "Municipalities of Teruel"
@@ -56,7 +58,7 @@ ggplot(teruel_sf) +
     text = element_text(face = "bold"),
     panel.background = element_rect(colour = "black"),
     panel.grid = element_blank(),
-    legend.position = c(.2, .95)
+    legend.position.inside = c(.2, .95)
   )
 }
 \seealso{

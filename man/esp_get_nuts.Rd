@@ -2,7 +2,7 @@
 % Please edit documentation in R/esp_get_nuts.R
 \name{esp_get_nuts}
 \alias{esp_get_nuts}
-\title{Get NUTS of Spain as \CRANpkg{sf} polygons and points}
+\title{Get NUTS of Spain as \code{\link[sf:sf]{sf}} \code{POLYGON} or \code{POINT}}
 \source{
 \href{https://gisco-services.ec.europa.eu/distribution/v2/}{GISCO API}
 }
@@ -28,10 +28,10 @@ esp_get_nuts(
 \item{epsg}{projection of the map: 4-digit \href{https://epsg.io/}{EPSG code}.
 One of:
 \itemize{
-\item \code{"4258"}: ETRS89
-\item \code{"4326"}: WGS84
-\item \code{"3035"}: ETRS89 / ETRS-LAEA
-\item \code{"3857"}: Pseudo-Mercator
+\item \code{"4258"}: ETRS89.
+\item \code{"4326"}: WGS84.
+\item \code{"3035"}: ETRS89 / ETRS-LAEA.
+\item \code{"3857"}: Pseudo-Mercator.
 }}
 
 \item{cache}{A logical whether to do caching. Default is \code{TRUE}. See
@@ -47,24 +47,24 @@ default is \code{FALSE}.}
 
 \item{resolution}{Resolution of the geospatial data. One of
 \itemize{
-\item "60": 1:60million
-\item "20": 1:20million
-\item "10": 1:10million
-\item "03": 1:3million
-\item "01": 1:1million
+\item \code{"60"}: 1:60million
+\item \code{"20"}: 1:20million
+\item \code{"10"}: 1:10million
+\item \code{"03"}: 1:3million
+\item \code{"01"}: 1:1million
 }}
 
 \item{spatialtype}{Type of geometry to be returned:
 \itemize{
-\item \code{"LB"}: Labels - point object.
-\item \code{"RG"}: Regions - polygon object.
+\item \code{"LB"}: Labels - \code{POINT} object.
+\item \code{"RG"}: Regions - \code{POLYGON} object.
 }}
 
 \item{region}{Optional. A vector of region names, NUTS or ISO codes
 (see \code{\link[=esp_dict_region_code]{esp_dict_region_code()}}).}
 
-\item{nuts_level}{NUTS level. One of "0" (Country-level), "1", "2" or "3".
-See \strong{Description}.}
+\item{nuts_level}{NUTS level. One of \code{"0"} (Country-level), \code{"1"}, \code{"2"} or
+\code{"3"}. See \strong{Description}.}
 
 \item{moveCAN}{A logical \code{TRUE/FALSE} or a vector of coordinates
 \code{c(lat, lon)}. It places the Canary Islands close to Spain's mainland.
@@ -72,21 +72,21 @@ Initial position can be adjusted using the vector of coordinates. See
 \strong{Displacing the Canary Islands}.}
 }
 \value{
-A \CRANpkg{sf} object specified by \code{spatialtype}.
+A \code{\link[sf:sf]{sf}} object specified by \code{spatialtype}.
 }
 \description{
 Returns \href{https://en.wikipedia.org/wiki/NUTS_statistical_regions_of_Spain}{NUTS regions of Spain}
-as polygons and points at a specified scale, as provided by
+as \code{POLYGON} or \code{POINT} at a specified scale, as provided by
 \href{https://ec.europa.eu/eurostat/web/gisco}{GISCO}
 (Geographic Information System of the Commission, depending of Eurostat).
 
 NUTS are provided at three different levels:
 \itemize{
-\item \strong{"0"}: Country level
-\item \strong{"1"}: Groups of autonomous communities
-\item \strong{"2"}: Autonomous communities
+\item \strong{"0"}: Country level.
+\item \strong{"1"}: Groups of autonomous communities.
+\item \strong{"2"}: Autonomous communities (CCAA).
 \item \strong{"3"}: Roughly matches the provinces, but providing specific individual
-objects for each major island
+objects for each major island.
 }
 }
 \note{
@@ -110,7 +110,7 @@ geographic position of the Canary Islands. When using the output for
 spatial analysis or using tiles (e.g. with \code{\link[=esp_getTiles]{esp_getTiles()}} or
 \code{\link[=addProviderEspTiles]{addProviderEspTiles()}})  this option should be set to \code{FALSE} in order to
 get the actual coordinates, instead of the modified ones. See also
-\code{\link[=esp_move_can]{esp_move_can()}} for displacing stand-alone \CRANpkg{sf} objects.
+\code{\link[=esp_move_can]{esp_move_can()}} for displacing stand-alone \code{\link[sf:sf]{sf}} objects.
 }
 
 \examples{
@@ -150,8 +150,10 @@ ggplot(NUTS1_orig) +
   )
 
 
-AndOriental <-
-  esp_get_nuts(region = c("Almeria", "Granada", "Jaen", "Malaga"))
+AndOriental <- esp_get_nuts(region = c(
+  "Almeria", "Granada",
+  "Jaen", "Malaga"
+))
 
 
 ggplot(AndOriental) +

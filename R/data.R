@@ -1,4 +1,4 @@
-#' Spanish Code Translation Data Frame
+#' Database with codes and names of spanish regions
 #'
 #' @family datasets
 #' @family political
@@ -9,21 +9,21 @@
 #' @docType data
 #'
 #' @description
-#' A data frame used internally for translating codes and names of the
-#' different subdivisions of Spain. The data frame provides the hierarchy of
-#' the subdivisions including NUTS1 level, Autonomous Communities
-#' (equivalent to NUTS2), Provinces and NUTS3 level. See **Note**.
+#' A `data.frame` object used internally for translating codes and names of the
+#' different subdivisions of Spain. The `data.frame` provides the hierarchy of
+#' the subdivisions including NUTS1 level, autonomous communities (equivalent
+#' to NUTS2), provinces and NUTS3 level. See **Note**.
 #'
 #' @source
-#' * **INE**: Instituto Nacional de Estadistica: <https://www.ine.es/>
-#' * **Eurostat (NUTS)**: <https://ec.europa.eu/eurostat/web/nuts/overview>
-#' * **ISO**: <https://www.iso.org/home.html>
-#' * **CLDR**: <https://unicode-org.github.io/cldr-staging/charts/38/index.html>
+#' - **INE**: Instituto Nacional de Estadistica: <https://www.ine.es/>
+#' - **Eurostat (NUTS)**: <https://ec.europa.eu/eurostat/web/nuts/overview>
+#' - **ISO**: <https://www.iso.org/home.html>
+#' - **CLDR**: <https://unicode-org.github.io/cldr-staging/charts/38/index.html>
 #'
 #' @encoding UTF-8
 #'
 #' @format
-#' A data frame with `r nrow(mapSpain::esp_codelist)` rows
+#' A [`data.frame`][base::data.frame] with `r nrow(mapSpain::esp_codelist)` rows
 #' codes and columns:
 #'
 #' \describe{
@@ -83,11 +83,11 @@
 #' Although NUTS2 matches the first subdivision level of Spain
 #' (CCAA - Autonomous Communities), it should be noted that NUTS3 does not
 #' match the second subdivision level of Spain (Provinces). NUTS3 provides a
-#' dedicated code for major islands whereas the Provinces doesn't.
+#' dedicated code for major islands whereas the provinces doesn't.
 #'
 #' Ceuta and Melilla has an specific status (Autonomous Cities) but are
-#' considered as communities with a single province (as Madrid, Asturias
-#' or Murcia) on this dataset.
+#' considered as autonomous communities with a single province (as Madrid,
+#' Asturias or Murcia) on this database.
 #'
 #' @examples
 #'
@@ -95,7 +95,7 @@
 NULL
 
 
-#' All NUTS `POLYGON` object of Spain
+#' [`sf`][sf::st_sf] object with all the NUTS levels of Spain (2016)
 #'
 #' @family datasets
 #' @family nuts
@@ -105,7 +105,7 @@ NULL
 #' @docType data
 #'
 #' @description
-#' A \CRANpkg{sf} object including all NUTS levels of Spain as provided by
+#' A [`sf`][sf::st_sf] object including all NUTS levels of Spain as provided by
 #' GISCO (2016 version).
 #'
 #' @source
@@ -116,13 +116,13 @@ NULL
 #'
 #'
 #' @format
-#' A `sf` object (resolution: 1:1million, EPSG:4258) with
+#' A [`sf`][sf::st_sf] object (resolution: 1:1million, EPSG:4258) with
 #' `r prettyNum(nrow(mapSpain::esp_nuts.sf), big.mark=",")` rows and columns:
 #' \describe{
 #'   \item{LEVL_CODE}{NUTS level code (0,1,2,3)}
 #'   \item{NUTS_ID}{NUTS identifier}
 #'   \item{URBN_TYPE}{Urban Type, see Details}
-#'   \item{CNTR_CODE}{Eurostat Country code \code{ES}}
+#'   \item{CNTR_CODE}{Eurostat Country code `ES`}
 #'   \item{NAME_LATN}{NUTS name on Latin characters}
 #'   \item{NUTS_NAME}{NUTS name on local alphabet}
 #'   \item{MOUNT_TYPE}{Mount Type, see Details}
@@ -159,28 +159,34 @@ NULL
 #'
 NULL
 
-#' All Municipalities `POLYGON` object of Spain (2019)
-#'
+#' [`sf`][sf::st_sf] object with all the municipalities of Spain (2019)
 #' @family datasets
 #' @family municipalities
 #'
 #' @name esp_munic.sf
 #'
 #' @description
-#' A \CRANpkg{sf} object including all municipalities of Spain as provided by
-#' GISCO (2019 version).
+#' A [`sf`][sf::st_sf] object including all municipalities of Spain as provided
+#' by GISCO (2019 version).
 #'
 #' @docType data
 #'
 #' @source
-#' <https://ec.europa.eu/eurostat/web/gisco/geodata/reference-data/>, LAU 2019
-#' data.
+#'
+#' ```{r, echo=FALSE, results='asis'}
+#'
+#' cat(paste0("<https://ec.europa.eu/eurostat/web/gisco/geodata/",
+#'            "statistical-units/local-administrative-units>, "))
+#'
+#'
+#' ```
+#' LAU 2019 data.
 #'
 #' @encoding UTF-8
 #'
 #' @seealso [esp_get_munic()].
 #' @format
-#' A `sf` object (resolution: 1:1million, EPSG:4258) object with
+#' A [`sf`][sf::st_sf] object (resolution: 1:1 million, EPSG:4258) object with
 #' `r prettyNum(nrow(mapSpain::esp_munic.sf), big.mark=",")` rows and columns:
 #' \describe{
 #'   \item{codauto}{INE code of the autonomous community.}
@@ -190,14 +196,15 @@ NULL
 #'   \item{cmun}{INE code of the municipality.}
 #'   \item{name}{Name of the municipality.}
 #'   \item{LAU_CODE}{LAU Code (GISCO) of the municipality. This is a
-#'     combination of **cpro** and **cmun**, aligned with INE coding scheme.}
+#'     combination of **cpro** and **cmun** fields, aligned with INE coding
+#'     scheme.}
 #'   \item{geometry}{geometry field.}
 #' }
 #' @example inst/examples/esp_munic_sf.R
 NULL
 
 
-#' @title Population by municipality (2019)
+#' Database with the population of Spain by municipality (2019)
 #'
 #' @family datasets
 #'
@@ -206,7 +213,7 @@ NULL
 #' @docType data
 #'
 #' @format
-#' An example data frame with
+#' An example `data.frame` object with
 #' `r prettyNum(nrow(mapSpain::pobmun19), big.mark=",")` rows containing the
 #' population data by municipality in Spain (2019).
 #'
@@ -227,7 +234,7 @@ NULL
 NULL
 
 
-#' @title Public WMS and WMTS of Spain
+#' (Superseded) Database of public WMS and WMTS of Spain
 #'
 #' @keywords internal
 #'
@@ -236,10 +243,10 @@ NULL
 #' @description
 #' `r lifecycle::badge('superseded')`
 #'
-#' This data frame is not longer in use by \CRANpkg{mapSpain}. See
+#' This `data.frame` is not longer in use by \CRANpkg{mapSpain}. See
 #' [esp_tiles_providers] instead.
 #'
-#' A data frame containing information of different public WMS and WMTS
+#' A `data.frame` containing information of different public WMS and WMTS
 #' providers of Spain
 #'
 #'
@@ -252,7 +259,7 @@ NULL
 #' @encoding UTF-8
 #'
 #' @format
-#' A data frame object with a list of the required parameters for calling
+#' A `data.frame` object with a list of the required parameters for calling
 #' the service:
 #' \describe{
 #'   \item{provider}{Provider name}.
@@ -264,7 +271,7 @@ NULL
 #' data("leaflet.providersESP.df")
 NULL
 
-#' @title List with information of Public WMS and WMTS of Spain
+#' Database of public WMS and WMTS of Spain
 #'
 #' @family datasets
 #' @family imagery utilities
@@ -272,9 +279,9 @@ NULL
 #' @name esp_tiles_providers
 #'
 #' @description
-#' A named list of length `r length(esp_tiles_providers)` containing
-#' the parameters of the url information of different public WMS and WMTS
-#' providers of Spain.
+#' A named [`list`][base::list] of length `r length(esp_tiles_providers)`
+#' containing the parameters of the url information of different public WMS and
+#' WMTSproviders of Spain.
 #'
 #' Implementation of javascript plugin
 #' [leaflet-providersESP](https://dieghernan.github.io/leaflet-providersESP/)
@@ -289,7 +296,7 @@ NULL
 #' @encoding UTF-8
 #'
 #' @format
-#' A named list of the providers available with the following structure:
+#' A named `list` of the providers available with the following structure:
 #' - Each item of the list is named with the provider alias.
 #' - Each element of the list contains two nested named lists:
 #'   - `static` with the parameters to get static tiles plus an additional item

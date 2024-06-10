@@ -9,20 +9,21 @@
 [![Downloads](https://cranlogs.r-pkg.org/badges/mapSpain)](https://CRAN.R-project.org/package=mapSpain)
 [![r-universe](https://ropenspain.r-universe.dev/badges/mapSpain)](https://ropenspain.r-universe.dev/mapSpain)
 [![R-CMD-check](https://github.com/rOpenSpain/mapSpain/workflows/R-CMD-check/badge.svg)](https://github.com/rOpenSpain/mapSpain/actions?query=workflow%3AR-CMD-check)
+[![R-hub](https://github.com/rOpenSpain/mapSpain/actions/workflows/rhub.yaml/badge.svg)](https://github.com/rOpenSpain/mapSpain/actions/workflows/rhub.yaml)
 [![codecov](https://codecov.io/gh/rOpenSpain/mapSpain/branch/main/graph/badge.svg?token=6L01BKLL85)](https://app.codecov.io/gh/rOpenSpain/mapSpain)
 [![DOI](https://img.shields.io/badge/DOI-10.5281/zenodo.5366622-blue)](https://doi.org/10.5281/zenodo.5366622)
 [![Project-Status:Active](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![status](https://tinyverse.netlify.com/badge/mapSpain)](https://CRAN.R-project.org/package=mapSpain)
+[![status](https://tinyverse.netlify.app/badge/mapSpain)](https://CRAN.R-project.org/package=mapSpain)
 
 <!-- badges: end -->
 
 [**mapSpain**](https://ropenspain.github.io/mapSpain/) is a package that
-provides spatial `sf` objects of the administrative boundaries of Spain,
-including CCAA, provinces and municipalities.
+provides spatial **sf** objects of the administrative boundaries of
+Spain, including CCAA, provinces and municipalities.
 
 **mapSpain** also provides a leaflet plugin to be used with the
-[`leaflet` package](https://rstudio.github.io/leaflet/), that loads
-several basemaps of public institutions of Spain, and the ability of
+[**leaflet** package](https://rstudio.github.io/leaflet/), that loads
+several base maps of public institutions of Spain, and the ability of
 downloading and processing static tiles.
 
 Full site with examples and vignettes on
@@ -55,8 +56,7 @@ Alternatively, you can install the developing version of **mapSpain**
 with:
 
 ``` r
-library(remotes)
-install_github("rOpenSpain/mapSpain", dependencies = TRUE)
+remotes::install_github("rOpenSpain/mapSpain", dependencies = TRUE)
 ```
 
 ## Usage
@@ -66,55 +66,51 @@ This script highlights some features of **mapSpain** :
 ``` r
 library(mapSpain)
 library(sf)
+library(dplyr)
 census <- mapSpain::pobmun19
 
 # Extract CCAA from base dataset
 
-codelist <- mapSpain::esp_codelist
+codelist <- mapSpain::esp_codelist %>%
+  select(cpro, codauto) %>%
+  distinct()
 
-census <-
-  unique(merge(census, codelist[, c("cpro", "codauto")], all.x = TRUE))
+census_ccaa <- census %>%
+  left_join(codelist) %>%
+  # Summarize by CCAA
+  group_by(codauto) %>%
+  summarise(pob19 = sum(pob19), men = sum(men), women = sum(women)) %>%
+  mutate(
+    porc_women = women / pob19,
+    porc_women_lab = paste0(round(100 * porc_women, 2), "%")
+  )
 
-# Summarize by CCAA
-census_ccaa <-
-  aggregate(cbind(pob19, men, women) ~ codauto, data = census, sum)
-
-census_ccaa$porc_women <- census_ccaa$women / census_ccaa$pob19
-census_ccaa$porc_women_lab <-
-  paste0(round(100 * census_ccaa$porc_women, 2), "%")
 
 # Merge into spatial data
 
-CCAA_sf <- esp_get_ccaa()
-CCAA_sf <- merge(CCAA_sf, census_ccaa)
-Can <- esp_get_can_box()
+ccaa_sf <- esp_get_ccaa() %>%
+  left_join(census_ccaa)
+can <- esp_get_can_box()
 
 
 # Plot with ggplot
 library(ggplot2)
 
 
-ggplot(CCAA_sf) +
-  geom_sf(aes(fill = porc_women),
-    color = "grey70",
-    linewidth = .3
-  ) +
-  geom_sf(data = Can, color = "grey70") +
+ggplot(ccaa_sf) +
+  geom_sf(aes(fill = porc_women), color = "grey70", linewidth = .3) +
+  geom_sf(data = can, color = "grey70") +
   geom_sf_label(aes(label = porc_women_lab),
     fill = "white", alpha = 0.5,
-    size = 3,
-    label.size = 0
+    size = 3, label.size = 0
   ) +
   scale_fill_gradientn(
     colors = hcl.colors(10, "Blues", rev = TRUE),
-    n.breaks = 10,
-    labels = function(x) {
-      sprintf("%1.1f%%", 100 * x)
-    },
-    guide = guide_legend(title = "Porc. women")
+    n.breaks = 10, labels = scales::label_percent(),
+    guide = guide_legend(title = "Porc. women", position = "inside")
   ) +
   theme_void() +
-  theme(legend.position = c(0.1, 0.6))
+  theme(legend.position.inside = c(0.1, 0.6))
 ```
 
 <img src="https://raw.githubusercontent.com/ropenspain/mapSpain/main/img/README-static-1.png" width="100%" />
@@ -123,25 +119,18 @@ You can combine `sf` objects with static tiles
 
 ``` r
 # Get census
-census <- mapSpain::pobmun19
-census$porc_women <- census$women / census$pob19
+census <- mapSpain::pobmun19 %>%
+  mutate(porc_women = women / pob19) %>%
+  select(cpro, cmun, porc_women)
 
 # Get shapes
 shape <- esp_get_munic_siane(region = "Segovia", epsg = 3857)
 provs <- esp_get_prov_siane(epsg = 3857)
 
-shape_pop <- merge(shape,
-  census,
-  by = c("cpro", "cmun"),
-  all.x = TRUE
-)
+shape_pop <- shape %>% left_join(census)
 
 
-tile <-
-  esp_getTiles(shape_pop,
-    type = "IGNBase.Todo",
-    zoommin = 1
-  )
+tile <- esp_getTiles(shape_pop, type = "IGNBase.Todo", zoommin = 1)
 
 # Plot
 
@@ -193,19 +182,13 @@ library(giscoR)
 
 res <- "20"
 
-all_countries <- gisco_get_countries(
-  resolution = res
-) |>
+all_countries <- gisco_get_countries(resolution = res) %>%
   st_transform(3035)
 
-eu_countries <- gisco_get_countries(
-  resolution = res, region = "EU"
-) |>
+eu_countries <- gisco_get_countries(resolution = res, region = "EU") %>%
   st_transform(3035)
 
-ccaa <- esp_get_ccaa(
-  moveCAN = FALSE, resolution = res
-) |>
+ccaa <- esp_get_ccaa(moveCAN = FALSE, resolution = res) %>%
   st_transform(3035)
 
 library(ggplot2)
@@ -215,16 +198,10 @@ ggplot(all_countries) +
   geom_sf(data = eu_countries, fill = "#FDFBEA", color = "#656565") +
   geom_sf(data = ccaa, fill = "#C12838", color = "grey80", linewidth = .1) +
   # Center in Europe: EPSG 3035
-  coord_sf(
-    xlim = c(2377294, 7453440),
-    ylim = c(1313597, 5628510)
-  ) +
+  coord_sf(xlim = c(2377294, 7453440), ylim = c(1313597, 5628510)) +
   theme(
     panel.background = element_blank(),
-    panel.grid = element_line(
-      colour = "#DFDFDF",
-      linetype = "dotted"
-    )
+    panel.grid = element_line(colour = "#DFDFDF", linetype = "dotted")
   )
 ```
 
@@ -267,7 +244,7 @@ A BibTeX entry for LaTeX users is:
     @Manual{R-mapspain,
       title = {{mapSpain}: Administrative Boundaries of Spain},
       year = {2024},
-      version = {0.9.0},
+      version = {0.9.1},
       author = {Diego Hernangómez},
       doi = {10.5281/zenodo.5366622},
       url = {https://ropenspain.github.io/mapSpain/},

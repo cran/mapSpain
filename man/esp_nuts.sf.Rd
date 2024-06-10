@@ -4,9 +4,9 @@
 \encoding{UTF-8}
 \name{esp_nuts.sf}
 \alias{esp_nuts.sf}
-\title{All NUTS \code{POLYGON} object of Spain}
+\title{\code{\link[sf:sf]{sf}} object with all the NUTS levels of Spain (2016)}
 \format{
-A \code{sf} object (resolution: 1:1million, EPSG:4258) with
+A \code{\link[sf:sf]{sf}} object (resolution: 1:1million, EPSG:4258) with
 86 rows and columns:
 \describe{
 \item{LEVL_CODE}{NUTS level code (0,1,2,3)}
@@ -26,7 +26,7 @@ A \code{sf} object (resolution: 1:1million, EPSG:4258) with
 \code{NUTS_RG_20M_2016_4326.geojson}.
 }
 \description{
-A \CRANpkg{sf} object including all NUTS levels of Spain as provided by
+A \code{\link[sf:sf]{sf}} object including all NUTS levels of Spain as provided by
 GISCO (2016 version).
 }
 \details{
@@ -88,10 +88,7 @@ ggplot(nuts3) +
     title = "NUTS3 levels of Spain",
     fill = "Urban topology"
   ) +
-  theme_linedraw() +
-  theme(
-    legend.position = c(.8, .2)
-  )
+  theme_linedraw()
 }
 \seealso{
 Other datasets: 

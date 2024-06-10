@@ -23,8 +23,8 @@ esp_get_simpl_ccaa(
 )
 }
 \arguments{
-\item{prov}{A vector of names and/or codes for provinces
-or \code{NULL} to get all the provinces. See \strong{Details}.}
+\item{prov}{A vector of names and/or codes for provinces or \code{NULL} to get all
+the provinces. See \strong{Details}.}
 
 \item{update_cache}{A logical whether to update cache. Default is \code{FALSE}.
 When set to \code{TRUE} it would force a fresh download of the source file.}
@@ -38,22 +38,22 @@ default is \code{FALSE}.}
 or \code{NULL} to get all the autonomous communities. See \strong{Details}.}
 }
 \value{
-A \CRANpkg{sf} POLYGON object.
+A \code{\link[sf:sf]{sf}} \code{POLYGON} object.
 }
 \description{
-Loads a simplified map (\CRANpkg{sf} object) with the boundaries of the
+Loads a simplified map (\code{\link[sf:sf]{sf}} object) with the boundaries of the
 provinces or autonomous communities of Spain, as provided by the \strong{INE}
 (Instituto Nacional de Estadistica).
 }
 \details{
 Results are provided \strong{without CRS}, as provided on source.
 
-You can use and mix names, ISO codes, "codauto"/"cpro" codes (see
+You can use and mix names, ISO codes, \code{"codauto"/"cpro"} codes (see
 \link{esp_codelist}) and NUTS codes of different levels.
 
 When using a code corresponding of a higher level (e.g.
 \code{esp_get_simpl_prov("Andalucia")}) all the corresponding units of that level
-are provided (in this case , all the provinces of Andalucia).
+are provided (in this case , all the provinces of Andalusia).
 }
 \section{About caching}{
 You can set your \code{cache_dir} with \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.

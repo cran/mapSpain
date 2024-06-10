@@ -21,21 +21,19 @@ addProviderEspTiles(
 providerEspTileOptions(...)
 }
 \arguments{
-\item{map}{A map widget created from \code{\link[leaflet:leaflet]{leaflet::leaflet()}}.}
+\item{map}{the map to add the tile layer to}
 
 \item{provider}{Name of the provider, see \link{esp_tiles_providers} for
 values available.}
 
-\item{layerId}{the layer id}
+\item{layerId}{the layer id to assign}
 
-\item{group}{The name of the group the newly created layers should belong to
-Human-friendly group names are permitted–they need not be short,
-identifier-style names. Any number of layers and even different types of
-layers (e.g. markers and polygons) can share the same group name. See
-\code{\link[leaflet:map-layers]{leaflet::addTiles()}}.}
+\item{group}{the name of the group the newly created layers should belong to
+(for \code{\link[leaflet]{clearGroup}} and \code{\link[leaflet]{addLayersControl}} purposes).
+Human-friendly group names are permitted--they need not be short,
+identifier-style names.}
 
-\item{options}{a list of extra options for tile layers, popups, paths
-(circles, rectangles, polygons, ...), or other map elements}
+\item{options}{tile options}
 
 \item{...}{Arguments passed on to \code{\link[leaflet:addProviderTiles]{leaflet::providerTileOptions()}}.}
 }
@@ -43,26 +41,31 @@ layers (e.g. markers and polygons) can share the same group name. See
 A modified \code{\link[leaflet:leaflet]{leaflet::leaflet()}} \code{map} object.
 }
 \description{
-Include tiles of public Spanish organisms to a
-\code{\link[leaflet:leaflet]{leaflet::leaflet()}} map.
+Include tiles of public Spanish organisms to a \code{\link[leaflet:leaflet]{leaflet::leaflet()}} map.
 }
 \details{
-\code{\link[=providerEspTileOptions]{providerEspTileOptions()}} is a wrapper of
-\code{\link[leaflet:addProviderTiles]{leaflet::providerTileOptions()}}.
+\code{\link[=providerEspTileOptions]{providerEspTileOptions()}} is a wrapper of \code{\link[leaflet:addProviderTiles]{leaflet::providerTileOptions()}}.
 }
 \examples{
 library(leaflet)
-PuertadelSol <-
-  leaflet() \%>\%
-  setView(
-    lat = 40.4166,
-    lng = -3.7038400,
-    zoom = 18
+leafmap <- leaflet(width = "100\%", height = "60vh") \%>\%
+  setView(lat = 40.4166, lng = -3.7038400, zoom = 10) \%>\%
+  addTiles(group = "Default (OSM)") \%>\%
+  addProviderEspTiles(
+    provider = "IDErioja.Claro",
+    group = "IDErioja Claro"
   ) \%>\%
-  addProviderEspTiles(provider = "IGNBase.Gris") \%>\%
-  addProviderEspTiles(provider = "RedTransporte.Carreteras")
+  addProviderEspTiles(
+    provider = "RedTransporte.Carreteras",
+    group = "Carreteras"
+  ) \%>\%
+  addLayersControl(
+    baseGroups = c("IDErioja Claro", "Default (OSM)"),
+    overlayGroups = "Carreteras",
+    options = layersControlOptions(collapsed = FALSE)
+  )
 
-PuertadelSol
+leafmap
 }
 \seealso{
 \code{\link[leaflet:leaflet]{leaflet::leaflet()}}, \code{\link[leaflet:map-layers]{leaflet::addTiles()}}
