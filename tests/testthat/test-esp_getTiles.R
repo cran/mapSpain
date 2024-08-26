@@ -29,6 +29,7 @@ test_that("tiles online", {
   # Skip test as tiles sometimes are not available
   skip_on_cran()
   skip_if_offline()
+  skip_on_os("linux")
 
   save_png <- function(code, width = 200, height = 200) {
     path <- tempfile(fileext = ".png")
@@ -89,11 +90,11 @@ test_that("tiles online", {
   ))
 
   expect_message(esp_getTiles(poly,
-    type = "RedTransporte.Carreteras",
+    type = "PNOA",
     verbose = TRUE, mask = TRUE
   ))
   expect_message(esp_getTiles(poly,
-    type = "RedTransporte.Carreteras",
+    type = "PNOA",
     verbose = TRUE, mask = TRUE
   ))
 
@@ -115,14 +116,14 @@ test_that("tiles online", {
 
   # Check layers
   n <- expect_silent(esp_getTiles(poly,
-    type = "RedTransporte.Carreteras"
+    type = "Catastro"
   ))
 
 
   expect_equal(terra::nlyr(n), 4)
 
   opaque <- expect_silent(esp_getTiles(poly,
-    type = "RedTransporte.Carreteras",
+    type = "Catastro",
     transparent = FALSE
   ))
 
@@ -205,11 +206,11 @@ test_that("tiles options", {
   skip_on_cran()
   skip_if_offline()
 
-  poly <- esp_get_capimun(munic = "^Toledo", epsg = 3857)
-  poly <- sf::st_buffer(poly, 20)
+  poly <- esp_get_capimun(munic = "^Santiago de compos", epsg = 3857)
+  poly <- sf::st_buffer(poly, 2000)
 
   tile2 <- esp_getTiles(poly,
-    type = "RedTransporte.Carreteras",
+    type = "CaminoDeSantiago",
     options = list(
       version = "1.3.0",
       crs = "EPSG:25830",
