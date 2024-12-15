@@ -130,7 +130,7 @@ provs <- esp_get_prov_siane(epsg = 3857)
 shape_pop <- shape %>% left_join(census)
 
 
-tile <- esp_getTiles(shape_pop, type = "IGNBase.Todo", zoommin = 1)
+tile <- esp_getTiles(shape_pop, type = "IDErioja.Relieve", zoommin = 1)
 
 # Plot
 
@@ -158,7 +158,7 @@ ggplot(remove_missing(shape_pop, na.rm = TRUE)) +
   ) +
   labs(
     title = "Share of women in Segovia by town (2019)",
-    caption = "Source: INE"
+    caption = "Source: INE, CC BY 4.0 www.iderioja.org"
   ) +
   theme_void() +
   theme(
@@ -244,7 +244,7 @@ A BibTeX entry for LaTeX users is:
     @Manual{R-mapspain,
       title = {{mapSpain}: Administrative Boundaries of Spain},
       year = {2024},
-      version = {0.9.2},
+      version = {0.10.0},
       author = {Diego Hernangómez},
       doi = {10.5281/zenodo.5366622},
       url = {https://ropenspain.github.io/mapSpain/},
