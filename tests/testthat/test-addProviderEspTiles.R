@@ -4,26 +4,26 @@ test_that("Testing leaflet", {
 
   library(leaflet)
 
-  expect_silent(providerEspTileOptions())
-
-  expect_error(
-    puertadelsol <- leaflet() %>%
+  expect_snapshot(
+    error = TRUE,
+    puertadelsol <- leaflet() |>
       setView(
         lat = 40.4166,
         lng = -3.7038400,
         zoom = 18
-      ) %>%
+      ) |>
       addProviderEspTiles(provider = "TESTING")
   )
 
   expect_silent(
-    puertadelsol <- leaflet() %>%
+    puertadelsol <- leaflet() |>
       setView(
         lat = 40.4166,
         lng = -3.7038400,
         zoom = 18
-      ) %>%
-      addProviderEspTiles(provider = "IDErioja.Claro") %>%
+      ) |>
+      addProviderEspTiles(provider = "IDErioja.Claro") |>
       addProviderEspTiles(provider = "RedTransporte.Carreteras")
   )
+  expect_s3_class(puertadelsol, "leaflet")
 })

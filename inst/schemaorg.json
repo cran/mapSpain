@@ -7,13 +7,29 @@
         "id": "https://orcid.org/0000-0001-8457-4658"
       },
       "codeRepository": "https://github.com/rOpenSpain/mapSpain",
-      "copyrightHolder": {
-        "id": "https://orcid.org/0000-0001-8457-4658",
+      "contributor": {
+        "id": "https://orcid.org/0000-0003-1626-525X",
         "type": "Person",
-        "email": "diego.hernangomezherrero@gmail.com",
-        "familyName": "Hernangómez",
-        "givenName": "Diego"
+        "familyName": "Goerlich",
+        "givenName": "Francisco J."
       },
+      "copyrightHolder": [
+        {
+          "id": "https://orcid.org/0000-0001-8457-4658",
+          "type": "Person",
+          "email": "diego.hernangomezherrero@gmail.com",
+          "familyName": "Hernangómez",
+          "givenName": "Diego"
+        },
+        {
+          "type": "Organization",
+          "name": "Eurostat"
+        },
+        {
+          "type": "Organization",
+          "name": "Instituto Geográfico Nacional"
+        }
+      ],
       "description": "Administrative Boundaries of Spain at several levels (Autonomous Communities, Provinces, Municipalities) based on the 'GISCO' 'Eurostat' database <https://ec.europa.eu/eurostat/web/gisco> and 'CartoBase SIANE' from 'Instituto Geografico Nacional' <https://www.ign.es/>. It also provides a 'leaflet' plugin and the ability of downloading and processing static tiles.",
       "license": "https://spdx.org/licenses/GPL-3.0",
       "name": "mapSpain: Administrative Boundaries of Spain",
@@ -28,8 +44,8 @@
         "name": "Comprehensive R Archive Network (CRAN)",
         "url": "https://cran.r-project.org"
       },
-      "runtimePlatform": "R version 4.4.2 (2024-10-31 ucrt)",
-      "version": "0.10.0"
+      "runtimePlatform": "R version 4.5.2 (2025-10-31 ucrt)",
+      "version": "1.0.0"
     },
     {
       "id": "https://doi.org/10.5281/zenodo.5366622",
