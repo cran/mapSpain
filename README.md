@@ -1,5 +1,6 @@
 
-# mapSpain <img src="man/figures/logo.png" align="right" width="120"/>
+
+# mapSpain <a href="https://ropenspain.github.io/mapSpain/"><img src="man/figures/logo.png" alt="mapSpain website" align="right" height="139"/></a>
 
 <!-- badges: start -->
 
@@ -9,7 +10,6 @@
 [![Downloads](https://cranlogs.r-pkg.org/badges/mapSpain)](https://CRAN.R-project.org/package=mapSpain)
 [![r-universe](https://ropenspain.r-universe.dev/badges/mapSpain)](https://ropenspain.r-universe.dev/mapSpain)
 [![R-CMD-check](https://github.com/rOpenSpain/mapSpain/actions/workflows/check-full.yaml/badge.svg)](https://github.com/rOpenSpain/mapSpain/actions/workflows/check-full.yaml)
-[![R-hub](https://github.com/rOpenSpain/mapSpain/actions/workflows/rhub.yaml/badge.svg)](https://github.com/rOpenSpain/mapSpain/actions/workflows/rhub.yaml)
 [![codecov](https://codecov.io/gh/rOpenSpain/mapSpain/branch/main/graph/badge.svg?token=6L01BKLL85)](https://app.codecov.io/gh/rOpenSpain/mapSpain)
 [![DOI](https://img.shields.io/badge/DOI-10.5281/zenodo.5366622-blue)](https://doi.org/10.5281/zenodo.5366622)
 [![Project-Status:Active](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
@@ -31,6 +31,8 @@ Full site with examples and vignettes on
 
 ## Installation
 
+<div class="pkgdown-release">
+
 Install **mapSpain** from
 [**CRAN**](https://CRAN.R-project.org/package=mapSpain):
 
@@ -38,12 +40,20 @@ Install **mapSpain** from
 install.packages("mapSpain", dependencies = TRUE)
 ```
 
+</div>
+
+<div class="pkgdown-devel">
+
+Check the docs of the developing version in
+<https://ropenspain.github.io/mapSpain/dev/>.
+
 You can install the developing version of **mapSpain** using the
 [r-universe](https://ropenspain.r-universe.dev/mapSpain):
 
 ``` r
 # Install mapSpain in R:
-install.packages("mapSpain",
+install.packages(
+  "mapSpain",
   repos = c(
     "https://ropenspain.r-universe.dev",
     "https://cloud.r-project.org"
@@ -60,10 +70,11 @@ with:
 pak::pak("rOpenSpain/mapSpain", dependencies = TRUE)
 ```
 
+</div>
+
 ## Usage
 
-This script highlights some features of **mapSpain** : key features of
-**mapSpain**
+This script highlights some key features of **mapSpain**.
 
 ``` r
 library(mapSpain)
@@ -73,7 +84,6 @@ census <- mapSpain::pobmun25 |>
   select(-name)
 
 # Extract CCAA from base dataset
-
 codelist <- mapSpain::esp_codelist |>
   select(cpro, codauto) |>
   distinct()
@@ -88,28 +98,29 @@ census_ccaa <- census |>
     porc_women_lab = paste0(round(100 * porc_women, 2), "%")
   )
 
-
 # Merge into spatial data
-
 ccaa_sf <- esp_get_ccaa() |>
   left_join(census_ccaa)
-can <- esp_get_can_box()
 
+can <- esp_get_can_box()
 
 # Plot with ggplot
 library(ggplot2)
 
-
 ggplot(ccaa_sf) +
-  geom_sf(aes(fill = porc_women), color = "grey70", linewidth = .3) +
+  geom_sf(aes(fill = porc_women), color = "grey70", linewidth = 0.3) +
   geom_sf(data = can, color = "grey70") +
-  geom_sf_label(aes(label = porc_women_lab),
-    fill = "white", alpha = 0.5,
-    size = 3, linewidth = 0
+  geom_sf_label(
+    aes(label = porc_women_lab),
+    fill = "white",
+    alpha = 0.5,
+    size = 3,
+    linewidth = 0
   ) +
   scale_fill_gradientn(
     colors = hcl.colors(10, "Blues", rev = TRUE),
-    n.breaks = 10, labels = scales::label_percent(),
+    n.breaks = 10,
+    labels = scales::label_percent(),
     guide = guide_legend(title = "% women", position = "inside")
   ) +
   theme_void() +
@@ -117,7 +128,8 @@ ggplot(ccaa_sf) +
   labs(caption = "Source: CartoBase ANE 2006-2024 CC-BY 4.0 ign.es, INE")
 ```
 
-<img src="man/figures/README-static-1.png" alt="Porc. of women by CCAA in Spain (2025)" width="100%" />
+<img src="man/figures/README-static-1.png" style="width:100.0%"
+alt="Porc. of women by CCAA in Spain (2025)" />
 
 You can combine `sf` objects with static tiles
 
@@ -133,7 +145,6 @@ provs <- esp_get_prov_siane(epsg = 3857)
 
 shape_pop <- shape |> left_join(census)
 
-
 tile <- esp_get_tiles(shape_pop, type = "IDErioja.Relieve", zoommin = 1)
 
 # Plot
@@ -148,7 +159,7 @@ ggplot(remove_missing(shape_pop, na.rm = TRUE)) +
   geom_sf(aes(fill = porc_women), color = NA) +
   geom_sf(data = provs, fill = NA) +
   scale_fill_gradientn(
-    colours = hcl.colors(10, "RdYlBu", alpha = .5),
+    colours = hcl.colors(10, "RdYlBu", alpha = 0.5),
     n.breaks = 8,
     labels = function(x) {
       sprintf("%1.0f%%", 100 * x)
@@ -173,7 +184,8 @@ ggplot(remove_missing(shape_pop, na.rm = TRUE)) +
   )
 ```
 
-<img src="man/figures/README-tile-1.png" alt="Perc. of women in Segovia by town (2025)" width="100%" />
+<img src="man/figures/README-tile-1.png" style="width:100.0%"
+alt="Perc. of women in Segovia by town (2025)" />
 
 ## mapSpain and giscoR
 
@@ -202,7 +214,7 @@ library(ggplot2)
 ggplot(all_countries) +
   geom_sf(fill = "#DFDFDF", color = "#656565") +
   geom_sf(data = eu_countries, fill = "#FDFBEA", color = "#656565") +
-  geom_sf(data = ccaa, fill = "#C12838", color = "grey80", linewidth = .1) +
+  geom_sf(data = ccaa, fill = "#C12838", color = "grey80", linewidth = 0.1) +
   # Center in Europe: EPSG 3035
   coord_sf(xlim = c(2377294, 7453440), ylim = c(1313597, 5628510)) +
   theme(
@@ -212,7 +224,8 @@ ggplot(all_countries) +
   labs(caption = giscoR::gisco_attributions("es"))
 ```
 
-<img src="man/figures/README-giscoR-1.png" alt="Locator map of Spain" width="100%" />
+<img src="man/figures/README-giscoR-1.png" style="width:100.0%"
+alt="Locator map of Spain" />
 
 ## A note on caching
 
@@ -242,7 +255,7 @@ A BibTeX entry for LaTeX users is:
     @Manual{R-mapspain,
       title = {{mapSpain}: Administrative Boundaries of Spain},
       year = {2026},
-      version = {1.0.0},
+      version = {1.1.0},
       author = {Diego Hernangómez},
       doi = {10.5281/zenodo.5366622},
       url = {https://ropenspain.github.io/mapSpain/},

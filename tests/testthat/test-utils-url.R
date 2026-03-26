@@ -1,7 +1,9 @@
 test_that("Test offline", {
   skip_on_cran()
   skip_if_siane_offline()
-  options(mapspain_test_offline = TRUE)
+  local_mocked_bindings(is_online_fun = function(...) {
+    FALSE
+  })
 
   url <- paste0(
     "https://github.com/rOpenSpain/mapSpain/raw/sianedata/dist/",
@@ -24,9 +26,10 @@ test_that("Test offline", {
   expect_length(list.files(cdir, recursive = TRUE), 0)
   unlink(cdir, recursive = TRUE, force = TRUE)
 
-  options(mapspain_test_offline = FALSE)
+  local_mocked_bindings(is_online_fun = function(...) {
+    httr2::is_online()
+  })
 })
-
 
 test_that("Test 404", {
   skip_on_cran()
@@ -37,7 +40,9 @@ test_that("Test 404", {
     unlink(cdir, recursive = TRUE, force = TRUE)
   }
 
-  options(mapspain_test_404 = TRUE)
+  local_mocked_bindings(is_404 = function(...) {
+    TRUE
+  })
   url <- paste0(
     "https://github.com/rOpenSpain/mapSpain/raw/sianedata/dist/",
     "se89_3_urban_capimuni_p_y.gpkg"
@@ -53,7 +58,9 @@ test_that("Test 404", {
   )
   expect_null(s)
 
-  options(mapspain_test_404 = FALSE)
+  local_mocked_bindings(is_404 = function(...) {
+    FALSE
+  })
 
   # Otherwise work
   expect_silent(
@@ -173,4 +180,34 @@ test_that("Test import jsonlite", {
   skip_if_siane_offline()
   expect_silent(p <- for_import_jsonlite())
   expect_null(for_import_jsonlite())
+})
+
+test_that("Test timeout", {
+  skip_on_cran()
+  skip_if_siane_offline()
+
+  cdir <- file.path(tempdir(), "testthat_timeout")
+  if (dir.exists(cdir)) {
+    unlink(cdir, recursive = TRUE, force = TRUE)
+  }
+
+  url <- paste0(
+    "https://github.com/rOpenSpain/mapSpain/raw/sianedata/dist/",
+    "se89_3_admin_muni_a_x.gpkg"
+  )
+
+  withr::local_options(mapspain_timeout = 0.01)
+  expect_error(
+    download_url(url = url, verbose = FALSE, cache_dir = cdir),
+    "Failed to perform HTTP request(.*)Timeout(.*)after(.*)milliseconds"
+  )
+
+  withr::local_options(mapspain_timeout = 300L)
+  expect_silent(
+    ff <- download_url(url = url, verbose = FALSE, cache_dir = cdir)
+  )
+
+  expect_true(file.exists(ff))
+  unlink(cdir, recursive = TRUE, force = TRUE)
+  expect_false(file.exists(ff))
 })

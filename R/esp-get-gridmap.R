@@ -4,6 +4,7 @@
 #' Loads a hexbin map ([`sf`][sf::st_sf] object) or a map of squares with the
 #' boundaries of the provinces or autonomous communities of Spain.
 #'
+#' @encoding UTF-8
 #' @rdname esp_get_gridmap
 #' @name esp_get_gridmap
 #' @family political
@@ -29,10 +30,8 @@
 #' `esp_get_prov("Andalucia")`) all the corresponding units of that level are
 #' provided (in this case, all the provinces of Andalusia).
 #'
-#'
 #' Results are provided in **EPSG:4258**, use [sf::st_transform()]
 #' to change the projection.
-#'
 #'
 #' @examplesIf esp_check_access()
 #' \donttest{
@@ -48,7 +47,6 @@
 #'   theme_void() +
 #'   labs(title = "Hexbin: CCAA")
 #'
-#'
 #' hexprov <- esp_get_hex_prov()
 #'
 #' ggplot(hexprov) +
@@ -58,7 +56,6 @@
 #'   theme_void() +
 #'   labs(title = "Hexbin: Provinces")
 #'
-#'
 #' gridccaa <- esp_get_grid_ccaa()
 #'
 #' ggplot(gridccaa) +
@@ -67,7 +64,6 @@
 #'   geom_sf_text(aes(label = label), check_overlap = TRUE) +
 #'   theme_void() +
 #'   labs(title = "Grid: CCAA")
-#'
 #'
 #' gridprov <- esp_get_grid_prov()
 #'

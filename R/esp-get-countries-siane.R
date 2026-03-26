@@ -81,13 +81,12 @@ esp_get_countries_siane <- function(
   data_sf
 }
 
-
 #' Filter data sf by country
 #'
 #' @param data_sf sf object
 #' @param country character vector of country codes or names
 #'
-#' @return sf object filtered
+#' @return An `sf` object with rows filtered by the provided country vector.
 #'
 #' @noRd
 filter_country <- function(data_sf, country = NULL) {

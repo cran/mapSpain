@@ -3,8 +3,9 @@ test_that("Test offline", {
   skip_if_siane_offline()
   skip_if_gisco_offline()
 
-  options(gisco_test_offline = TRUE)
-  options(mapspain_test_offline = TRUE)
+  local_mocked_bindings(is_online_fun = function(...) {
+    FALSE
+  })
   x <- esp_nuts_2024[1, ]
 
   # WMTS
@@ -31,8 +32,9 @@ test_that("Test offline", {
   )
   expect_null(n)
 
-  options(mapspain_test_offline = FALSE)
-  options(gisco_test_offline = FALSE)
+  local_mocked_bindings(is_online_fun = function(...) {
+    httr2::is_online()
+  })
 })
 
 test_that("Test 404", {
@@ -40,8 +42,9 @@ test_that("Test 404", {
   skip_if_siane_offline()
   skip_if_gisco_offline()
 
-  options(gisco_test_404 = TRUE)
-  options(mapspain_test_404 = TRUE)
+  local_mocked_bindings(is_404 = function(...) {
+    TRUE
+  })
   x <- esp_nuts_2024[1, ]
   expect_message(
     n <- esp_get_tiles(
@@ -65,8 +68,9 @@ test_that("Test 404", {
   )
   expect_null(n)
 
-  options(mapspain_test_404 = FALSE)
-  options(gisco_test_404 = FALSE)
+  local_mocked_bindings(is_404 = function(...) {
+    FALSE
+  })
 })
 
 test_that("tiles error", {
@@ -289,7 +293,7 @@ test_that("WMS", {
   unlink(cdir, recursive = TRUE, force = TRUE)
 
   expect_length(
-    list.files(file.path(cdir, "Cartociudad")),
+    list.files(file.path(cdir, "CaminoDeSantiago")),
     0
   )
   # Single point
@@ -298,14 +302,14 @@ test_that("WMS", {
   expect_silent(
     res <- esp_get_tiles(
       point,
-      "Cartociudad",
+      "CaminoDeSantiago",
       cache_dir = cdir,
       bbox_expand = 0
     )
   )
 
   expect_length(
-    list.files(file.path(cdir, "Cartociudad")),
+    list.files(file.path(cdir, "CaminoDeSantiago")),
     1
   )
 
@@ -317,18 +321,23 @@ test_that("WMS", {
   expect_equal(rel_x, 50)
 
   # See if cache is modified
-  res2 <- esp_get_tiles(point, "Cartociudad", cache_dir = cdir, bbox_expand = 0)
+  res2 <- esp_get_tiles(
+    point,
+    "CaminoDeSantiago",
+    cache_dir = cdir,
+    bbox_expand = 0
+  )
 
   expect_identical(terra::crs(res2), terra::crs(point))
   expect_length(
-    list.files(file.path(cdir, "Cartociudad")),
+    list.files(file.path(cdir, "CaminoDeSantiago")),
     1
   )
 
   # Modify res
   res3 <- esp_get_tiles(
     point,
-    "Cartociudad",
+    "CaminoDeSantiago",
     cache_dir = cdir,
     bbox_expand = 0,
     res = 256
@@ -379,7 +388,6 @@ test_that("WMS", {
 
   unlink(cdir, recursive = TRUE, force = TRUE)
 })
-
 
 test_that("WMTS", {
   skip_on_cran()

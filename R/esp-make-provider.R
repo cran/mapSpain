@@ -3,12 +3,12 @@
 #' @description
 #' Helper function for [esp_get_tiles()] that helps to create a custom provider.
 #'
+#' @encoding UTF-8
 #' @family images
 #' @seealso [esp_get_tiles()].
 #'
 #' For a list of potential providers from Spain check
 #' [IDEE Directory](https://www.idee.es/segun-tipo-de-servicio).
-#'
 #'
 #' @return
 #' A named list with two elements `id` and `q`.

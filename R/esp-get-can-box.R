@@ -13,6 +13,7 @@
 #' - `"left"` / `"right"`: decorative `LINESTRING` variants that follow
 #'   the western or eastern side of the islands respectively.
 #'
+#' @encoding UTF-8
 #' @family can_helpers
 #' @rdname esp_get_can_box
 #' @name esp_get_can_box
@@ -25,7 +26,6 @@
 #' @return
 #' An [`sf`][sf::st_sf] object: a `POLYGON` (when `style = "poly"`) or a
 #' `LINESTRING` (other styles).
-#'
 #'
 #' @examples
 #' provs <- esp_get_prov()

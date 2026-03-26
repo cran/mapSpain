@@ -5,7 +5,7 @@
 #' names of the different subdivisions of Spain. This tibble provides a
 #' hierarchical representation of Spain's subdivisions, including NUTS1 level,
 #' autonomous communities (equivalent to NUTS2), provinces, and NUTS3 level.
-#' See **Note**.
+#' See the note section below for important coverage details.
 #'
 #' @docType data
 #' @encoding UTF-8
@@ -18,7 +18,6 @@
 #' - **ISO**: <https://www.iso.org/obp/ui/#iso:code:3166:ES>
 #' - **CLDR**:
 #'   <https://www.unicode.org/cldr/charts/48/subdivisionNames/index.html>
-#'
 #'
 #' @format
 #' A [tibble][tibble::tbl_df] with `r nrow(mapSpain::esp_codelist)` rows and
@@ -91,7 +90,6 @@
 #' data("esp_codelist")
 #' esp_codelist
 NULL
-
 
 #' Population of Spain by municipality (2025)
 #'
@@ -168,9 +166,7 @@ NULL
 #' t <- names(mapSpain::esp_tiles_providers)
 #' t <- paste0('\n - `"', t, '"`')
 #'
-#'
 #' cat(t)
-#'
 #'
 #' ```
 #' @examples
@@ -199,7 +195,6 @@ NULL
 #' according to the Nomenclature of Territorial Units for Statistics (NUTS)
 #' classification for 2024.
 #'
-#'
 #' @format
 #' An [`sf`][sf::st_sf] object with `MULTIPOLYGON` geometries at 1:1 million
 #' resolution in [EPSG:4258](https://epsg.io/4258) projection, containing
@@ -226,8 +221,8 @@ NULL
 #'  - `2`: More than 50% of the regional population lives in topographic
 #'    mountain areas.
 #'  - `3`: More than 50% of the surface is covered by topographic mountain
-#'    areas and more than 50% of the regional population lives in these mountain
-#'    areas.
+#'    areas and more than 50% of the regional population lives in these
+#'    mountain areas.
 #'  - `4`: Non-mountain region or other regions.
 #'  - `0`: No classification provided.
 #'
@@ -243,7 +238,6 @@ NULL
 #'        of the coastline).
 #'   - `3`: Non-coastal region.
 #'   - `0`: No classification provided.
-#'
 #'
 #' @source
 #'

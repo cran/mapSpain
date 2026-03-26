@@ -47,6 +47,7 @@ download_url <- function(
   make_msg("info", verbose, msg)
 
   req <- httr2::request(url)
+  req <- httr2::req_timeout(req, getOption("mapspain_timeout", 300L))
   req <- httr2::req_error(req, is_error = function(x) {
     FALSE
   })
@@ -62,15 +63,12 @@ download_url <- function(
     max_age = 3600
   )
 
-  req <- httr2::req_timeout(req, 300)
   req <- httr2::req_retry(req, max_tries = 3)
   if (verbose) {
     req <- httr2::req_progress(req)
   }
 
-  test_off <- getOption("mapspain_test_offline", FALSE)
-
-  if (any(!httr2::is_online(), test_off)) {
+  if (!is_online_fun()) {
     cli::cli_alert_danger("Offline")
     cli::cli_alert("Returning {.val NULL}")
     return(NULL)
@@ -92,7 +90,7 @@ download_url <- function(
   }
 
   # Testing
-  test_offline <- getOption("mapspain_test_404", FALSE)
+  test_offline <- is_404()
   if (test_offline) {
     # Modify to redirect to fake url
     req <- httr2::req_url(
@@ -130,7 +128,6 @@ download_url <- function(
   file_local
 }
 
-
 #' Allows to use jsonlite in Imports
 #'
 #' The only purpose of this function is to use \CRANpkg{jsonlite} in the
@@ -156,4 +153,16 @@ for_import_jsonlite <- function() {
   local <- tibble::tibble(row = unlist(local[[1]]))
   local <- NULL
   invisible(local)
+}
+
+#' Wrapper is_online for testing
+#' @noRd
+is_online_fun <- function(...) {
+  httr2::is_online()
+}
+
+#' Wrapper is_404 for testing
+#' @noRd
+is_404 <- function(...) {
+  FALSE
 }

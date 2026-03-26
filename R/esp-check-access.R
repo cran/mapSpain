@@ -1,11 +1,12 @@
-#' Check access to SIANE data
+#' Check access to SIANE data resources
 #'
+#' @encoding UTF-8
 #' @keywords internal
 #' @description
-#' Check if **R** has access to resources at
+#' Check whether **R** has access to resources at
 #' <https://github.com/rOpenSpain/mapSpain/tree/sianedata>.
 #'
-#' @return A logical.
+#' @return Logical scalar, `TRUE` if accessible and `FALSE` otherwise.
 #'
 #' @seealso [giscoR::gisco_check_access()].
 #'
@@ -22,6 +23,7 @@ esp_check_access <- function() {
   }
 
   req <- httr2::request("https://github.com/rOpenSpain/mapSpain/raw/sianedata/")
+  req <- httr2::req_timeout(req, getOption("mapspain_timeout", 300L))
   req <- httr2::req_url_path_append(req, "dist/se89_3_admin_ccaa_a_y.gpkg")
   req <- httr2::req_error(req, is_error = function(x) {
     FALSE
@@ -37,12 +39,12 @@ esp_check_access <- function() {
 
 #' Skip tests if SIANE data is not reachable
 #'
-#' @return invisible TRUE or skips the test
+#' @return Invisible. `TRUE` if offline logic passes or the test is skipped.
 #'
 #' @noRd
 skip_if_siane_offline <- function() {
   # nocov start
-  test_offline <- getOption("mapspain_test_404", FALSE)
+  test_offline <- is_404()
   if (test_offline) {
     return(invisible(TRUE))
   }
@@ -60,12 +62,12 @@ skip_if_siane_offline <- function() {
 
 #' Skip tests if GISCO API is not reachable
 #'
-#' @return invisible TRUE or skips the test
+#' @return Invisible. `TRUE` if offline logic passes or the test is skipped.
 #'
 #' @noRd
 skip_if_gisco_offline <- function() {
   # nocov start
-  test_offline <- getOption("gisco_test_404", FALSE)
+  test_offline <- is_404()
   if (test_offline) {
     return(invisible(TRUE))
   }
@@ -81,9 +83,8 @@ skip_if_gisco_offline <- function() {
   # nocov end
 }
 
-
 #' Internal function to check if we are on CRAN
-#' @return logical
+#' @return Logical scalar, `TRUE` if running on CRAN and `FALSE` otherwise.
 #' @noRd
 on_cran <- function() {
   env <- Sys.getenv("NOT_CRAN")
