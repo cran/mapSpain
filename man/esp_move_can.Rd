@@ -3,37 +3,37 @@
 \encoding{UTF-8}
 \name{esp_move_can}
 \alias{esp_move_can}
-\title{Displace a \code{\link[sf:sf]{sf}} object located in the Canary Islands}
+\title{Displace a \code{\link[sf:st_sf]{sf}} object located in the Canary Islands}
 \usage{
 esp_move_can(x, moveCAN = TRUE)
 }
 \arguments{
-\item{x}{An \code{\link[sf:sf]{sf}} object. It can be an \code{sf} or \code{sfc} object.}
+\item{x}{An \code{\link[sf:st_sf]{sf}} object. It can be an \code{sf} or \code{sfc} object.}
 
 \item{moveCAN}{A logical \code{TRUE/FALSE} or a vector of coordinates
-\code{c(lat, lon)}.  It places the Canary Islands close to Spain's mainland.
+\code{c(lat, lon)}. It places the Canary Islands close to Spain's mainland.
 Initial position can be adjusted using the vector of coordinates.}
 }
 \value{
-A \code{\link[sf:sf]{sf}} object of the same class and same CRS as \code{x}
-but displaced accordingly.
+A \code{\link[sf:st_sf]{sf}} object of the same class and same CRS as \code{x},
+displaced accordingly.
 }
 \description{
-Helper function to displace an external \code{\link[sf:sf]{sf}} object (potentially
-representing a location in the Canary Islands) to align it with the objects
-provided by \code{\link[sf:sf]{sf}} with the option \code{moveCAN = TRUE}.
+Helper function to displace an external \code{\link[sf:st_sf]{sf}} object,
+potentially representing a location in the Canary Islands, to align it with
+\CRANpkg{mapSpain} objects generated with \code{moveCAN = TRUE}.
 }
 \details{
-This is a helper function that intends to ease the representation of objects
-located in the Canary Islands that have been obtained from other sources
-rather than the package \CRANpkg{mapSpain}.
+This helper function makes it easier to represent objects located in the
+Canary Islands that have been obtained from sources other than
+\CRANpkg{mapSpain}.
 }
 \section{Displacing the Canary Islands}{
 While \code{moveCAN} is useful for visualization, it will alter the actual
 geographic position of the Canary Islands. When using the output for
-spatial analysis or using tiles (e.g. with \code{\link[=esp_get_tiles]{esp_get_tiles()}} or
-\code{\link[=addProviderEspTiles]{addProviderEspTiles()}})  this option should be set to \code{FALSE} in order to
-get the actual coordinates, instead of the modified ones.
+spatial analysis or tiles (for example, with \code{\link[=esp_get_tiles]{esp_get_tiles()}} or
+\code{\link[=addProviderEspTiles]{addProviderEspTiles()}}), set this option to \code{FALSE} to get the actual
+coordinates instead of the modified ones.
 }
 
 \examples{
@@ -46,7 +46,7 @@ teide <- data.frame(
 
 teide_sf <- st_as_sf(teide, coords = c("lon", "lat"), crs = 4326)
 
-# If we use any mapSpain produced object with moveCAN = TRUE...
+# A mapSpain object with moveCAN = TRUE is displaced.
 
 esp <- esp_get_spain(moveCAN = c(13, 0))
 
@@ -60,7 +60,7 @@ ggplot(esp) +
     subtitle = "But not the external Teide object"
   )
 
-# But we can
+# Displace the external object too.
 
 teide_sf_disp <- esp_move_can(teide_sf, moveCAN = c(13, 0))
 
@@ -74,7 +74,7 @@ ggplot(esp) +
 
 }
 \seealso{
-Other helpers for the Canary Islands:
-\code{\link{esp_get_can_box}()}
+Helpers for Canary Islands insets and displacement:
+\code{\link[=esp_get_can_box]{esp_get_can_box()}}
 }
 \concept{can_helpers}

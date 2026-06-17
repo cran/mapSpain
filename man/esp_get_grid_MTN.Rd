@@ -3,9 +3,9 @@
 \encoding{UTF-8}
 \name{esp_get_grid_MTN}
 \alias{esp_get_grid_MTN}
-\title{National geographic grids from IGN MTN ((Mapa Topografico Nacional)}
+\title{National geographic grids from IGN MTN (Mapa Topografico Nacional)}
 \source{
-IGN data via a custom CDN (see
+IGN data distributed through the \code{sianedata/MTN} data branch (see
 \url{https://github.com/rOpenSpain/mapSpain/tree/sianedata/MTN}).
 }
 \usage{
@@ -19,19 +19,19 @@ esp_get_grid_MTN(
 \arguments{
 \item{grid}{Name of the grid to be loaded. See \strong{Details}.}
 
-\item{update_cache}{logical. Should the cached file be refreshed? Default
-is \code{FALSE}. When set to \code{TRUE}, it will force a new download.}
+\item{update_cache}{Logical. If \code{TRUE}, refreshes the cached file and forces
+a new download. Defaults to \code{FALSE}.}
 
-\item{cache_dir}{character string. A path to a cache directory. See
+\item{cache_dir}{Character string. A path to a cache directory. See
 \strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
 
-\item{verbose}{logical. If \code{TRUE} displays informational messages.}
+\item{verbose}{A logical value. If \code{TRUE} displays informational messages.}
 }
 \value{
-A \code{\link[sf:sf]{sf}} \code{POLYGON}.
+A \code{\link[sf:st_sf]{sf}} \code{POLYGON}.
 }
 \description{
-Loads a \code{\link[sf:sf]{sf}} \code{POLYGON} with the geographic grids of Spain.
+Loads a \code{\link[sf:st_sf]{sf}} \code{POLYGON} with the geographic grids of Spain.
 }
 \details{
 Metadata available on
@@ -48,21 +48,21 @@ Possible values of \code{grid} are:\tabular{l}{
    MTN50_RegCan95_Canarias \cr
 }
 
-\subsection{MTN Grids}{
+\subsection{MTN grids}{
 
 A description of the MTN (Mapa Topografico Nacional) grids available:
 
 \strong{MTN25_ED50_Peninsula_Baleares}
 
 MTN25 grid corresponding to the Peninsula and Balearic Islands, in ED50 and
-geographical coordinates (longitude, latitude) This is the real MTN25 grid,
+geographical coordinates (longitude, latitude). This is the real MTN25 grid,
 that is, the one that divides the current printed series of the map, taking
 into account special sheets and irregularities.
 
 \strong{MTN50_ED50_Peninsula_Baleares}
 
 MTN50 grid corresponding to the Peninsula and Balearic Islands, in ED50 and
-geographical coordinates (longitude, latitude) This is the real MTN50 grid,
+geographical coordinates (longitude, latitude). This is the real MTN50 grid,
 that is, the one that divides the current printed series of the map, taking
 into account special sheets and irregularities.
 
@@ -116,8 +116,8 @@ ggplot(grid) +
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-Other geographical grids:
-\code{\link{esp_get_grid_BDN}()},
-\code{\link{esp_get_grid_ESDAC}()}
+Geographical grid datasets:
+\code{\link[=esp_get_grid_BDN]{esp_get_grid_BDN()}},
+\code{\link[=esp_get_grid_ESDAC]{esp_get_grid_ESDAC()}}
 }
 \concept{grids}

@@ -1,9 +1,5 @@
 test_that("Errors", {
-  teide <- data.frame(
-    name = "Teide Peak",
-    lon = -16.6437593,
-    lat = 28.2722883
-  )
+  teide <- data.frame(name = "Teide Peak", lon = -16.6437593, lat = 28.2722883)
 
   expect_snapshot(error = TRUE, esp_move_can(teide))
   expect_snapshot(error = TRUE, esp_move_can())
@@ -44,10 +40,7 @@ test_that("sfc", {
   mat <- sf::st_coordinates(a1)
 
   # Default mov in 3857
-  expect_identical(
-    as.data.frame(mat),
-    data.frame(X = 550000, Y = 920000)
-  )
+  expect_identical(as.data.frame(mat), data.frame(X = 550000, Y = 920000))
 
   # Mov with params
 
@@ -98,7 +91,6 @@ test_that("sf", {
   expect_true(all(sf::st_is_valid(moved3)))
 })
 
-
 test_that("Empty", {
   teide <- data.frame(
     name = rep("test", 20),
@@ -113,16 +105,12 @@ test_that("Empty", {
 
   # sfc
   teide_null_sfc <- sf::st_geometry(teide_null)
-  expect_equal(length(teide_null_sfc), 0)
+  expect_length(teide_null_sfc, 0)
   expect_identical(teide_null_sfc, esp_move_can(teide_null_sfc, moveCAN = TRUE))
 })
 
 test_that("Internal", {
-  test <- data.frame(
-    name = "test",
-    lon = 0,
-    lat = 0
-  )
+  test <- data.frame(name = "test", lon = 0, lat = 0)
 
   test_sf <- sf::st_as_sf(test, coords = c("lon", "lat"), crs = 3857)
 
@@ -166,11 +154,7 @@ test_that("Internal", {
 })
 
 test_that("Several", {
-  test <- data.frame(
-    name = c("test", "2"),
-    lon = c(0, 0),
-    lat = c(0, 0)
-  )
+  test <- data.frame(name = c("test", "2"), lon = c(0, 0), lat = c(0, 0))
 
   test_sf <- sf::st_as_sf(test, coords = c("lon", "lat"), crs = 3857)
 

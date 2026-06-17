@@ -8,17 +8,16 @@
 esp_make_provider(id, q, service, layers, ...)
 }
 \arguments{
-\item{id}{An identifier for the user. It will be used for identifying
-cached tiles.}
+\item{id}{An identifier for the user. Used for identifying cached tiles.}
 
-\item{q}{The base url of the service.}
+\item{q}{The base URL of the service.}
 
 \item{service}{The type of tile service, either \code{"WMS"} or \code{"WMTS"}.}
 
 \item{layers}{The name of the layer to retrieve.}
 
-\item{...}{Additional arguments to the query, like \code{version}, \code{format},
-\code{crs/srs}, \code{style}, etc. depending on the capabilities of the service.}
+\item{...}{Additional arguments to the query, such as \code{version}, \code{format},
+\code{crs/srs} and \code{style}, depending on the capabilities of the service.}
 }
 \value{
 A named list with two elements \code{id} and \code{q}.
@@ -27,31 +26,29 @@ A named list with two elements \code{id} and \code{q}.
 Helper function for \code{\link[=esp_get_tiles]{esp_get_tiles()}} that helps to create a custom provider.
 }
 \details{
-This function is meant to work with services provided as of the
+This function is meant to work with services provided under the
 \href{https://www.ogc.org/standards/wms/}{OGC Standard}.
 
 Note that:
 \itemize{
-\item \CRANpkg{mapSpain} will not provide advice on the argument \code{q} to be
-provided.
-\item Currently, on \strong{WMTS} requests only services with
+\item \CRANpkg{mapSpain} does not provide advice on the value of \code{q}.
+\item Currently, for \strong{WMTS} requests only services with
 \code{tilematrixset=GoogleMapsCompatible} are supported.
 }
 }
 \examples{
 \dontshow{if (esp_check_access()) withAutoprint(\{ # examplesIf}
 \dontrun{
-custom_wms <- esp_make_provider(
-  id = "an_id_for_caching",
-  q = "https://idecyl.jcyl.es/geoserver/ge/wms?",
-  service = "WMS",
-  version = "1.3.0",
-  layers = "geolog_cyl_litologia"
+custom_wmts <- esp_make_provider(
+  id = "example",
+  q = "https://www.ign.es/wmts/ign-base?",
+  service = "WMTS",
+  layer = "IGNBaseTodo"
 )
 
 x <- esp_get_ccaa("Castilla y León", epsg = 3857)
 
-mytile <- esp_get_tiles(x, type = custom_wms)
+mytile <- esp_get_tiles(x, type = custom_wmts)
 
 tidyterra::autoplot(mytile) +
   ggplot2::geom_sf(data = x, fill = NA)
@@ -61,11 +58,11 @@ tidyterra::autoplot(mytile) +
 \seealso{
 \code{\link[=esp_get_tiles]{esp_get_tiles()}}.
 
-For a list of potential providers from Spain check
+For a list of potential providers from Spain, check the
 \href{https://www.idee.es/segun-tipo-de-servicio}{IDEE Directory}.
 
-Other functions for creating maps with images:
-\code{\link{addProviderEspTiles}()},
-\code{\link{esp_get_tiles}()}
+Static map tiles and imagery:
+\code{\link[=addProviderEspTiles]{addProviderEspTiles()}},
+\code{\link[=esp_get_tiles]{esp_get_tiles()}}
 }
 \concept{images}

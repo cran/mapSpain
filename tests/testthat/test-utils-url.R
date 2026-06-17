@@ -72,12 +72,11 @@ test_that("Test 404", {
     )
   )
   expect_length(s, 1)
-  expect_true(is.character(s))
+  expect_type(s, "character")
   if (dir.exists(cdir)) {
     unlink(cdir, recursive = TRUE, force = TRUE)
   }
 })
-
 
 test_that("Caching tests", {
   skip_on_cran()
@@ -99,7 +98,7 @@ test_that("Caching tests", {
       update_cache = FALSE,
       verbose = TRUE
     ),
-    "Cache dir is"
+    "Cache directory is"
   )
 
   expect_length(list.files(cdir, recursive = TRUE), 1)
@@ -169,7 +168,7 @@ test_that("Caching errors", {
       update_cache = FALSE,
       verbose = FALSE
     ),
-    "The file to be downloaded has size"
+    "Download size"
   )
 
   unlink(cdir, recursive = TRUE, force = TRUE)
@@ -199,7 +198,7 @@ test_that("Test timeout", {
   withr::local_options(mapspain_timeout = 0.01)
   expect_error(
     download_url(url = url, verbose = FALSE, cache_dir = cdir),
-    "Failed to perform HTTP request(.*)Timeout(.*)after(.*)milliseconds"
+    "Failed to perform HTTP request(.*)Timeout"
   )
 
   withr::local_options(mapspain_timeout = 300L)

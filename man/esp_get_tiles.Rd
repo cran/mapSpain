@@ -5,10 +5,10 @@
 \alias{esp_get_tiles}
 \alias{esp_get_attributions}
 \alias{esp_getTiles}
-\title{Get static tiles from public administrations of Spain}
+\title{Get static map tiles from public administrations of Spain}
 \source{
-\url{https://dieghernan.github.io/leaflet-providersESP/} leaflet plugin,
-\strong{v1.3.3}.
+\url{https://dieghernan.github.io/leaflet-providersESP/}, a plugin for
+\CRANpkg{leaflet}, \strong{v1.3.3}.
 }
 \usage{
 esp_get_tiles(
@@ -30,9 +30,9 @@ esp_get_tiles(
 esp_get_attributions(type, options = NULL)
 }
 \arguments{
-\item{x}{An \code{\link[sf:sf]{sf}} or \code{\link[sf:sfc]{sfc}} object.}
+\item{x}{An \code{\link[sf:st_sf]{sf}} or \code{\link[sf:st_sfc]{sfc}} object.}
 
-\item{type}{This argument can be either:
+\item{type}{This argument can be one of:
 \itemize{
 \item The name of one of the pre-defined providers (see
 \link{esp_tiles_providers}).
@@ -40,36 +40,36 @@ esp_get_attributions(type, options = NULL)
 \code{\link[=esp_make_provider]{esp_make_provider()}} and examples.
 }}
 
-\item{zoom}{character string or number. Only valid for WMTS providers, zoom
+\item{zoom}{Character string or number. Only valid for WMTS providers, zoom
 level to be downloaded. If \code{NULL}, it is determined automatically. If set,
 it overrides \code{zoommin}. If a single \code{sf} \code{POINT} and \code{zoom = NULL}, the
 function sets a zoom level of 18. See \strong{Details}.}
 
-\item{zoommin}{character string or number. Delta on default \code{zoom}.
+\item{zoommin}{Character string or number. Delta on default \code{zoom}.
 The default value is designed to download fewer tiles than you probably
 want. Use \code{1} or \code{2} to increase the resolution.}
 
-\item{crop}{logical. If \code{TRUE}, the results will be cropped to the specified
-\code{x} extent. If \code{x} is an \code{\link[sf:sf]{sf}} object with one \code{POINT},
-\code{crop} is set to \code{FALSE}. See \code{\link[terra:crop]{terra::crop()}}.}
+\item{crop}{Logical. If \code{TRUE}, crop results to the specified \code{x} extent. If
+\code{x} is an \code{\link[sf:st_sf]{sf}} object with one \code{POINT}, \code{crop} is set to
+\code{FALSE}. See \code{\link[terra:crop]{terra::crop()}}.}
 
-\item{res}{character string or number. Only valid for WMS providers.
+\item{res}{Character string or number. Only valid for WMS providers.
 Resolution (in pixels) of the final tile.}
 
-\item{bbox_expand}{number. Expansion percentage of the bounding box of \code{x}.}
+\item{bbox_expand}{Number. Expansion percentage of the bounding box of \code{x}.}
 
-\item{transparent}{logical. Provides transparent background, if supported.}
+\item{transparent}{Logical. Whether to use a transparent background, if
+supported.}
 
-\item{mask}{logical. \code{TRUE} if the result should be masked to \code{x}. See
-\code{\link[terra:mask]{terra::mask()}}.}
+\item{mask}{Logical. \code{TRUE} to mask the result to \code{x}. See \code{\link[terra:mask]{terra::mask()}}.}
 
-\item{update_cache}{logical. Should the cached file be refreshed? Default
-is \code{FALSE}. When set to \code{TRUE}, it will force a new download.}
+\item{update_cache}{Logical. If \code{TRUE}, refreshes the cached file and forces
+a new download. Defaults to \code{FALSE}.}
 
-\item{cache_dir}{character string. A path to a cache directory. See
+\item{cache_dir}{Character string. A path to a cache directory. See
 \strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
 
-\item{verbose}{logical. If \code{TRUE} displays informational messages.}
+\item{verbose}{A logical value. If \code{TRUE} displays informational messages.}
 
 \item{options}{A named list containing additional options to pass to the
 query.}
@@ -80,13 +80,13 @@ the provider. See \code{\link[terra:rast]{terra::rast()}}.
 }
 \description{
 Get static map tiles based on a spatial object. Maps can be fetched from
-various open map servers.
+WMS and WMTS providers.
 
-This function is an implementation of the javascript plugin
+This function is an implementation of the JavaScript plugin
 \href{https://dieghernan.github.io/leaflet-providersESP/}{leaflet-providersESP}
 \strong{v1.3.3}.
 
-\code{esp_get_attributions} gets the attribution of a tile provider defined as
+\code{esp_get_attributions()} gets the attribution of a tile provider defined by
 the \code{type} argument.
 }
 \details{
@@ -105,11 +105,11 @@ Zoom levels are described on the
 }
 
 
-For a complete list of providers see \link{esp_tiles_providers}.
+For a complete list of providers, see \link{esp_tiles_providers}.
 
 Most WMS/WMTS providers provide tiles on
-\href{https://epsg.io/3857}{\code{"EPSG:3857"}}. In case that the tile looks deformed,
-try projecting first \code{x}:
+\href{https://epsg.io/3857}{\code{"EPSG:3857"}}. If the tile looks deformed, try
+projecting \code{x} first:
 
 \code{x <- sf::st_transform(x, 3857)}
 }
@@ -117,7 +117,7 @@ try projecting first \code{x}:
 \dontshow{if (esp_check_access()) withAutoprint(\{ # examplesIf}
 \dontrun{
 
-# This example downloads data to your local computer!
+# This example downloads data to your local computer.
 
 segovia <- esp_get_prov_siane("segovia", epsg = 3857)
 tile <- esp_get_tiles(segovia, "IGNBase.Todo")
@@ -129,7 +129,7 @@ ggplot(segovia) +
   geom_spatraster_rgb(data = tile, maxcell = Inf) +
   geom_sf(fill = NA, linewidth = 1)
 
-# Another provider
+# Another provider.
 
 tile2 <- esp_get_tiles(segovia, type = "MDT")
 
@@ -137,23 +137,7 @@ ggplot(segovia) +
   geom_spatraster_rgb(data = tile2, maxcell = Inf) +
   geom_sf(fill = NA, linewidth = 1, color = "red")
 
-# A custom WMS provided
-
-custom_wms <- esp_make_provider(
-  id = "an_id_for_caching",
-  q = "https://idecyl.jcyl.es/geoserver/ge/wms?",
-  service = "WMS",
-  version = "1.3.0",
-  format = "image/png",
-  layers = "geolog_cyl_litologia"
-)
-
-custom_wms_tile <- esp_get_tiles(segovia, custom_wms)
-
-autoplot(custom_wms_tile, maxcell = Inf) +
-  geom_sf(data = segovia, fill = NA, color = "red", linewidth = 1)
-
-# A custom WMTS provider
+# A custom WMTS provider.
 
 custom_wmts <- esp_make_provider(
   id = "cyl_wmts",
@@ -167,7 +151,7 @@ custom_wmts_tile <- esp_get_tiles(segovia, custom_wmts)
 autoplot(custom_wmts_tile, maxcell = Inf) +
   geom_sf(data = segovia, fill = NA, color = "white", linewidth = 1)
 
-# Example from https://leaflet-extras.github.io/leaflet-providers/preview/
+# Example from https://leaflet-extras.github.io/leaflet-providers/preview/.
 cartodb_dark <- list(
   id = "CartoDB_DarkMatter",
   q = "https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
@@ -183,12 +167,15 @@ autoplot(cartodb_dark_tile, maxcell = Inf) +
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-\code{\link[terra:rast]{terra::rast()}}, \link{esp_tiles_providers}, \code{\link[maptiles:get_tiles]{maptiles::get_tiles()}}
+\itemize{
+\item \code{\link[terra:rast]{terra::rast()}}.
+\item \link{esp_tiles_providers}.
+}
 
 \code{\link[giscoR:gisco_attributions]{giscoR::gisco_attributions()}}
 
-Other functions for creating maps with images:
-\code{\link{addProviderEspTiles}()},
-\code{\link{esp_make_provider}()}
+Static map tiles and imagery:
+\code{\link[=addProviderEspTiles]{addProviderEspTiles()}},
+\code{\link[=esp_make_provider]{esp_make_provider()}}
 }
 \concept{images}

@@ -13,21 +13,20 @@
 [![codecov](https://codecov.io/gh/rOpenSpain/mapSpain/branch/main/graph/badge.svg?token=6L01BKLL85)](https://app.codecov.io/gh/rOpenSpain/mapSpain)
 [![DOI](https://img.shields.io/badge/DOI-10.5281/zenodo.5366622-blue)](https://doi.org/10.5281/zenodo.5366622)
 [![Project-Status:Active](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![status](https://tinyverse.netlify.app/badge/mapSpain)](https://CRAN.R-project.org/package=mapSpain)
 
 <!-- badges: end -->
 
-[**mapSpain**](https://ropenspain.github.io/mapSpain/) is a package that
-provides spatial **sf** objects of Spain’s administrative boundaries,
-including Autonomous Communities, provinces, and municipalities.
+[**mapSpain**](https://ropenspain.github.io/mapSpain/) provides
+administrative boundaries of Spain at several levels, including
+Autonomous Communities and Cities, provinces, municipalities and NUTS,
+as **sf** objects.
 
-**mapSpain** also provides a Leaflet plugin to be used with the
-[**leaflet** package](https://rstudio.github.io/leaflet/), which loads
-several base maps from Spain’s public institutions and enables
-downloading and processing of static tiles.
+**mapSpain** also includes tools to download and process static map
+tiles, plus a [**leaflet**](https://rstudio.github.io/leaflet/) plugin
+for Spanish public administration tile providers.
 
-Full site with examples and vignettes on
-<https://ropenspain.github.io/mapSpain/>
+The full package website, with examples and vignettes, is available at
+<https://ropenspain.github.io/mapSpain/>.
 
 ## Installation
 
@@ -44,14 +43,14 @@ install.packages("mapSpain", dependencies = TRUE)
 
 <div class="pkgdown-devel">
 
-Check the docs of the developing version in
+Check the documentation for the development version at
 <https://ropenspain.github.io/mapSpain/dev/>.
 
-You can install the developing version of **mapSpain** using the
+You can install the development version of **mapSpain** from
 [r-universe](https://ropenspain.r-universe.dev/mapSpain):
 
 ``` r
-# Install mapSpain in R:
+# Install mapSpain in R.
 install.packages(
   "mapSpain",
   repos = c(
@@ -62,7 +61,7 @@ install.packages(
 )
 ```
 
-Alternatively, you can install the developing version of **mapSpain**
+Alternatively, you can install the development version of **mapSpain**
 with:
 
 ``` r
@@ -74,7 +73,7 @@ pak::pak("rOpenSpain/mapSpain", dependencies = TRUE)
 
 ## Usage
 
-This script highlights some key features of **mapSpain**.
+The following examples highlight some key features of **mapSpain**.
 
 ``` r
 library(mapSpain)
@@ -83,14 +82,14 @@ library(dplyr)
 census <- mapSpain::pobmun25 |>
   select(-name)
 
-# Extract CCAA from base dataset
+# Extract Autonomous Community or City codes from the base dataset.
 codelist <- mapSpain::esp_codelist |>
   select(cpro, codauto) |>
   distinct()
 
 census_ccaa <- census |>
   left_join(codelist) |>
-  # Summarize by CCAA
+  # Summarize by Autonomous Community or City.
   group_by(codauto) |>
   summarise(pob25 = sum(pob25), men = sum(men), women = sum(women)) |>
   mutate(
@@ -98,13 +97,13 @@ census_ccaa <- census |>
     porc_women_lab = paste0(round(100 * porc_women, 2), "%")
   )
 
-# Merge into spatial data
+# Merge into spatial data.
 ccaa_sf <- esp_get_ccaa() |>
   left_join(census_ccaa)
 
 can <- esp_get_can_box()
 
-# Plot with ggplot
+# Plot with ggplot.
 library(ggplot2)
 
 ggplot(ccaa_sf) +
@@ -129,17 +128,17 @@ ggplot(ccaa_sf) +
 ```
 
 <img src="man/figures/README-static-1.png" style="width:100.0%"
-alt="Porc. of women by CCAA in Spain (2025)" />
+alt="Percentage of women by Autonomous Community or City in Spain (2025)" />
 
-You can combine `sf` objects with static tiles
+You can combine **sf** objects with static map tiles.
 
 ``` r
-# Get census
+# Get census data.
 census <- mapSpain::pobmun25 |>
   mutate(porc_women = women / pob25) |>
   select(cpro, cmun, porc_women)
 
-# Get shapes
+# Get municipality and province geometries.
 shape <- esp_get_munic_siane(region = "Segovia", epsg = 3857)
 provs <- esp_get_prov_siane(epsg = 3857)
 
@@ -147,7 +146,7 @@ shape_pop <- shape |> left_join(census)
 
 tile <- esp_get_tiles(shape_pop, type = "IDErioja.Relieve", zoommin = 1)
 
-# Plot
+# Plot.
 
 library(ggplot2)
 library(tidyterra)
@@ -164,7 +163,7 @@ ggplot(remove_missing(shape_pop, na.rm = TRUE)) +
     labels = function(x) {
       sprintf("%1.0f%%", 100 * x)
     },
-    guide = guide_legend(title = "", )
+    guide = guide_legend(title = "")
   ) +
   coord_sf(
     xlim = lims[c(1, 2)],
@@ -185,18 +184,18 @@ ggplot(remove_missing(shape_pop, na.rm = TRUE)) +
 ```
 
 <img src="man/figures/README-tile-1.png" style="width:100.0%"
-alt="Perc. of women in Segovia by town (2025)" />
+alt="Percentage of women in Segovia by municipality (2025)" />
 
 ## mapSpain and giscoR
 
-If you need to plot Spain alongside other countries, consider using the
+If you need to plot Spain alongside other countries, use the
 [**giscoR**](https://ropengov.github.io/giscoR/) package, which is
-installed as a dependency with **mapSpain**. Here’s a basic example:
+installed as a dependency of **mapSpain**. Here is a basic example:
 
 ``` r
 library(giscoR)
 
-# Set the same resolution for a perfect fit
+# Set the same resolution for a perfect fit.
 
 res <- "20"
 
@@ -215,7 +214,7 @@ ggplot(all_countries) +
   geom_sf(fill = "#DFDFDF", color = "#656565") +
   geom_sf(data = eu_countries, fill = "#FDFBEA", color = "#656565") +
   geom_sf(data = ccaa, fill = "#C12838", color = "grey80", linewidth = 0.1) +
-  # Center in Europe: EPSG 3035
+  # Center on Europe: EPSG 3035.
   coord_sf(xlim = c(2377294, 7453440), ylim = c(1313597, 5628510)) +
   theme(
     panel.background = element_blank(),
@@ -229,59 +228,58 @@ alt="Locator map of Spain" />
 
 ## A note on caching
 
-Some data sets and tiles may have a size larger than 50MB. You can use
-**mapSpain** to create your own local repository at a given local
-directory passing the following option:
+Some datasets and tiles may be larger than 50 MB. You can use
+**mapSpain** to create a local cache directory with
+`esp_set_cache_dir()`:
 
 ``` r
 esp_set_cache_dir("./path/to/location")
 ```
 
-When this option is set, **mapSpain** will look for the cached file and
-load it, which speeds up the process.
+When a cache directory is set, **mapSpain** looks for cached files
+before downloading them again, which speeds up subsequent calls.
 
 ## Citation
 
 <p>
 
-Hernangómez D (2026). <em>mapSpain: Administrative Boundaries of
-Spain</em>.
-<a href="https://doi.org/10.5281/zenodo.5366622">doi:10.5281/zenodo.5366622</a>,
+Hernangómez D (2026). <em>mapSpain: Administrative Boundaries and Static
+Map Tiles for Spain</em>.
+<a href="https://doi.org/10.5281/zenodo.5366622">doi:10.5281/zenodo.5366622</a>.
 <a href="https://ropenspain.github.io/mapSpain/">https://ropenspain.github.io/mapSpain/</a>.
 </p>
 
 A BibTeX entry for LaTeX users is:
 
     @Manual{R-mapspain,
-      title = {{mapSpain}: Administrative Boundaries of Spain},
+      title = {{mapSpain}: Administrative Boundaries and Static Map Tiles for Spain},
       year = {2026},
-      version = {1.1.0},
+      version = {1.2.0},
       author = {Diego Hernangómez},
       doi = {10.5281/zenodo.5366622},
       url = {https://ropenspain.github.io/mapSpain/},
-      abstract = {Administrative Boundaries of Spain at several levels (Autonomous Communities, Provinces, Municipalities) based on the GISCO Eurostat database <https://ec.europa.eu/eurostat/web/gisco> and CartoBase SIANE from Instituto Geografico Nacional <https://www.ign.es/>. It also provides a leaflet plugin and the ability of downloading and processing static tiles.},
+      abstract = {Administrative boundaries of Spain at several levels (Autonomous Communities and Cities, provinces, municipalities and NUTS), based on GISCO from Eurostat <https://ec.europa.eu/eurostat/web/gisco> and CartoBase ANE from Instituto Geográfico Nacional <https://www.ign.es/>. Includes tools to download and process static map tiles and a leaflet plugin for Spanish public administration tile providers.},
     }
 
 ## Contribute
 
-Check the GitHub page for [source
+Check the GitHub page for the [source
 code](https://github.com/ropenspain/mapSpain/).
 
 ## Copyright notice
 
-This package uses data from CartoBase SIANE, provided by Instituto
-Geográfico Nacional:
+This package uses data from CartoBase ANE, provided by the Instituto
+Geográfico Nacional.
 
 > Atlas Nacional de España (ANE) [CC BY
 > 4.0](https://creativecommons.org/licenses/by/4.0/deed.en)
 > [ign.es](https://www.ign.es/)
 
-See <https://github.com/rOpenSpain/mapSpain/tree/sianedata>
+See <https://github.com/rOpenSpain/mapSpain/tree/sianedata>.
 
-This package also uses data from **GISCO**. GISCO
+This package also uses data from GISCO. GISCO
 [(FAQ)](https://ec.europa.eu/eurostat/web/gisco) is a geospatial open
-data repository containing multiple datasets at various resolution
-levels.
+data repository with multiple datasets at several resolution levels.
 
 *From GISCO \> Geodata \> Reference data \> Administrative Units /
 Statistical Units*

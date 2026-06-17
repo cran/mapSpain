@@ -3,7 +3,7 @@
 \encoding{UTF-8}
 \name{esp_get_munic}
 \alias{esp_get_munic}
-\title{Municipalities of Spain - GISCO}
+\title{Municipalities of Spain from GISCO}
 \source{
 \url{https://gisco-services.ec.europa.eu/distribution/v2/}.
 
@@ -25,14 +25,14 @@ esp_get_munic(
 )
 }
 \arguments{
-\item{year}{year character string or number. Release year of the file. See
+\item{year}{Year character string or number. Release year of the file. See
 \code{\link[giscoR:gisco_get_lau]{giscoR::gisco_get_lau()}} and \code{\link[giscoR:gisco_get_communes]{giscoR::gisco_get_communes()}} for valid
 values.}
 
-\item{epsg}{character string or number. Projection of the map: 4-digit
+\item{epsg}{Character string or number. Projection of the map: 4-digit
 \href{https://epsg.io/}{EPSG code}. One of:
 \itemize{
-\item \code{"4258"}: \href{https://epsg.io/4258}{ETRS89}
+\item \code{"4258"}: \href{https://epsg.io/4258}{ETRS89}.
 \item \code{"4326"}: \href{https://epsg.io/4326}{WGS84}.
 \item \code{"3035"}: \href{https://epsg.io/3035}{ETRS89 / ETRS-LAEA}.
 \item \code{"3857"}: \href{https://epsg.io/3857}{Pseudo-Mercator}.
@@ -41,19 +41,19 @@ values.}
 \item{cache}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}. This argument is
 deprecated, the dataset will always be downloaded to the \code{cache_dir}.}
 
-\item{update_cache}{logical. Should the cached file be refreshed? Default
-is \code{FALSE}. When set to \code{TRUE}, it will force a new download.}
+\item{update_cache}{Logical. If \code{TRUE}, refreshes the cached file and forces
+a new download. Defaults to \code{FALSE}.}
 
-\item{cache_dir}{character string. A path to a cache directory. See
+\item{cache_dir}{Character string. A path to a cache directory. See
 \strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
 
-\item{verbose}{logical. If \code{TRUE} displays informational messages.}
+\item{verbose}{A logical value. If \code{TRUE} displays informational messages.}
 
 \item{region}{Optional. A vector of region names, NUTS or ISO codes
 (see \code{\link[=esp_dict_region_code]{esp_dict_region_code()}}).}
 
-\item{munic}{character string. A name or \code{\link[base:grep]{regex}} expression
-with the names of the required municipalities. \code{NULL} will return all
+\item{munic}{Character string. A name or \code{\link[base:grep]{regex}} expression
+with the names of the required municipalities. Use \code{NULL} to return all
 municipalities.}
 
 \item{moveCAN}{A logical \code{TRUE/FALSE} or a vector of coordinates
@@ -61,36 +61,34 @@ municipalities.}
 Initial position can be adjusted using the vector of coordinates. See
 \strong{Displacing the Canary Islands} in \code{\link[=esp_move_can]{esp_move_can()}}.}
 
-\item{ext}{character. Extension of the file (default \code{"gpkg"}). See
+\item{ext}{Character. Extension of the file (default \code{"gpkg"}). See
 \code{\link[giscoR:gisco_get_nuts]{giscoR::gisco_get_nuts()}}.}
 }
 \value{
-A \code{\link[sf:sf]{sf}} object.
+A \code{\link[sf:st_sf]{sf}} object.
 }
 \description{
-This dataset shows boundaries of municipalities in Spain.
+Get boundaries of municipalities in Spain.
 }
 \details{
 When using \code{region} you can use and mix names and NUTS codes (levels 1, 2 or
 3), ISO codes (corresponding to level 2 or 3) or \code{"cpro"}
 (see \link{esp_codelist}).
 
-When calling a higher level (province, CCAA or NUTS1), all the municipalities
-of that level will be added.
+When calling a higher level (province, Autonomous Community or City, or
+NUTS 1), all municipalities of that level are added.
 }
-\section{Note}{
-
-Please check the download and usage provisions on \code{\link[giscoR:gisco_attributions]{gisco_attributions()}}.
-
+\note{
+Please check the download and usage provisions on
+\code{\link[giscoR:gisco_attributions]{giscoR::gisco_attributions()}}.
 }
-
 \examples{
 \dontshow{if (esp_check_access()) withAutoprint(\{ # examplesIf}
 \donttest{
 # The Spanish Lapland:
 # https://en.wikipedia.org/wiki/Celtiberian_Range
 
-# Get munics
+# Get municipalities.
 spanish_laplad <- esp_get_munic(
   year = 2023,
   region = c(
@@ -145,33 +143,36 @@ ggplot(spanish_laplad) +
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-\code{\link[giscoR:gisco_get_lau]{giscoR::gisco_get_lau()}}, \code{\link[giscoR:gisco_get_communes]{giscoR::gisco_get_communes()}}.
+\itemize{
+\item \code{\link[giscoR:gisco_get_lau]{giscoR::gisco_get_lau()}}.
+\item \code{\link[giscoR:gisco_get_communes]{giscoR::gisco_get_communes()}}.
+}
 
-Other datasets representing political borders:
-\code{\link{esp_get_capimun}()},
-\code{\link{esp_get_ccaa}()},
-\code{\link{esp_get_ccaa_siane}()},
-\code{\link{esp_get_comarca}()},
-\code{\link{esp_get_countries_siane}()},
+Political and administrative boundary datasets:
+\code{\link[=esp_get_capimun]{esp_get_capimun()}},
+\code{\link[=esp_get_ccaa]{esp_get_ccaa()}},
+\code{\link[=esp_get_ccaa_siane]{esp_get_ccaa_siane()}},
+\code{\link[=esp_get_comarca]{esp_get_comarca()}},
+\code{\link[=esp_get_countries_siane]{esp_get_countries_siane()}},
 \code{\link{esp_get_gridmap}},
-\code{\link{esp_get_munic_siane}()},
-\code{\link{esp_get_nuts}()},
-\code{\link{esp_get_prov}()},
-\code{\link{esp_get_prov_siane}()},
+\code{\link[=esp_get_munic_siane]{esp_get_munic_siane()}},
+\code{\link[=esp_get_nuts]{esp_get_nuts()}},
+\code{\link[=esp_get_prov]{esp_get_prov()}},
+\code{\link[=esp_get_prov_siane]{esp_get_prov_siane()}},
 \code{\link{esp_get_simpl}},
-\code{\link{esp_get_spain}()},
-\code{\link{esp_get_spain_siane}()},
-\code{\link{esp_siane_bulk_download}()}
+\code{\link[=esp_get_spain]{esp_get_spain()}},
+\code{\link[=esp_get_spain_siane]{esp_get_spain_siane()}},
+\code{\link[=esp_siane_bulk_download]{esp_siane_bulk_download()}}
 
-Datasets representing municipalities:
-\code{\link{esp_get_capimun}()},
-\code{\link{esp_get_munic_siane}()}
+Municipality-level datasets:
+\code{\link[=esp_get_capimun]{esp_get_capimun()}},
+\code{\link[=esp_get_munic_siane]{esp_get_munic_siane()}}
 
-Datasets provided by GISCO:
-\code{\link{esp_get_ccaa}()},
-\code{\link{esp_get_nuts}()},
-\code{\link{esp_get_prov}()},
-\code{\link{esp_get_spain}()}
+Datasets sourced from GISCO:
+\code{\link[=esp_get_ccaa]{esp_get_ccaa()}},
+\code{\link[=esp_get_nuts]{esp_get_nuts()}},
+\code{\link[=esp_get_prov]{esp_get_prov()}},
+\code{\link[=esp_get_spain]{esp_get_spain()}}
 }
 \concept{gisco}
 \concept{municipalities}

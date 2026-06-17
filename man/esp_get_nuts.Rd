@@ -27,31 +27,31 @@ esp_get_nuts(
 )
 }
 \arguments{
-\item{year}{year character string or number. Release year of the file. See
+\item{year}{Year character string or number. Release year of the file. See
 \code{\link[giscoR:gisco_get_nuts]{giscoR::gisco_get_nuts()}} for valid values.}
 
-\item{epsg}{character string or number. Projection of the map: 4-digit
+\item{epsg}{Character string or number. Projection of the map: 4-digit
 \href{https://epsg.io/}{EPSG code}. One of:
 \itemize{
-\item \code{"4258"}: \href{https://epsg.io/4258}{ETRS89}
+\item \code{"4258"}: \href{https://epsg.io/4258}{ETRS89}.
 \item \code{"4326"}: \href{https://epsg.io/4326}{WGS84}.
 \item \code{"3035"}: \href{https://epsg.io/3035}{ETRS89 / ETRS-LAEA}.
 \item \code{"3857"}: \href{https://epsg.io/3857}{Pseudo-Mercator}.
 }}
 
-\item{cache}{logical. Whether to do caching. Default is \code{TRUE}. See
+\item{cache}{Logical. Whether to cache downloaded files. Default is \code{TRUE}.
+See \strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
+
+\item{update_cache}{Logical. If \code{TRUE}, refreshes the cached file and forces
+a new download. Defaults to \code{FALSE}.}
+
+\item{cache_dir}{Character string. A path to a cache directory. See
 \strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
 
-\item{update_cache}{logical. Should the cached file be refreshed? Default
-is \code{FALSE}. When set to \code{TRUE}, it will force a new download.}
+\item{verbose}{A logical value. If \code{TRUE} displays informational messages.}
 
-\item{cache_dir}{character string. A path to a cache directory. See
-\strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
-
-\item{verbose}{logical. If \code{TRUE} displays informational messages.}
-
-\item{resolution}{character string or number. Resolution of the geospatial
-data. One of:
+\item{resolution}{A character string or numeric value with the geospatial
+data resolution. One of:
 \itemize{
 \item \code{"60"}: 1:60 million.
 \item \code{"20"}: 1:20 million.
@@ -60,17 +60,17 @@ data. One of:
 \item \code{"01"}: 1:1 million.
 }}
 
-\item{spatialtype}{character string. Type of geometry to be returned.
+\item{spatialtype}{Character string. Type of geometry to be returned.
 Options available are:
 \itemize{
-\item "RG": Regions - \code{MULTIPOLYGON/POLYGON} object.
-\item "LB": Labels - \code{POINT} object.
+\item \code{"RG"}: regions, returned as a \code{MULTIPOLYGON/POLYGON} object.
+\item \code{"LB"}: labels, returned as a \code{POINT} object.
 }}
 
 \item{region}{Optional. A vector of region names, NUTS or ISO codes
 (see \code{\link[=esp_dict_region_code]{esp_dict_region_code()}}).}
 
-\item{nuts_level}{character string. NUTS level. One of \code{0},
+\item{nuts_level}{A character string with the NUTS level. One of \code{0},
 \code{1}, \code{2}, \code{3} or \code{all} for all levels.}
 
 \item{moveCAN}{A logical \code{TRUE/FALSE} or a vector of coordinates
@@ -78,27 +78,27 @@ Options available are:
 Initial position can be adjusted using the vector of coordinates. See
 \strong{Displacing the Canary Islands} in \code{\link[=esp_move_can]{esp_move_can()}}.}
 
-\item{ext}{character. Extension of the file (default \code{"gpkg"}). See
+\item{ext}{Character. Extension of the file (default \code{"gpkg"}). See
 \code{\link[giscoR:gisco_get_nuts]{giscoR::gisco_get_nuts()}}.}
 }
 \value{
-A \code{\link[sf:sf]{sf}} object.
+A \code{\link[sf:st_sf]{sf}} object.
 }
 \description{
-The GISCO statistical unit dataset represents the NUTS (nomenclature of
-territorial units for statistics) and statistical regions using
+The GISCO statistical unit dataset represents NUTS (Nomenclature of
+Territorial Units for Statistics) and statistical regions using
 multipart polygon, polyline and point topology. The NUTS geographical
 information is completed by attribute tables and a set of cartographic
-help lines to better visualise multipart polygonal regions.
+help lines to better visualize multipart polygonal regions.
 
-The NUTS are a hierarchical system divided into 3 levels:
+NUTS is a hierarchical system divided into three levels:
 \itemize{
-\item NUTS 1: major socio-economic regions
-\item NUTS 2: basic regions for the application of regional policies
+\item NUTS 1: major socioeconomic regions.
+\item NUTS 2: basic regions for the application of regional policies.
 \item NUTS 3: small regions for specific diagnoses.
 }
 
-Also, there is a NUTS 0 level, which usually corresponds to the national
+There is also a NUTS 0 level, which usually corresponds to the national
 boundaries.
 }
 \details{
@@ -106,24 +106,19 @@ The NUTS nomenclature is a hierarchical classification of statistical
 regions and subdivides the EU economic territory into regions of three
 different levels (NUTS 1, 2 and 3, moving respectively from larger to smaller
 territorial units). NUTS 1 is the most aggregated level. An additional
-Country level (NUTS 0) is also available for countries where the nation at
+country level (NUTS 0) is also available for countries where the nation at
 statistical level does not coincide with the administrative boundaries.
 
 The NUTS classification has been officially established through Commission
-Delegated Regulation 2019/1755. A non-official NUTS-like classification has
+Delegated Regulation 2019/1755. An unofficial NUTS-like classification has
 been defined for the EFTA countries, candidate countries and potential
 candidates based on a bilateral agreement between Eurostat and the respective
 statistical agencies.
-
-An introduction to the NUTS classification is available here:
-\url{https://ec.europa.eu/eurostat/web/nuts/overview}.
 }
-\section{Note}{
-
-Please check the download and usage provisions on \code{\link[giscoR:gisco_attributions]{gisco_attributions()}}.
-
+\note{
+Please check the download and usage provisions on
+\code{\link[giscoR:gisco_attributions]{giscoR::gisco_attributions()}}.
 }
-
 \examples{
 nuts1 <- esp_get_nuts(nuts_level = 1, moveCAN = TRUE)
 
@@ -132,7 +127,7 @@ library(ggplot2)
 ggplot(nuts1) +
   geom_sf() +
   labs(
-    title = "NUTS1: Displacing Canary Islands",
+    title = "NUTS 1: Displacing Canary Islands",
     caption = giscoR::gisco_attributions()
   )
 
@@ -141,7 +136,7 @@ nuts1_alt <- esp_get_nuts(nuts_level = 1, moveCAN = c(15, 0))
 ggplot(nuts1_alt) +
   geom_sf() +
   labs(
-    title = "NUTS1: Displacing Canary Islands",
+    title = "NUTS 1: Displacing Canary Islands",
     subtitle = "to the right",
     caption = giscoR::gisco_attributions()
   )
@@ -151,8 +146,8 @@ nuts1_orig <- esp_get_nuts(nuts_level = 1, moveCAN = FALSE)
 ggplot(nuts1_orig) +
   geom_sf() +
   labs(
-    title = "NUTS1",
-    subtitle = "Canary Islands on the true location",
+    title = "NUTS 1",
+    subtitle = "Canary Islands in their true location",
     caption = giscoR::gisco_attributions()
   )
 
@@ -179,30 +174,30 @@ ggplot(mixing_codes) +
 \seealso{
 \code{\link[giscoR:gisco_get_nuts]{giscoR::gisco_get_nuts()}}, \code{\link[=esp_dict_region_code]{esp_dict_region_code()}}.
 
-Other datasets representing political borders:
-\code{\link{esp_get_capimun}()},
-\code{\link{esp_get_ccaa}()},
-\code{\link{esp_get_ccaa_siane}()},
-\code{\link{esp_get_comarca}()},
-\code{\link{esp_get_countries_siane}()},
+Political and administrative boundary datasets:
+\code{\link[=esp_get_capimun]{esp_get_capimun()}},
+\code{\link[=esp_get_ccaa]{esp_get_ccaa()}},
+\code{\link[=esp_get_ccaa_siane]{esp_get_ccaa_siane()}},
+\code{\link[=esp_get_comarca]{esp_get_comarca()}},
+\code{\link[=esp_get_countries_siane]{esp_get_countries_siane()}},
 \code{\link{esp_get_gridmap}},
-\code{\link{esp_get_munic}()},
-\code{\link{esp_get_munic_siane}()},
-\code{\link{esp_get_prov}()},
-\code{\link{esp_get_prov_siane}()},
+\code{\link[=esp_get_munic]{esp_get_munic()}},
+\code{\link[=esp_get_munic_siane]{esp_get_munic_siane()}},
+\code{\link[=esp_get_prov]{esp_get_prov()}},
+\code{\link[=esp_get_prov_siane]{esp_get_prov_siane()}},
 \code{\link{esp_get_simpl}},
-\code{\link{esp_get_spain}()},
-\code{\link{esp_get_spain_siane}()},
-\code{\link{esp_siane_bulk_download}()}
+\code{\link[=esp_get_spain]{esp_get_spain()}},
+\code{\link[=esp_get_spain_siane]{esp_get_spain_siane()}},
+\code{\link[=esp_siane_bulk_download]{esp_siane_bulk_download()}}
 
-Other nuts: 
-\code{\link{esp_get_spain}()}
+NUTS boundary datasets:
+\code{\link[=esp_get_spain]{esp_get_spain()}}
 
-Datasets provided by GISCO:
-\code{\link{esp_get_ccaa}()},
-\code{\link{esp_get_munic}()},
-\code{\link{esp_get_prov}()},
-\code{\link{esp_get_spain}()}
+Datasets sourced from GISCO:
+\code{\link[=esp_get_ccaa]{esp_get_ccaa()}},
+\code{\link[=esp_get_munic]{esp_get_munic()}},
+\code{\link[=esp_get_prov]{esp_get_prov()}},
+\code{\link[=esp_get_spain]{esp_get_spain()}}
 }
 \concept{gisco}
 \concept{nuts}

@@ -7,13 +7,13 @@ test_that("Test offline", {
   })
   expect_message(
     n <- esp_get_grid_BDN(update_cache = TRUE),
-    "Offline"
+    "No internet connection"
   )
   expect_null(n)
 
   expect_message(
     n <- esp_get_grid_BDN_ccaa(ccaa = "Murcia", update_cache = TRUE),
-    "Offline"
+    "No internet connection"
   )
   expect_null(n)
   local_mocked_bindings(is_online_fun = function(...) {
@@ -28,10 +28,7 @@ test_that("Test 404", {
   local_mocked_bindings(is_404 = function(...) {
     TRUE
   })
-  expect_message(
-    n <- esp_get_grid_BDN(update_cache = TRUE),
-    "Error"
-  )
+  expect_message(n <- esp_get_grid_BDN(update_cache = TRUE), "Error")
   expect_null(n)
 
   expect_message(
@@ -86,7 +83,6 @@ test_that("BDN grid online", {
   unlink(tdir, recursive = TRUE, force = TRUE)
   expect_false(dir.exists(tdir))
 })
-
 
 test_that("BDN grid online CCAA", {
   skip_on_cran()

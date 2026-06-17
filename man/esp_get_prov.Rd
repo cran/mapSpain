@@ -3,7 +3,7 @@
 \encoding{UTF-8}
 \name{esp_get_prov}
 \alias{esp_get_prov}
-\title{Provinces of Spain - GISCO}
+\title{Provinces of Spain from GISCO}
 \source{
 \url{https://gisco-services.ec.europa.eu/distribution/v2/}.
 
@@ -14,8 +14,8 @@ Copyright:
 esp_get_prov(prov = NULL, moveCAN = TRUE, ...)
 }
 \arguments{
-\item{prov}{A vector of names and/or codes for provinces or \code{NULL} to get all
-the provinces. See \strong{Details}.}
+\item{prov}{A vector of names, codes or both for provinces, or \code{NULL} to get
+all the provinces. See \strong{Details}.}
 
 \item{moveCAN}{A logical \code{TRUE/FALSE} or a vector of coordinates
 \code{c(lat, lon)}. It places the Canary Islands close to Spain's mainland.
@@ -23,35 +23,35 @@ Initial position can be adjusted using the vector of coordinates. See
 \strong{Displacing the Canary Islands} in \code{\link[=esp_move_can]{esp_move_can()}}.}
 
 \item{...}{
-  Arguments passed on to \code{\link[=esp_get_nuts]{esp_get_nuts}}, \code{\link[=esp_get_nuts]{esp_get_nuts}}
+  Arguments passed on to \code{\link{esp_get_nuts}}
   \describe{
-    \item{\code{year}}{year character string or number. Release year of the file. See
+    \item{\code{year}}{Year character string or number. Release year of the file. See
 \code{\link[giscoR:gisco_get_nuts]{giscoR::gisco_get_nuts()}} for valid values.}
-    \item{\code{epsg}}{character string or number. Projection of the map: 4-digit
+    \item{\code{epsg}}{Character string or number. Projection of the map: 4-digit
 \href{https://epsg.io/}{EPSG code}. One of:
 \itemize{
-\item \code{"4258"}: \href{https://epsg.io/4258}{ETRS89}
+\item \code{"4258"}: \href{https://epsg.io/4258}{ETRS89}.
 \item \code{"4326"}: \href{https://epsg.io/4326}{WGS84}.
 \item \code{"3035"}: \href{https://epsg.io/3035}{ETRS89 / ETRS-LAEA}.
 \item \code{"3857"}: \href{https://epsg.io/3857}{Pseudo-Mercator}.
 }}
-    \item{\code{cache}}{logical. Whether to do caching. Default is \code{TRUE}. See
+    \item{\code{cache}}{Logical. Whether to cache downloaded files. Default is \code{TRUE}.
+See \strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
+    \item{\code{update_cache}}{Logical. If \code{TRUE}, refreshes the cached file and forces
+a new download. Defaults to \code{FALSE}.}
+    \item{\code{cache_dir}}{Character string. A path to a cache directory. See
 \strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
-    \item{\code{update_cache}}{logical. Should the cached file be refreshed? Default
-is \code{FALSE}. When set to \code{TRUE}, it will force a new download.}
-    \item{\code{cache_dir}}{character string. A path to a cache directory. See
-\strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
-    \item{\code{spatialtype}}{character string. Type of geometry to be returned.
+    \item{\code{spatialtype}}{Character string. Type of geometry to be returned.
 Options available are:
 \itemize{
-\item "RG": Regions - \code{MULTIPOLYGON/POLYGON} object.
-\item "LB": Labels - \code{POINT} object.
+\item \code{"RG"}: regions, returned as a \code{MULTIPOLYGON/POLYGON} object.
+\item \code{"LB"}: labels, returned as a \code{POINT} object.
 }}
-    \item{\code{ext}}{character. Extension of the file (default \code{"gpkg"}). See
+    \item{\code{ext}}{Character. Extension of the file (default \code{"gpkg"}). See
 \code{\link[giscoR:gisco_get_nuts]{giscoR::gisco_get_nuts()}}.}
-    \item{\code{verbose}}{logical. If \code{TRUE} displays informational messages.}
-    \item{\code{resolution}}{character string or number. Resolution of the geospatial
-data. One of:
+    \item{\code{verbose}}{A logical value. If \code{TRUE} displays informational messages.}
+    \item{\code{resolution}}{A character string or numeric value with the geospatial
+data resolution. One of:
 \itemize{
 \item \code{"60"}: 1:60 million.
 \item \code{"20"}: 1:20 million.
@@ -62,29 +62,27 @@ data. One of:
   }}
 }
 \value{
-A \code{\link[sf:sf]{sf}} object.
+A \code{\link[sf:st_sf]{sf}} object.
 }
 \description{
-Returns
+Get
 \href{https://en.wikipedia.org/wiki/Provinces_of_Spain}{provinces of Spain}
 at a specified scale.
 }
 \details{
 When using \code{prov} you can use and mix names and NUTS codes (levels 1, 2 or
-3), ISO codes (corresponding to level 2 or 3) or "cpro" (see
+3), ISO codes (corresponding to level 2 or 3) or \code{"cpro"} (see
 \link{esp_codelist}).
 
-Ceuta and Melilla are considered as provinces in this dataset.
+Ceuta and Melilla are considered provinces in this dataset.
 
-When calling a higher level (Autonomous Community or NUTS1), all the
-provinces of that level will be added.
+When calling a higher level (Autonomous Community or City, or NUTS 1), all
+provinces of that level are added.
 }
-\section{Note}{
-
-Please check the download and usage provisions on \code{\link[giscoR:gisco_attributions]{gisco_attributions()}}.
-
+\note{
+Please check the download and usage provisions on
+\code{\link[giscoR:gisco_attributions]{giscoR::gisco_attributions()}}.
 }
-
 \examples{
 prov <- esp_get_prov()
 
@@ -95,7 +93,7 @@ ggplot(prov) +
   theme_minimal()
 
 \donttest{
-# Random Provinces
+# Random provinces.
 random <- esp_get_prov(prov = c(
   "Zamora", "Palencia", "ES-GR",
   "ES521", "01"
@@ -106,7 +104,7 @@ ggplot(random) +
   scale_fill_manual(values = hcl.colors(nrow(random), "Spectral")) +
   theme_minimal()
 
-# All Provinces of a Zone plus an addition
+# All provinces of a zone plus one addition.
 mix <- esp_get_prov(prov = c(
   "Noroeste",
   "Castilla y Leon", "La Rioja"
@@ -122,7 +120,7 @@ ggplot(mix) +
   scale_fill_discrete(type = hcl.colors(5, "Temps")) +
   theme_classic()
 
-# ISO codes available
+# Available ISO codes.
 
 allprovs <- esp_get_prov()
 
@@ -137,27 +135,27 @@ ggplot(allprovs) +
 }
 }
 \seealso{
-Other datasets representing political borders:
-\code{\link{esp_get_capimun}()},
-\code{\link{esp_get_ccaa}()},
-\code{\link{esp_get_ccaa_siane}()},
-\code{\link{esp_get_comarca}()},
-\code{\link{esp_get_countries_siane}()},
+Political and administrative boundary datasets:
+\code{\link[=esp_get_capimun]{esp_get_capimun()}},
+\code{\link[=esp_get_ccaa]{esp_get_ccaa()}},
+\code{\link[=esp_get_ccaa_siane]{esp_get_ccaa_siane()}},
+\code{\link[=esp_get_comarca]{esp_get_comarca()}},
+\code{\link[=esp_get_countries_siane]{esp_get_countries_siane()}},
 \code{\link{esp_get_gridmap}},
-\code{\link{esp_get_munic}()},
-\code{\link{esp_get_munic_siane}()},
-\code{\link{esp_get_nuts}()},
-\code{\link{esp_get_prov_siane}()},
+\code{\link[=esp_get_munic]{esp_get_munic()}},
+\code{\link[=esp_get_munic_siane]{esp_get_munic_siane()}},
+\code{\link[=esp_get_nuts]{esp_get_nuts()}},
+\code{\link[=esp_get_prov_siane]{esp_get_prov_siane()}},
 \code{\link{esp_get_simpl}},
-\code{\link{esp_get_spain}()},
-\code{\link{esp_get_spain_siane}()},
-\code{\link{esp_siane_bulk_download}()}
+\code{\link[=esp_get_spain]{esp_get_spain()}},
+\code{\link[=esp_get_spain_siane]{esp_get_spain_siane()}},
+\code{\link[=esp_siane_bulk_download]{esp_siane_bulk_download()}}
 
-Datasets provided by GISCO:
-\code{\link{esp_get_ccaa}()},
-\code{\link{esp_get_munic}()},
-\code{\link{esp_get_nuts}()},
-\code{\link{esp_get_spain}()}
+Datasets sourced from GISCO:
+\code{\link[=esp_get_ccaa]{esp_get_ccaa()}},
+\code{\link[=esp_get_munic]{esp_get_munic()}},
+\code{\link[=esp_get_nuts]{esp_get_nuts()}},
+\code{\link[=esp_get_spain]{esp_get_spain()}}
 }
 \concept{gisco}
 \concept{political}

@@ -6,9 +6,9 @@
 \alias{esp_get_grid_BDN_ccaa}
 \title{National geographic grids from BDN (Nature Data Bank)}
 \source{
-Data sourced from the Banco de Datos de la Naturaleza (BDN) via a custom
-CDN. See the repository structure:
-\url{https://github.com/rOpenSpain/mapSpain/tree/sianedata/MTN}
+Data sourced from the Banco de Datos de la Naturaleza (BDN). See the
+repository structure:
+\url{https://github.com/rOpenSpain/mapSpain/tree/sianedata/MITECO/dist}
 
 For more information about BDN grids and other resources, visit:
 \url{https://www.miteco.gob.es/es/biodiversidad/servicios/banco-datos-naturaleza/informacion-disponible/bdn-cart-aux-descargas-ccaa.html}.
@@ -30,64 +30,64 @@ esp_get_grid_BDN_ccaa(
 )
 }
 \arguments{
-\item{resolution}{numeric. Resolution of the grid in kms. Must be one of:
+\item{resolution}{Numeric. Resolution of the grid in kilometers. Must be one
+of:
 \itemize{
-\item \code{5}: 5x5 kilometer cells
-\item \code{10}: 10x10 kilometer cells (default)
+\item \code{5}: 5 x 5 kilometer cells.
+\item \code{10}: 10 x 10 kilometer cells (default).
 }}
 
-\item{type}{character. The geographic scope of the grid:
+\item{type}{Character. The geographic scope of the grid:
 \itemize{
-\item \code{"main"}: Mainland Spain (default)
-\item \code{"canary"}: Canary Islands
+\item \code{"main"}: Mainland Spain (default).
+\item \code{"canary"}: Canary Islands.
 }}
 
-\item{update_cache}{logical. Should the cached file be refreshed? Default
-is \code{FALSE}. When set to \code{TRUE}, it will force a new download.}
+\item{update_cache}{Logical. If \code{TRUE}, refreshes the cached file and forces
+a new download. Defaults to \code{FALSE}.}
 
-\item{cache_dir}{character string. A path to a cache directory. See
+\item{cache_dir}{Character string. A path to a cache directory. See
 \strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
 
-\item{verbose}{logical. If \code{TRUE} displays informational messages.}
+\item{verbose}{A logical value. If \code{TRUE} displays informational messages.}
 
-\item{ccaa}{character string. A vector of names and/or codes for Autonomous
-Communities. See \strong{Details} on \code{\link[=esp_get_ccaa]{esp_get_ccaa()}} for accepted formats.}
+\item{ccaa}{Character string. A vector of names, codes or both for
+Autonomous Communities and Cities. See \strong{Details} on \code{\link[=esp_get_ccaa]{esp_get_ccaa()}}
+for accepted formats.}
 }
 \value{
-A \code{\link[sf:sf]{sf}} object.
+A \code{\link[sf:st_sf]{sf}} object.
 }
 \description{
-Loads a \code{\link[sf:sf]{sf}} \code{POLYGON} object with the geographic grids of
+Load an \code{\link[sf:st_sf]{sf}} \code{POLYGON} object with the geographic grids of
 Spain as provided by the Banco de Datos de la Naturaleza (Nature Data Bank),
 under the Ministry of Environment (MITECO).
 
-This dataset provides:
-\itemize{
-\item \code{\link[=esp_get_grid_BDN]{esp_get_grid_BDN()}} extracts country-wide regular grids with resolutions
-of 5x5 or 10x10 kilometers (mainland Spain or Canary Islands).
-\item \code{\link[=esp_get_grid_BDN_ccaa]{esp_get_grid_BDN_ccaa()}} extracts 1x1 kilometer resolution grids for
-individual Autonomous Communities.
-}
+This dataset provides two accessors. \code{\link[=esp_get_grid_BDN]{esp_get_grid_BDN()}} extracts
+country-wide regular grids with resolutions of 5 x 5 or 10 x 10 kilometers
+for mainland Spain or the Canary Islands. \code{\link[=esp_get_grid_BDN_ccaa]{esp_get_grid_BDN_ccaa()}} extracts
+1 x 1 kilometer resolution grids for individual Autonomous Communities and
+Cities.
 
 These grids are useful for biodiversity analysis, environmental monitoring,
 and spatial statistical applications.
 
-\code{esp_get_grid_BDN_ccaa()} provides higher-resolution 1x1 kilometer grids
-for specific Autonomous Communities, useful for regional analysis with
-finer spatial detail.
+\code{esp_get_grid_BDN_ccaa()} provides higher-resolution 1 x 1 kilometer grids
+for specific Autonomous Communities and Cities, useful for regional analysis
+with finer spatial detail.
 }
 \details{
 The BDN provides standardized geographic grids for Spain that follow the
-Nature Data Bank's specifications. The data is maintained via a custom CDN
-and is regularly updated.
+Nature Data Bank's specifications. The data are downloaded from the
+\code{sianedata/MITECO/dist} data branch and is regularly updated.
 }
 \examples{
 \dontshow{if (esp_check_access()) withAutoprint(\{ # examplesIf}
 \donttest{
-# Load a 10x10 km grid for mainland Spain
+# Load a 10 x 10 km grid for mainland Spain.
 grid <- esp_get_grid_BDN(resolution = 10, type = "main")
 
-# Visualize the grid
+# Visualize the grid.
 library(ggplot2)
 
 ggplot(grid) +
@@ -100,8 +100,8 @@ ggplot(grid) +
 \seealso{
 \code{\link[=esp_get_ccaa]{esp_get_ccaa()}}
 
-Other geographical grids:
-\code{\link{esp_get_grid_ESDAC}()},
-\code{\link{esp_get_grid_MTN}()}
+Geographical grid datasets:
+\code{\link[=esp_get_grid_ESDAC]{esp_get_grid_ESDAC()}},
+\code{\link[=esp_get_grid_MTN]{esp_get_grid_MTN()}}
 }
 \concept{grids}

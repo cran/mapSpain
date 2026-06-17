@@ -3,29 +3,29 @@
 \encoding{UTF-8}
 \name{esp_get_spain_siane}
 \alias{esp_get_spain_siane}
-\title{Boundaries of Spain - SIANE}
+\title{Boundaries of Spain from SIANE}
 \source{
-CartoBase ANE provided by Instituto Geografico Nacional (IGN),
+CartoBase ANE (Atlas Nacional de España) provided by Instituto Geográfico Nacional (IGN),
 \url{http://www.ign.es/web/ign/portal}. Years available are 2005 up to today.
 
 Copyright:
 \url{https://centrodedescargas.cnig.es/CentroDescargas/cartobase-ane}
 
-It's necessary to always acknowledge authorship using the following formulas:
+Always acknowledge authorship using the following statements:
 \enumerate{
-\item When the original digital product is not modified or altered, it can
-be expressed in one of the following ways:
+\item When the original digital product is not modified or altered, use one of
+the following statements:
 \itemize{
-\item CartoBase ANE 2006-2024 CC-BY 4.0 ign.es
-\item CartoBase ANE 2006-2024 CC-BY 4.0 Instituto Geográfico Nacional
+\item CartoBase ANE 2006-2024 CC-BY 4.0 ign.es.
+\item CartoBase ANE 2006-2024 CC-BY 4.0 Instituto Geográfico Nacional.
 }
 \item When a new product is generated:
-}
 \itemize{
-\item Obra derivada de CartoBase ANE 2006-2024 CC-BY 4.0 ign.es
+\item Obra derivada de CartoBase ANE 2006-2024 CC-BY 4.0 ign.es.
+}
 }
 
-Data distributed via a custom CDN, see
+Data distributed through the \code{sianedata} data branch, see
 \url{https://github.com/rOpenSpain/mapSpain/tree/sianedata}.
 }
 \usage{
@@ -38,47 +38,47 @@ Initial position can be adjusted using the vector of coordinates. See
 \strong{Displacing the Canary Islands} in \code{\link[=esp_move_can]{esp_move_can()}}.}
 
 \item{...}{
-  Arguments passed on to \code{\link[=esp_get_ccaa_siane]{esp_get_ccaa_siane}}
+  Arguments passed on to \code{\link{esp_get_ccaa_siane}}
   \describe{
-    \item{\code{year}}{character string or number. Release year, it must be in
-formats \code{YYYY} (assuming end of year) or \code{YYYY-MM-DD}. Historical
-information starts as of 2005.}
-    \item{\code{resolution}}{character string or number. Resolution of the geospatial
+    \item{\code{year}}{Character string or number. Release year. It must use format
+\code{YYYY} (assuming end of year) or \code{YYYY-MM-DD}. Historical information
+starts as of 2005.}
+    \item{\code{resolution}}{Character string or number. Resolution of the geospatial
 data. One of:
 \itemize{
-\item "10": 1:10 million.
-\item "6.5": 1:6.5 million.
-\item "3": 1:3 million.
+\item \code{"10"}: 1:10 million.
+\item \code{"6.5"}: 1:6.5 million.
+\item \code{"3"}: 1:3 million.
 }}
-    \item{\code{epsg}}{character string or number. Projection of the map: 4-digit
+    \item{\code{epsg}}{Character string or number. Projection of the map: 4-digit
 \href{https://epsg.io/}{EPSG code}. One of:
 \itemize{
-\item \code{"4258"}: \href{https://epsg.io/4258}{ETRS89}
+\item \code{"4258"}: \href{https://epsg.io/4258}{ETRS89}.
 \item \code{"4326"}: \href{https://epsg.io/4326}{WGS84}.
 \item \code{"3035"}: \href{https://epsg.io/3035}{ETRS89 / ETRS-LAEA}.
 \item \code{"3857"}: \href{https://epsg.io/3857}{Pseudo-Mercator}.
 }}
-    \item{\code{cache}}{logical. Whether to do caching. Default is \code{TRUE}. See
+    \item{\code{cache}}{Logical. Whether to cache downloaded files. Default is \code{TRUE}.
+See \strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
+    \item{\code{update_cache}}{Logical. If \code{TRUE}, refreshes the cached file and forces
+a new download. Defaults to \code{FALSE}.}
+    \item{\code{cache_dir}}{Character string. A path to a cache directory. See
 \strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
-    \item{\code{update_cache}}{logical. Should the cached file be refreshed? Default
-is \code{FALSE}. When set to \code{TRUE}, it will force a new download.}
-    \item{\code{cache_dir}}{character string. A path to a cache directory. See
-\strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
-    \item{\code{verbose}}{logical. If \code{TRUE} displays informational messages.}
+    \item{\code{verbose}}{A logical value. If \code{TRUE} displays informational messages.}
   }}
 }
 \value{
-A \code{\link[sf:sf]{sf}} object.
+A \code{\link[sf:st_sf]{sf}} object.
 }
 \description{
-Returns the boundaries of Spain as a single \code{\link[sf:sf]{sf}} \code{POLYGON}.
+Returns the boundaries of Spain as a single \code{\link[sf:st_sf]{sf}} \code{POLYGON}.
 }
 \examples{
 \dontshow{if (esp_check_access()) withAutoprint(\{ # examplesIf}
 \donttest{
 original_can <- esp_get_spain_siane(moveCAN = FALSE)
 
-# One row only
+# One row only.
 original_can
 
 library(ggplot2)
@@ -86,7 +86,7 @@ library(ggplot2)
 ggplot(original_can) +
   geom_sf(fill = "grey70")
 
-# Less resolution
+# Less resolution.
 moved_can <- esp_get_spain_siane(moveCAN = TRUE, resolution = 10)
 
 ggplot(moved_can) +
@@ -95,29 +95,29 @@ ggplot(moved_can) +
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-Other datasets representing political borders:
-\code{\link{esp_get_capimun}()},
-\code{\link{esp_get_ccaa}()},
-\code{\link{esp_get_ccaa_siane}()},
-\code{\link{esp_get_comarca}()},
-\code{\link{esp_get_countries_siane}()},
+Political and administrative boundary datasets:
+\code{\link[=esp_get_capimun]{esp_get_capimun()}},
+\code{\link[=esp_get_ccaa]{esp_get_ccaa()}},
+\code{\link[=esp_get_ccaa_siane]{esp_get_ccaa_siane()}},
+\code{\link[=esp_get_comarca]{esp_get_comarca()}},
+\code{\link[=esp_get_countries_siane]{esp_get_countries_siane()}},
 \code{\link{esp_get_gridmap}},
-\code{\link{esp_get_munic}()},
-\code{\link{esp_get_munic_siane}()},
-\code{\link{esp_get_nuts}()},
-\code{\link{esp_get_prov}()},
-\code{\link{esp_get_prov_siane}()},
+\code{\link[=esp_get_munic]{esp_get_munic()}},
+\code{\link[=esp_get_munic_siane]{esp_get_munic_siane()}},
+\code{\link[=esp_get_nuts]{esp_get_nuts()}},
+\code{\link[=esp_get_prov]{esp_get_prov()}},
+\code{\link[=esp_get_prov_siane]{esp_get_prov_siane()}},
 \code{\link{esp_get_simpl}},
-\code{\link{esp_get_spain}()},
-\code{\link{esp_siane_bulk_download}()}
+\code{\link[=esp_get_spain]{esp_get_spain()}},
+\code{\link[=esp_siane_bulk_download]{esp_siane_bulk_download()}}
 
-Political borders from CartoBase ANE:
-\code{\link{esp_get_capimun}()},
-\code{\link{esp_get_ccaa_siane}()},
-\code{\link{esp_get_countries_siane}()},
-\code{\link{esp_get_munic_siane}()},
-\code{\link{esp_get_prov_siane}()},
-\code{\link{esp_siane_bulk_download}()}
+Datasets sourced from CartoBase ANE (Atlas Nacional de España):
+\code{\link[=esp_get_capimun]{esp_get_capimun()}},
+\code{\link[=esp_get_ccaa_siane]{esp_get_ccaa_siane()}},
+\code{\link[=esp_get_countries_siane]{esp_get_countries_siane()}},
+\code{\link[=esp_get_munic_siane]{esp_get_munic_siane()}},
+\code{\link[=esp_get_prov_siane]{esp_get_prov_siane()}},
+\code{\link[=esp_siane_bulk_download]{esp_siane_bulk_download()}}
 }
 \concept{political}
 \concept{siane}

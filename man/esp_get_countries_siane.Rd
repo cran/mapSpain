@@ -3,29 +3,29 @@
 \encoding{UTF-8}
 \name{esp_get_countries_siane}
 \alias{esp_get_countries_siane}
-\title{Countries of the World - SIANE}
+\title{Countries of the world from SIANE}
 \source{
-CartoBase ANE provided by Instituto Geografico Nacional (IGN),
+CartoBase ANE (Atlas Nacional de España) provided by Instituto Geográfico Nacional (IGN),
 \url{http://www.ign.es/web/ign/portal}. Years available are 2005 up to today.
 
 Copyright:
 \url{https://centrodedescargas.cnig.es/CentroDescargas/cartobase-ane}
 
-It's necessary to always acknowledge authorship using the following formulas:
+Always acknowledge authorship using the following statements:
 \enumerate{
-\item When the original digital product is not modified or altered, it can
-be expressed in one of the following ways:
+\item When the original digital product is not modified or altered, use one of
+the following statements:
 \itemize{
-\item CartoBase ANE 2006-2024 CC-BY 4.0 ign.es
-\item CartoBase ANE 2006-2024 CC-BY 4.0 Instituto Geográfico Nacional
+\item CartoBase ANE 2006-2024 CC-BY 4.0 ign.es.
+\item CartoBase ANE 2006-2024 CC-BY 4.0 Instituto Geográfico Nacional.
 }
 \item When a new product is generated:
-}
 \itemize{
-\item Obra derivada de CartoBase ANE 2006-2024 CC-BY 4.0 ign.es
+\item Obra derivada de CartoBase ANE 2006-2024 CC-BY 4.0 ign.es.
+}
 }
 
-Data distributed via a custom CDN, see
+Data distributed through the \code{sianedata} data branch, see
 \url{https://github.com/rOpenSpain/mapSpain/tree/sianedata}.
 }
 \usage{
@@ -40,36 +40,36 @@ esp_get_countries_siane(
 )
 }
 \arguments{
-\item{year}{character string or number. Release year, it must be in
-formats \code{YYYY} (assuming end of year) or \code{YYYY-MM-DD}. Historical
-information starts as of 2005.}
+\item{year}{Character string or number. Release year. It must use format
+\code{YYYY} (assuming end of year) or \code{YYYY-MM-DD}. Historical information
+starts as of 2005.}
 
-\item{epsg}{character string or number. Projection of the map: 4-digit
+\item{epsg}{Character string or number. Projection of the map: 4-digit
 \href{https://epsg.io/}{EPSG code}. One of:
 \itemize{
-\item \code{"4258"}: \href{https://epsg.io/4258}{ETRS89}
+\item \code{"4258"}: \href{https://epsg.io/4258}{ETRS89}.
 \item \code{"4326"}: \href{https://epsg.io/4326}{WGS84}.
 \item \code{"3035"}: \href{https://epsg.io/3035}{ETRS89 / ETRS-LAEA}.
 \item \code{"3857"}: \href{https://epsg.io/3857}{Pseudo-Mercator}.
 }}
 
-\item{cache}{logical. Whether to do caching. Default is \code{TRUE}. See
+\item{cache}{Logical. Whether to cache downloaded files. Default is \code{TRUE}.
+See \strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
+
+\item{update_cache}{Logical. If \code{TRUE}, refreshes the cached file and forces
+a new download. Defaults to \code{FALSE}.}
+
+\item{cache_dir}{Character string. A path to a cache directory. See
 \strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
 
-\item{update_cache}{logical. Should the cached file be refreshed? Default
-is \code{FALSE}. When set to \code{TRUE}, it will force a new download.}
+\item{verbose}{A logical value. If \code{TRUE} displays informational messages.}
 
-\item{cache_dir}{character string. A path to a cache directory. See
-\strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
-
-\item{verbose}{logical. If \code{TRUE} displays informational messages.}
-
-\item{country}{character vector of country codes. It can be either a
-vector of country names, a vector of ISO3 country codes or a vector of
-ISO2 country codes. See also \code{\link[countrycode:countrycode]{countrycode::countrycode()}}.}
+\item{country}{Character vector of country codes. It can be a vector of
+country names, ISO3 country codes or ISO2 country codes. See also
+\code{\link[countrycode:countrycode]{countrycode::countrycode()}}.}
 }
 \value{
-A \code{\link[sf:sf]{sf}} object.
+A \code{\link[sf:st_sf]{sf}} object.
 }
 \description{
 This dataset contains the administrative boundaries at country level of the
@@ -90,29 +90,29 @@ ggplot(cntries) +
 \seealso{
 \code{\link[giscoR:gisco_get_countries]{giscoR::gisco_get_countries()}}.
 
-Other datasets representing political borders:
-\code{\link{esp_get_capimun}()},
-\code{\link{esp_get_ccaa}()},
-\code{\link{esp_get_ccaa_siane}()},
-\code{\link{esp_get_comarca}()},
+Political and administrative boundary datasets:
+\code{\link[=esp_get_capimun]{esp_get_capimun()}},
+\code{\link[=esp_get_ccaa]{esp_get_ccaa()}},
+\code{\link[=esp_get_ccaa_siane]{esp_get_ccaa_siane()}},
+\code{\link[=esp_get_comarca]{esp_get_comarca()}},
 \code{\link{esp_get_gridmap}},
-\code{\link{esp_get_munic}()},
-\code{\link{esp_get_munic_siane}()},
-\code{\link{esp_get_nuts}()},
-\code{\link{esp_get_prov}()},
-\code{\link{esp_get_prov_siane}()},
+\code{\link[=esp_get_munic]{esp_get_munic()}},
+\code{\link[=esp_get_munic_siane]{esp_get_munic_siane()}},
+\code{\link[=esp_get_nuts]{esp_get_nuts()}},
+\code{\link[=esp_get_prov]{esp_get_prov()}},
+\code{\link[=esp_get_prov_siane]{esp_get_prov_siane()}},
 \code{\link{esp_get_simpl}},
-\code{\link{esp_get_spain}()},
-\code{\link{esp_get_spain_siane}()},
-\code{\link{esp_siane_bulk_download}()}
+\code{\link[=esp_get_spain]{esp_get_spain()}},
+\code{\link[=esp_get_spain_siane]{esp_get_spain_siane()}},
+\code{\link[=esp_siane_bulk_download]{esp_siane_bulk_download()}}
 
-Political borders from CartoBase ANE:
-\code{\link{esp_get_capimun}()},
-\code{\link{esp_get_ccaa_siane}()},
-\code{\link{esp_get_munic_siane}()},
-\code{\link{esp_get_prov_siane}()},
-\code{\link{esp_get_spain_siane}()},
-\code{\link{esp_siane_bulk_download}()}
+Datasets sourced from CartoBase ANE (Atlas Nacional de España):
+\code{\link[=esp_get_capimun]{esp_get_capimun()}},
+\code{\link[=esp_get_ccaa_siane]{esp_get_ccaa_siane()}},
+\code{\link[=esp_get_munic_siane]{esp_get_munic_siane()}},
+\code{\link[=esp_get_prov_siane]{esp_get_prov_siane()}},
+\code{\link[=esp_get_spain_siane]{esp_get_spain_siane()}},
+\code{\link[=esp_siane_bulk_download]{esp_siane_bulk_download()}}
 }
 \concept{political}
 \concept{siane}

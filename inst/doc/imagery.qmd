@@ -1,16 +1,18 @@
 ---
-title: "Imagery and mapSpain"
+title: "Static map tiles with mapSpain"
 vignette: >
-  %\VignetteIndexEntry{Imagery and mapSpain}
+  %\VignetteIndexEntry{Static map tiles with mapSpain}
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 ---
 
 Visit <https://ropenspain.github.io/mapSpain/articles/working_imagery.html> to
-learn how to download imagery of Spain.
+learn how to download and use static map tiles for Spain.
 
-Note that you may need several additional packages. Install them by running:
+::: callout-note
+You may need several additional packages. Install them by running:
 
 ``` r
 install.packages("mapSpain", dependencies = TRUE)
 ```
+:::

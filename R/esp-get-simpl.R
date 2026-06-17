@@ -1,39 +1,40 @@
-#' Simplified map of provinces and autonomous communities of Spain
+#' Simplified map of provinces and Autonomous Communities and Cities of Spain
 #'
 #' @description
 #'
-#' Simplified map with the boundaries of the
-#' provinces or autonomous communities of Spain, as provided by the **INE**
-#' (Instituto Nacional de Estadistica).
+#' Simplified map with the boundaries of the provinces or Autonomous
+#' Communities of Spain, as provided by the **INE** (Instituto Nacional de
+#' Estadística).
 #'
-#' @rdname esp_get_simpl
-#' @name esp_get_simpl
+#' @details
 #'
-#' @encoding UTF-8
-#' @family political
+#' Results are provided **without CRS**, as provided by the source.
+#'
+#' You can use and mix names, ISO codes, `"codauto"` or `"cpro"` codes (see
+#' [esp_codelist]) and NUTS codes of different levels.
+#'
+#' When using a code corresponding to a higher level (for example,
+#' `esp_get_prov("Andalucia")`), all the corresponding units of that level are
+#' provided (in this case, all the provinces of Andalusia).
+#'
+#' @param prov,ccaa Character. A vector of names, codes or both for provinces
+#'   and Autonomous Communities and Cities, or `NULL` to get all the data. See
+#'   **Details**.
+#'
 #' @inheritParams esp_get_prov
 #' @inheritParams esp_get_ccaa
 #' @inheritParams esp_get_nuts
 #' @inherit esp_get_nuts return
+#' @source INE: PC-Axis files.
+#'
+#' @seealso [esp_get_gridmap()].
+#'
+#' @family political
+#' @encoding UTF-8
+#' @rdname esp_get_simpl
+#' @name esp_get_simpl
+#'
 #' @export
-#'
-#' @param prov,ccaa character. A vector of names and/or codes for provinces
-#'   and autonomous communities or `NULL` to get all the data. See **Details**.
-#'
-#' @seealso [`esp_get_gridmap`][esp_get_gridmap].
-#'
-#' @source INE: PC_Axis files
-#'
-#' @details
-#'
-#' Results are provided **without CRS**, as provided by source.
-#'
-#' You can use and mix names, ISO codes, `"codauto"/ "cpro"` codes (see
-#' [esp_codelist]) and NUTS codes of different levels.
-#'
-#' When using a code corresponding to a higher level (e.g.
-#' `esp_get_prov("Andalucia")`) all the corresponding units of that level are
-#' provided (in this case, all the provinces of Andalusia).
 #'
 #' @examplesIf esp_check_access()
 #' \donttest{
@@ -43,16 +44,16 @@
 #'
 #' ggplot(prov_simp) +
 #'   geom_sf(aes(fill = ine.ccaa.name)) +
-#'   labs(fill = "CCAA")
+#'   labs(fill = "Autonomous Communities and Cities")
 #'
-#' # Provs of Single CCAA
+#' # Provinces of a single Autonomous Community or City.
 #'
 #' and_simple <- esp_get_simpl_prov("Andalucia")
 #'
 #' ggplot(and_simple) +
 #'   geom_sf()
 #'
-#' # CCAAs
+#' # Autonomous Communities and Cities.
 #'
 #' ccaa_simp <- esp_get_simpl_ccaa()
 #'
@@ -66,26 +67,24 @@ esp_get_simpl_prov <- function(
   cache_dir = NULL,
   verbose = FALSE
 ) {
-  # Url
+  # Build the download URL.
   url <- paste0(
     "https://github.com/rOpenSpain/mapSpain/raw/sianedata/INE/",
     "ine_prov_simplified.gpkg"
   )
 
-  file_local <- download_url(
+  data_sf <- download_and_read_geo_file(
     url,
-    cache_dir = cache_dir,
     subdir = "ine",
     update_cache = update_cache,
+    cache_dir = cache_dir,
     verbose = verbose
   )
-  if (is.null(file_local)) {
+  if (is.null(data_sf)) {
     return(NULL)
   }
 
-  data_sf <- read_geo_file_sf(file_local)
-
-  # Order
+  # Order features by Autonomous Community or City and province.
   data_sf <- data_sf[order(data_sf$codauto, data_sf$cpro), ]
   data_sf <- sanitize_sf(data_sf)
   sf::st_crs(data_sf) <- NA
@@ -94,13 +93,7 @@ esp_get_simpl_prov <- function(
   if (is.null(prov)) {
     return(data_sf)
   }
-  region <- convert_to_nuts_prov(prov)
-
-  dfcpro <- mapSpain::esp_codelist
-  dfcpro <- unique(dfcpro[, c("nuts3.code", "cpro")])
-  cprocodes <- unique(dfcpro[dfcpro$nuts3.code %in% region, ]$cpro)
-
-  data_sf <- data_sf[data_sf$cpro %in% cprocodes, ]
+  data_sf <- filter_by_cpro_region(data_sf, prov)
 
   data_sf
 }
@@ -114,26 +107,24 @@ esp_get_simpl_ccaa <- function(
   cache_dir = NULL,
   verbose = FALSE
 ) {
-  # Url
+  # Build the download URL.
   url <- paste0(
     "https://github.com/rOpenSpain/mapSpain/raw/sianedata/INE/",
     "ine_ccaa_simplified.gpkg"
   )
 
-  file_local <- download_url(
+  data_sf <- download_and_read_geo_file(
     url,
-    cache_dir = cache_dir,
     subdir = "ine",
     update_cache = update_cache,
+    cache_dir = cache_dir,
     verbose = verbose
   )
-  if (is.null(file_local)) {
+  if (is.null(data_sf)) {
     return(NULL)
   }
 
-  data_sf <- read_geo_file_sf(file_local)
-
-  # Order
+  # Order features by Autonomous Community or City.
   data_sf <- data_sf[order(data_sf$codauto), ]
   data_sf <- sanitize_sf(data_sf)
   sf::st_crs(data_sf) <- NA
@@ -142,12 +133,7 @@ esp_get_simpl_ccaa <- function(
   if (is.null(ccaa)) {
     return(data_sf)
   }
-  nuts_id <- convert_to_nuts_ccaa(ccaa)
-  dfcodauto <- mapSpain::esp_codelist
-  dfcodauto <- unique(dfcodauto[, c("nuts2.code", "codauto")])
-  dfcodauto <- unique(dfcodauto[dfcodauto$nuts2.code %in% nuts_id, ]$codauto)
-
-  data_sf <- data_sf[data_sf$codauto %in% dfcodauto, ]
+  data_sf <- filter_by_codauto_region(data_sf, ccaa)
 
   data_sf
 }

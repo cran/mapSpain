@@ -1,4 +1,4 @@
-#' Read geospatial file into sf object with optional query
+#' Read a geospatial file into an sf object with an optional query
 #'
 #' @param file_local Local file path or URL to the geospatial file.
 #' @param q Optional SQL query string to filter the data during reading.
@@ -8,14 +8,13 @@
 #'
 #' @noRd
 read_geo_file_sf <- function(file_local, q = NULL, ..., shp_hint = NULL) {
-  # Secure nulls
+  # Normalize NULL and empty values.
   file_local <- ensure_null(file_local)
   if (is.null(file_local)) {
     return(NULL)
   }
 
-  # Warn if file size is huge and no query
-
+  # Warn for large files when no SQL query is provided.
   if (all(!grepl("^http", file_local), file.exists(file_local), is.null(q))) {
     fsize <- file.size(file_local)
     fsize_unit <- fsize
@@ -23,12 +22,12 @@ read_geo_file_sf <- function(file_local, q = NULL, ..., shp_hint = NULL) {
     thr <- 20 * (1024^2)
     if (fsize > thr) {
       fsize_unit <- paste0("(", format(fsize_unit, units = "auto"), ").")
-      make_msg("warning", TRUE, "Reading large file", fsize_unit)
-      make_msg("generic", TRUE, "It can take a while. Hold on!")
+      make_msg("warning", TRUE, "Reading a large file:", fsize_unit)
+      make_msg("generic", TRUE, "This can take a while.")
     }
   }
 
-  # Create and read 'vsizip' construct for shp.zip
+  # Create and read the "vsizip" construct for zipped shapefiles.
   if (grepl(".zip$", file_local, ignore.case = TRUE)) {
     shp_zip <- unzip(file_local, list = TRUE)
     shp_zip <- shp_zip$Name
@@ -40,16 +39,14 @@ read_geo_file_sf <- function(file_local, q = NULL, ..., shp_hint = NULL) {
     shp_end <- shp_zip[1]
     shp_end <- ensure_null(shp_end)
     if (is.null(shp_end)) {
-      cli::cli_alert_warning("Can't read file {.file {file_local}}")
-      cli::cli_abort(
-        paste0(
-          "Please open an issue: ",
-          "{.url https://github.com/rOpenSpain/mapSpain/issues}."
-        )
-      )
+      cli::cli_alert_warning("Cannot read file {.file {file_local}}.")
+      cli::cli_abort(paste0(
+        "Please open an issue at ",
+        "{.url https://github.com/rOpenSpain/mapSpain/issues}."
+      ))
     }
 
-    # Read with vszip
+    # Read with vsizip.
     file_local <- file.path("/vsizip/", file_local, shp_end)
     file_local <- gsub("//", "/", file_local, fixed = TRUE)
   }
@@ -65,9 +62,148 @@ read_geo_file_sf <- function(file_local, q = NULL, ..., shp_hint = NULL) {
   data_sf
 }
 
+read_siane_files <- function(
+  urls,
+  cache = TRUE,
+  update_cache = FALSE,
+  cache_dir = NULL,
+  verbose = FALSE,
+  codauto = NULL
+) {
+  if (cache) {
+    files <- lapply(
+      urls,
+      download_url,
+      cache_dir = cache_dir,
+      subdir = "siane",
+      update_cache = update_cache,
+      verbose = verbose
+    )
+    missing_file <- vapply(
+      files,
+      function(x) {
+        is.null(ensure_null(x))
+      },
+      FUN.VALUE = logical(1)
+    )
+    if (any(missing_file)) {
+      return(NULL)
+    }
+    files <- unlist(files, use.names = FALSE)
+  } else {
+    files <- urls
+    for (url in urls) {
+      msg <- paste0("{.url ", url, "}.")
+      make_msg("info", verbose, "Reading from", msg)
+    }
+  }
+
+  data_sf <- lapply(seq_along(files), function(i) {
+    sf_file <- read_geo_file_sf(files[i])
+    if (!is.null(codauto)) {
+      sf_file$codauto <- codauto[i]
+    }
+    sf_file
+  })
+
+  rbind_fill(data_sf)
+}
+
+download_and_read_geo_file <- function(
+  url,
+  subdir,
+  name = basename(url),
+  update_cache = FALSE,
+  cache_dir = NULL,
+  verbose = FALSE,
+  ...
+) {
+  file_local <- download_url(
+    url,
+    name = name,
+    cache_dir = cache_dir,
+    subdir = subdir,
+    update_cache = update_cache,
+    verbose = verbose
+  )
+  if (is.null(file_local)) {
+    return(NULL)
+  }
+
+  read_geo_file_sf(file_local, ...)
+}
+
+download_unzip_read_geo_file <- function(
+  url,
+  subdir,
+  member,
+  update_cache = FALSE,
+  cache_dir = NULL,
+  verbose = FALSE
+) {
+  file_local <- download_url(
+    url,
+    cache_dir = cache_dir,
+    subdir = subdir,
+    update_cache = update_cache,
+    verbose = verbose
+  )
+  if (is.null(file_local)) {
+    return(NULL)
+  }
+
+  path <- gsub(basename(file_local), "", file_local)
+  unzip(file_local, exdir = path, junkpaths = TRUE)
+  read_geo_file_sf(file.path(path, member))
+}
+
+download_rds <- function(
+  url,
+  subdir,
+  update_cache = FALSE,
+  cache_dir = NULL,
+  verbose = FALSE
+) {
+  file_local <- download_url(
+    url,
+    cache_dir = cache_dir,
+    subdir = subdir,
+    update_cache = update_cache,
+    verbose = verbose
+  )
+  if (is.null(file_local)) {
+    return(NULL)
+  }
+
+  readRDS(file_local)
+}
+
+union_sf_by <- function(data_sf, by) {
+  values <- unique(data_sf[[by]])
+  binded_sf <- lapply(values, function(x) {
+    the_geom <- data_sf[data_sf[[by]] == x, ]
+    if (nrow(the_geom) == 1) {
+      return(the_geom)
+    }
+
+    g <- sf::st_union(sf::st_geometry(the_geom))
+    out <- sf::st_sf(geometry = g)
+    out[[by]] <- x
+    out <- out[, c(by, "geometry")]
+    out
+  })
+
+  rbind_fill(binded_sf)
+}
+
+sanitize_transform_sf <- function(data_sf, epsg) {
+  data_sf <- sanitize_sf(data_sf)
+  sf::st_transform(data_sf, as.double(epsg))
+}
+
 #' Convert sf object to UTF-8
 #'
-#' Convert to UTF-8
+#' Ensures all character columns use UTF-8 encoding.
 #'
 #' @param data_sf Input object to convert to UTF-8.
 #'
@@ -89,36 +225,33 @@ sanitize_sf <- function(data_sf) {
     }
     structure(lapply(x, to_utf8), names = n)
   }
-  # end
+  # End set_utf8 helper.
 
-  # Remove empty geoms silently...
+  # Remove empty geometries.
   data_sf <- data_sf[!sf::st_is_empty(data_sf), ]
 
-  # To UTF-8
+  # Convert names and character columns to UTF-8.
   names <- names(data_sf)
   g <- sf::st_geometry(data_sf)
 
   nm <- "geometry"
-  data_utf8 <-
-    as.data.frame(
-      set_utf8(sf::st_drop_geometry(data_sf)),
-      stringsAsFactors = FALSE
-    )
+  data_utf8 <- as.data.frame(
+    set_utf8(sf::st_drop_geometry(data_sf)),
+    stringsAsFactors = FALSE
+  )
 
   data_utf8 <- tibble::as_tibble(data_utf8)
 
-  # Regenerate with right encoding
+  # Reconstruct the sf object with corrected encoding.
   data_sf <- sf::st_as_sf(data_utf8, g)
 
-  # Rename geometry to geometry
+  # Rename the geometry column from "g" to "geometry".
   newnames <- names(data_sf)
   newnames[newnames == "g"] <- nm
   colnames(data_sf) <- newnames
   data_sf <- sf::st_set_geometry(data_sf, nm)
 
-  # Some CRS are not properly defined (i.e may have additional properties)
-  # Normalize with the EPSG number
-
+  # Some CRS definitions carry extra properties. Normalize with the EPSG code.
   epsg_num <- sf::st_crs(data_sf)$epsg
   epsg_num <- ensure_null(epsg_num)
   if (is.null(epsg_num)) {
@@ -141,7 +274,7 @@ sanitize_sf <- function(data_sf) {
 #' @noRd
 get_geo_file_colnames <- function(file_local) {
   layer <- get_sf_layer_name(file_local)
-  # Get column names
+  # Use LIMIT 1 to avoid loading the full dataset.
   q_base <- paste0("SELECT * FROM \"", layer, "\"")
   get_cols <- read_geo_file_sf(file_local, q = paste(q_base, "LIMIT 1"))
 
@@ -154,14 +287,11 @@ get_geo_file_colnames <- function(file_local) {
 #' @param candidates Character vector of candidate column names.
 #'
 #' @return
-#' A character vector with the matching column names or NULL if none found.
+#' A character vector with the matching column names or `NULL` if none found.
 #'
 #' @noRd
 #'
-get_col_name <- function(
-  file_local,
-  candidates = c("CNTR_ID", "CNTR_CODE")
-) {
+get_col_name <- function(file_local, candidates = c("CNTR_ID", "CNTR_CODE")) {
   actual_names <- get_geo_file_colnames(file_local)
   match <- intersect(candidates, actual_names)
   if (length(match) == 0) {

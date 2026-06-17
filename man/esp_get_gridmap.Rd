@@ -7,7 +7,7 @@
 \alias{esp_get_hex_ccaa}
 \alias{esp_get_grid_prov}
 \alias{esp_get_grid_ccaa}
-\title{Get a \code{\link[sf:sf]{sf}} hexbin or squared \code{POLYGON} of Spain}
+\title{Get a \code{\link[sf:st_sf]{sf}} hexbin or squared \code{POLYGON} of Spain}
 \usage{
 esp_get_hex_prov(prov = NULL)
 
@@ -18,15 +18,16 @@ esp_get_grid_prov(prov = NULL)
 esp_get_grid_ccaa(ccaa = NULL)
 }
 \arguments{
-\item{prov, ccaa}{character. A vector of names and/or codes for provinces
-and autonomous communities or \code{NULL} to get all the data. See \strong{Details}.}
+\item{prov, ccaa}{Character. A vector of names, codes or both for provinces
+and Autonomous Communities and Cities, or \code{NULL} to get all the data. See
+\strong{Details}.}
 }
 \value{
-A \code{\link[sf:sf]{sf}} object.
+A \code{\link[sf:st_sf]{sf}} object.
 }
 \description{
-Loads a hexbin map (\code{\link[sf:sf]{sf}} object) or a map of squares with the
-boundaries of the provinces or autonomous communities of Spain.
+Loads a hexbin map (\code{\link[sf:st_sf]{sf}} object) or a map of squares with
+boundaries of the provinces or Autonomous Communities and Cities of Spain.
 }
 \details{
 Hexbin (or grid) maps have an advantage over traditional choropleth maps.
@@ -34,14 +35,14 @@ In choropleths, regions with larger polygons tend to appear more prominent
 simply because of their size, which introduces visual bias. With hexbin
 maps, each region is represented equally, reducing this bias.
 
-You can use and mix names, ISO codes, \code{"codauto"/ "cpro"} codes (see
+You can use and mix names, ISO codes, \code{"codauto"} or \code{"cpro"} codes (see
 \link{esp_codelist}) and NUTS codes of different levels.
 
-When using a code corresponding to a higher level (e.g.
-\code{esp_get_prov("Andalucia")}) all the corresponding units of that level are
+When using a code corresponding to a higher level (for example,
+\code{esp_get_prov("Andalucia")}), all the corresponding units of that level are
 provided (in this case, all the provinces of Andalusia).
 
-Results are provided in \strong{EPSG:4258}, use \code{\link[sf:st_transform]{sf::st_transform()}}
+Results are provided in \strong{EPSG:4258}. Use \code{\link[sf:st_transform]{sf::st_transform()}}
 to change the projection.
 }
 \examples{
@@ -57,7 +58,7 @@ ggplot(hexccaa) +
   geom_sf(aes(fill = codauto), alpha = 0.3, show.legend = FALSE) +
   geom_sf_text(aes(label = label), check_overlap = TRUE) +
   theme_void() +
-  labs(title = "Hexbin: CCAA")
+  labs(title = "Hexbin: Autonomous Communities and Cities")
 
 hexprov <- esp_get_hex_prov()
 
@@ -75,7 +76,7 @@ ggplot(gridccaa) +
   geom_sf(aes(fill = codauto), alpha = 0.3, show.legend = FALSE) +
   geom_sf_text(aes(label = label), check_overlap = TRUE) +
   theme_void() +
-  labs(title = "Grid: CCAA")
+  labs(title = "Grid: Autonomous Communities and Cities")
 
 gridprov <- esp_get_grid_prov()
 
@@ -89,22 +90,22 @@ ggplot(gridprov) +
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-\code{\link{esp_get_simpl}}.
+\code{\link[=esp_get_simpl]{esp_get_simpl()}}.
 
-Other datasets representing political borders:
-\code{\link{esp_get_capimun}()},
-\code{\link{esp_get_ccaa}()},
-\code{\link{esp_get_ccaa_siane}()},
-\code{\link{esp_get_comarca}()},
-\code{\link{esp_get_countries_siane}()},
-\code{\link{esp_get_munic}()},
-\code{\link{esp_get_munic_siane}()},
-\code{\link{esp_get_nuts}()},
-\code{\link{esp_get_prov}()},
-\code{\link{esp_get_prov_siane}()},
+Political and administrative boundary datasets:
+\code{\link[=esp_get_capimun]{esp_get_capimun()}},
+\code{\link[=esp_get_ccaa]{esp_get_ccaa()}},
+\code{\link[=esp_get_ccaa_siane]{esp_get_ccaa_siane()}},
+\code{\link[=esp_get_comarca]{esp_get_comarca()}},
+\code{\link[=esp_get_countries_siane]{esp_get_countries_siane()}},
+\code{\link[=esp_get_munic]{esp_get_munic()}},
+\code{\link[=esp_get_munic_siane]{esp_get_munic_siane()}},
+\code{\link[=esp_get_nuts]{esp_get_nuts()}},
+\code{\link[=esp_get_prov]{esp_get_prov()}},
+\code{\link[=esp_get_prov_siane]{esp_get_prov_siane()}},
 \code{\link{esp_get_simpl}},
-\code{\link{esp_get_spain}()},
-\code{\link{esp_get_spain_siane}()},
-\code{\link{esp_siane_bulk_download}()}
+\code{\link[=esp_get_spain]{esp_get_spain()}},
+\code{\link[=esp_get_spain_siane]{esp_get_spain_siane()}},
+\code{\link[=esp_siane_bulk_download]{esp_siane_bulk_download()}}
 }
 \concept{political}

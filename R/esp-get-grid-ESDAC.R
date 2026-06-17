@@ -4,6 +4,11 @@
 #' Loads a [`sf`][sf::st_sf] `POLYGON` with the geographic grids of Spain as
 #' provided by the European Soil Data Centre (ESDAC).
 #'
+#' @param resolution Numeric. Resolution of the grid in kilometers. Can be `1`
+#'   or `10`.
+#'
+#' @inheritParams esp_get_grid_EEA
+#' @inherit esp_get_grid_EEA return
 #' @source
 #' [EEA reference
 #' grid](https://esdac.jrc.ec.europa.eu/content/european-reference-grids).
@@ -16,13 +21,9 @@
 #' - European Soil Data Centre (ESDAC), esdac.jrc.ec.europa.eu, European
 #'   Commission, Joint Research Centre.
 #'
-#' @encoding UTF-8
 #' @family grids
-#' @inheritParams esp_get_grid_EEA
-#' @inherit esp_get_grid_EEA return
+#' @encoding UTF-8
 #' @export
-#'
-#' @param resolution numeric. Resolution of the grid in kms Can be `1` or `10`.
 #'
 #' @examplesIf esp_check_access()
 #' \dontrun{
@@ -44,10 +45,10 @@ esp_get_grid_ESDAC <- function(
   cache_dir = NULL,
   verbose = FALSE
 ) {
-  # Check grid
+  # Check grid.
   res <- match_arg_pretty(resolution)
 
-  # Url
+  # Build the download URL.
   if (res == 10) {
     url <- paste0(
       "https://esdac.jrc.ec.europa.eu/Library/Reference_Grids/",
@@ -56,7 +57,7 @@ esp_get_grid_ESDAC <- function(
     shp_hint <- "spain"
   } else {
     # nocov start
-    # Tests are slow due to this file size
+    # Tests are slow due to this file size.
     url <- paste0(
       "https://esdac.jrc.ec.europa.eu/Library/Reference_Grids/",
       "Grids/grid_spain_etrs_laea_1k.zip"
@@ -65,16 +66,17 @@ esp_get_grid_ESDAC <- function(
   }
   # nocov end
 
-  file_local <- download_url(
+  data_sf <- download_and_read_geo_file(
     url,
-    cache_dir = cache_dir,
     subdir = "grid",
     update_cache = update_cache,
-    verbose = verbose
+    cache_dir = cache_dir,
+    verbose = verbose,
+    shp_hint = shp_hint
   )
-  if (is.null(file_local)) {
-    return(file_local)
+  if (is.null(data_sf)) {
+    return(NULL)
   }
 
-  read_geo_file_sf(file_local, shp_hint = shp_hint)
+  data_sf
 }

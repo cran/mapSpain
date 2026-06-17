@@ -3,29 +3,29 @@
 \encoding{UTF-8}
 \name{esp_get_roads}
 \alias{esp_get_roads}
-\title{Roads of Spain - SIANE}
+\title{Roads of Spain from SIANE}
 \source{
-CartoBase ANE provided by Instituto Geografico Nacional (IGN),
+CartoBase ANE (Atlas Nacional de España) provided by Instituto Geográfico Nacional (IGN),
 \url{http://www.ign.es/web/ign/portal}. Years available are 2005 up to today.
 
 Copyright:
 \url{https://centrodedescargas.cnig.es/CentroDescargas/cartobase-ane}
 
-It's necessary to always acknowledge authorship using the following formulas:
+Always acknowledge authorship using the following statements:
 \enumerate{
-\item When the original digital product is not modified or altered, it can
-be expressed in one of the following ways:
+\item When the original digital product is not modified or altered, use one of
+the following statements:
 \itemize{
-\item CartoBase ANE 2006-2024 CC-BY 4.0 ign.es
-\item CartoBase ANE 2006-2024 CC-BY 4.0 Instituto Geográfico Nacional
+\item CartoBase ANE 2006-2024 CC-BY 4.0 ign.es.
+\item CartoBase ANE 2006-2024 CC-BY 4.0 Instituto Geográfico Nacional.
 }
 \item When a new product is generated:
-}
 \itemize{
-\item Obra derivada de CartoBase ANE 2006-2024 CC-BY 4.0 ign.es
+\item Obra derivada de CartoBase ANE 2006-2024 CC-BY 4.0 ign.es.
+}
 }
 
-Data distributed via a custom CDN, see
+Data distributed through the \code{sianedata} data branch, see
 \url{https://github.com/rOpenSpain/mapSpain/tree/sianedata}.
 }
 \usage{
@@ -42,25 +42,25 @@ esp_get_roads(
 \arguments{
 \item{year}{Ignored.}
 
-\item{epsg}{character string or number. Projection of the map: 4-digit
+\item{epsg}{Character string or number. Projection of the map: 4-digit
 \href{https://epsg.io/}{EPSG code}. One of:
 \itemize{
-\item \code{"4258"}: \href{https://epsg.io/4258}{ETRS89}
+\item \code{"4258"}: \href{https://epsg.io/4258}{ETRS89}.
 \item \code{"4326"}: \href{https://epsg.io/4326}{WGS84}.
 \item \code{"3035"}: \href{https://epsg.io/3035}{ETRS89 / ETRS-LAEA}.
 \item \code{"3857"}: \href{https://epsg.io/3857}{Pseudo-Mercator}.
 }}
 
-\item{cache}{logical. Whether to do caching. Default is \code{TRUE}. See
+\item{cache}{Logical. Whether to cache downloaded files. Default is \code{TRUE}.
+See \strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
+
+\item{update_cache}{Logical. If \code{TRUE}, refreshes the cached file and forces
+a new download. Defaults to \code{FALSE}.}
+
+\item{cache_dir}{Character string. A path to a cache directory. See
 \strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
 
-\item{update_cache}{logical. Should the cached file be refreshed? Default
-is \code{FALSE}. When set to \code{TRUE}, it will force a new download.}
-
-\item{cache_dir}{character string. A path to a cache directory. See
-\strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
-
-\item{verbose}{logical. If \code{TRUE} displays informational messages.}
+\item{verbose}{A logical value. If \code{TRUE} displays informational messages.}
 
 \item{moveCAN}{A logical \code{TRUE/FALSE} or a vector of coordinates
 \code{c(lat, lon)}. It places the Canary Islands close to Spain's mainland.
@@ -68,7 +68,7 @@ Initial position can be adjusted using the vector of coordinates. See
 \strong{Displacing the Canary Islands} in \code{\link[=esp_move_can]{esp_move_can()}}.}
 }
 \value{
-A \code{\link[sf:sf]{sf}} object.
+A \code{\link[sf:st_sf]{sf}} object.
 }
 \description{
 Object representing the main roads of Spain.
@@ -96,7 +96,7 @@ ggplot(country) +
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-Other man-made infrastructures:
-\code{\link{esp_get_railway}()}
+Transport infrastructure datasets:
+\code{\link[=esp_get_railway]{esp_get_railway()}}
 }
 \concept{infrastructure}

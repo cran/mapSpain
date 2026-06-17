@@ -5,27 +5,27 @@
 \alias{esp_siane_bulk_download}
 \title{SIANE bulk download}
 \source{
-CartoBase ANE provided by Instituto Geografico Nacional (IGN),
+CartoBase ANE (Atlas Nacional de España) provided by Instituto Geográfico Nacional (IGN),
 \url{http://www.ign.es/web/ign/portal}. Years available are 2005 up to today.
 
 Copyright:
 \url{https://centrodedescargas.cnig.es/CentroDescargas/cartobase-ane}
 
-It's necessary to always acknowledge authorship using the following formulas:
+Always acknowledge authorship using the following statements:
 \enumerate{
-\item When the original digital product is not modified or altered, it can
-be expressed in one of the following ways:
+\item When the original digital product is not modified or altered, use one of
+the following statements:
 \itemize{
-\item CartoBase ANE 2006-2024 CC-BY 4.0 ign.es
-\item CartoBase ANE 2006-2024 CC-BY 4.0 Instituto Geográfico Nacional
+\item CartoBase ANE 2006-2024 CC-BY 4.0 ign.es.
+\item CartoBase ANE 2006-2024 CC-BY 4.0 Instituto Geográfico Nacional.
 }
 \item When a new product is generated:
-}
 \itemize{
-\item Obra derivada de CartoBase ANE 2006-2024 CC-BY 4.0 ign.es
+\item Obra derivada de CartoBase ANE 2006-2024 CC-BY 4.0 ign.es.
+}
 }
 
-Data distributed via a custom CDN, see
+Data distributed through the \code{sianedata} data branch, see
 \url{https://github.com/rOpenSpain/mapSpain/tree/sianedata}.
 }
 \usage{
@@ -36,65 +36,65 @@ esp_siane_bulk_download(
 )
 }
 \arguments{
-\item{cache_dir}{character string. A path to a cache directory. See
+\item{cache_dir}{Character string. A path to a cache directory. See
 \strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
 
-\item{update_cache}{logical. Should the cached file be refreshed? Default
-is \code{FALSE}. When set to \code{TRUE}, it will force a new download.}
+\item{update_cache}{Logical. If \code{TRUE}, refreshes the cached file and forces
+a new download. Defaults to \code{FALSE}.}
 
-\item{verbose}{logical. If \code{TRUE} displays informational messages.}
+\item{verbose}{A logical value. If \code{TRUE} displays informational messages.}
 }
 \value{
-A (invisible) character vector with the full path of the files extracted.
+An invisible character vector with the full paths of the extracted files.
 See \strong{Examples}.
 }
 \description{
 Download zipped data from SIANE to the \code{\link[=esp_set_cache_dir]{cache_dir}}
-and extract the relevant ones.
+and extract the relevant files.
 }
 \examples{
 \dontshow{if (esp_check_access()) withAutoprint(\{ # examplesIf}
 tmp <- file.path(tempdir(), "testexample")
 dest_files <- esp_siane_bulk_download(cache_dir = tmp)
 
-# Read one
+# Read one file.
 library(sf)
 read_sf(dest_files[1]) |> head()
 
-# Now we can connect the function with the downloaded data like:
+# Connect the function with the downloaded data.
 
 connect <- esp_get_munic_siane(cache_dir = tmp, verbose = TRUE)
 
-# Message shows file is already cached :)
+# The message shows that the file is already cached.
 
-# Clean
+# Clean up.
 unlink(tmp, force = TRUE, recursive = TRUE)
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-Other datasets representing political borders:
-\code{\link{esp_get_capimun}()},
-\code{\link{esp_get_ccaa}()},
-\code{\link{esp_get_ccaa_siane}()},
-\code{\link{esp_get_comarca}()},
-\code{\link{esp_get_countries_siane}()},
+Political and administrative boundary datasets:
+\code{\link[=esp_get_capimun]{esp_get_capimun()}},
+\code{\link[=esp_get_ccaa]{esp_get_ccaa()}},
+\code{\link[=esp_get_ccaa_siane]{esp_get_ccaa_siane()}},
+\code{\link[=esp_get_comarca]{esp_get_comarca()}},
+\code{\link[=esp_get_countries_siane]{esp_get_countries_siane()}},
 \code{\link{esp_get_gridmap}},
-\code{\link{esp_get_munic}()},
-\code{\link{esp_get_munic_siane}()},
-\code{\link{esp_get_nuts}()},
-\code{\link{esp_get_prov}()},
-\code{\link{esp_get_prov_siane}()},
+\code{\link[=esp_get_munic]{esp_get_munic()}},
+\code{\link[=esp_get_munic_siane]{esp_get_munic_siane()}},
+\code{\link[=esp_get_nuts]{esp_get_nuts()}},
+\code{\link[=esp_get_prov]{esp_get_prov()}},
+\code{\link[=esp_get_prov_siane]{esp_get_prov_siane()}},
 \code{\link{esp_get_simpl}},
-\code{\link{esp_get_spain}()},
-\code{\link{esp_get_spain_siane}()}
+\code{\link[=esp_get_spain]{esp_get_spain()}},
+\code{\link[=esp_get_spain_siane]{esp_get_spain_siane()}}
 
-Political borders from CartoBase ANE:
-\code{\link{esp_get_capimun}()},
-\code{\link{esp_get_ccaa_siane}()},
-\code{\link{esp_get_countries_siane}()},
-\code{\link{esp_get_munic_siane}()},
-\code{\link{esp_get_prov_siane}()},
-\code{\link{esp_get_spain_siane}()}
+Datasets sourced from CartoBase ANE (Atlas Nacional de España):
+\code{\link[=esp_get_capimun]{esp_get_capimun()}},
+\code{\link[=esp_get_ccaa_siane]{esp_get_ccaa_siane()}},
+\code{\link[=esp_get_countries_siane]{esp_get_countries_siane()}},
+\code{\link[=esp_get_munic_siane]{esp_get_munic_siane()}},
+\code{\link[=esp_get_prov_siane]{esp_get_prov_siane()}},
+\code{\link[=esp_get_spain_siane]{esp_get_spain_siane()}}
 }
 \concept{political}
 \concept{siane}

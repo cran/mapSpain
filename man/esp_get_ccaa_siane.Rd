@@ -3,29 +3,29 @@
 \encoding{UTF-8}
 \name{esp_get_ccaa_siane}
 \alias{esp_get_ccaa_siane}
-\title{Autonomous Communities of Spain - SIANE}
+\title{Autonomous Communities and Cities of Spain from SIANE}
 \source{
-CartoBase ANE provided by Instituto Geografico Nacional (IGN),
+CartoBase ANE (Atlas Nacional de España) provided by Instituto Geográfico Nacional (IGN),
 \url{http://www.ign.es/web/ign/portal}. Years available are 2005 up to today.
 
 Copyright:
 \url{https://centrodedescargas.cnig.es/CentroDescargas/cartobase-ane}
 
-It's necessary to always acknowledge authorship using the following formulas:
+Always acknowledge authorship using the following statements:
 \enumerate{
-\item When the original digital product is not modified or altered, it can
-be expressed in one of the following ways:
+\item When the original digital product is not modified or altered, use one of
+the following statements:
 \itemize{
-\item CartoBase ANE 2006-2024 CC-BY 4.0 ign.es
-\item CartoBase ANE 2006-2024 CC-BY 4.0 Instituto Geográfico Nacional
+\item CartoBase ANE 2006-2024 CC-BY 4.0 ign.es.
+\item CartoBase ANE 2006-2024 CC-BY 4.0 Instituto Geográfico Nacional.
 }
 \item When a new product is generated:
-}
 \itemize{
-\item Obra derivada de CartoBase ANE 2006-2024 CC-BY 4.0 ign.es
+\item Obra derivada de CartoBase ANE 2006-2024 CC-BY 4.0 ign.es.
+}
 }
 
-Data distributed via a custom CDN, see
+Data distributed through the \code{sianedata} data branch, see
 \url{https://github.com/rOpenSpain/mapSpain/tree/sianedata}.
 }
 \usage{
@@ -43,40 +43,41 @@ esp_get_ccaa_siane(
 )
 }
 \arguments{
-\item{ccaa}{character string. A vector of names and/or codes for Autonomous
-Communities or \code{NULL} to get all the autonomous communities. See
-\strong{Details}.}
+\item{ccaa}{Character string. A vector of names, codes or both for
+Autonomous Communities and Cities, or \code{NULL} to get all Autonomous
+Communities and Cities.
+See \strong{Details}.}
 
-\item{year}{character string or number. Release year, it must be in
-formats \code{YYYY} (assuming end of year) or \code{YYYY-MM-DD}. Historical
-information starts as of 2005.}
+\item{year}{Character string or number. Release year. It must use format
+\code{YYYY} (assuming end of year) or \code{YYYY-MM-DD}. Historical information
+starts as of 2005.}
 
-\item{epsg}{character string or number. Projection of the map: 4-digit
+\item{epsg}{Character string or number. Projection of the map: 4-digit
 \href{https://epsg.io/}{EPSG code}. One of:
 \itemize{
-\item \code{"4258"}: \href{https://epsg.io/4258}{ETRS89}
+\item \code{"4258"}: \href{https://epsg.io/4258}{ETRS89}.
 \item \code{"4326"}: \href{https://epsg.io/4326}{WGS84}.
 \item \code{"3035"}: \href{https://epsg.io/3035}{ETRS89 / ETRS-LAEA}.
 \item \code{"3857"}: \href{https://epsg.io/3857}{Pseudo-Mercator}.
 }}
 
-\item{cache}{logical. Whether to do caching. Default is \code{TRUE}. See
+\item{cache}{Logical. Whether to cache downloaded files. Default is \code{TRUE}.
+See \strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
+
+\item{update_cache}{Logical. If \code{TRUE}, refreshes the cached file and forces
+a new download. Defaults to \code{FALSE}.}
+
+\item{cache_dir}{Character string. A path to a cache directory. See
 \strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
 
-\item{update_cache}{logical. Should the cached file be refreshed? Default
-is \code{FALSE}. When set to \code{TRUE}, it will force a new download.}
+\item{verbose}{A logical value. If \code{TRUE} displays informational messages.}
 
-\item{cache_dir}{character string. A path to a cache directory. See
-\strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
-
-\item{verbose}{logical. If \code{TRUE} displays informational messages.}
-
-\item{resolution}{character string or number. Resolution of the geospatial
+\item{resolution}{Character string or number. Resolution of the geospatial
 data. One of:
 \itemize{
-\item "10": 1:10 million.
-\item "6.5": 1:6.5 million.
-\item "3": 1:3 million.
+\item \code{"10"}: 1:10 million.
+\item \code{"6.5"}: 1:6.5 million.
+\item \code{"3"}: 1:3 million.
 }}
 
 \item{moveCAN}{A logical \code{TRUE/FALSE} or a vector of coordinates
@@ -84,31 +85,32 @@ data. One of:
 Initial position can be adjusted using the vector of coordinates. See
 \strong{Displacing the Canary Islands} in \code{\link[=esp_move_can]{esp_move_can()}}.}
 
-\item{rawcols}{logical. Setting this to \code{TRUE} will add the raw columns of
-the resulting object as provided by IGN.}
+\item{rawcols}{Logical. If \code{TRUE}, adds the raw columns of the resulting
+object as provided by IGN.}
 }
 \value{
-A \code{\link[sf:sf]{sf}} object.
+A \code{\link[sf:st_sf]{sf}} object.
 }
 \description{
-Returns
-\href{https://en.wikipedia.org/wiki/Autonomous_communities_of_Spain}{Autonomous Communities of Spain} at a
+Get
+\href{https://en.wikipedia.org/wiki/Autonomous_communities_of_Spain}{Autonomous Communities and Cities of Spain} at a
 specified scale.
 }
 \details{
 When using \code{ccaa} you can use and mix names and NUTS codes (levels 1 or 2),
 ISO codes (corresponding to level 2) or \code{codauto} (see \link{esp_codelist}).
-Ceuta and Melilla are considered as Autonomous Communities in this function.
+Ceuta and Melilla are included at the Autonomous Communities and Cities
+level in this function.
 
-When calling a NUTS1 level, all the Autonomous Communities of that level
-will be added.
+When calling a NUTS 1 level, all Autonomous Communities and Cities of that
+level are added.
 }
 \examples{
 \dontshow{if (esp_check_access()) withAutoprint(\{ # examplesIf}
 ccaas1 <- esp_get_ccaa_siane()
 dplyr::glimpse(ccaas1)
 
-# Low res
+# Low resolution.
 ccaas_low <- esp_get_ccaa_siane(
   rawcols = TRUE, moveCAN = FALSE,
   resolution = 10, epsg = 3035
@@ -122,29 +124,29 @@ ggplot(ccaas_low) +
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-Other datasets representing political borders:
-\code{\link{esp_get_capimun}()},
-\code{\link{esp_get_ccaa}()},
-\code{\link{esp_get_comarca}()},
-\code{\link{esp_get_countries_siane}()},
+Political and administrative boundary datasets:
+\code{\link[=esp_get_capimun]{esp_get_capimun()}},
+\code{\link[=esp_get_ccaa]{esp_get_ccaa()}},
+\code{\link[=esp_get_comarca]{esp_get_comarca()}},
+\code{\link[=esp_get_countries_siane]{esp_get_countries_siane()}},
 \code{\link{esp_get_gridmap}},
-\code{\link{esp_get_munic}()},
-\code{\link{esp_get_munic_siane}()},
-\code{\link{esp_get_nuts}()},
-\code{\link{esp_get_prov}()},
-\code{\link{esp_get_prov_siane}()},
+\code{\link[=esp_get_munic]{esp_get_munic()}},
+\code{\link[=esp_get_munic_siane]{esp_get_munic_siane()}},
+\code{\link[=esp_get_nuts]{esp_get_nuts()}},
+\code{\link[=esp_get_prov]{esp_get_prov()}},
+\code{\link[=esp_get_prov_siane]{esp_get_prov_siane()}},
 \code{\link{esp_get_simpl}},
-\code{\link{esp_get_spain}()},
-\code{\link{esp_get_spain_siane}()},
-\code{\link{esp_siane_bulk_download}()}
+\code{\link[=esp_get_spain]{esp_get_spain()}},
+\code{\link[=esp_get_spain_siane]{esp_get_spain_siane()}},
+\code{\link[=esp_siane_bulk_download]{esp_siane_bulk_download()}}
 
-Political borders from CartoBase ANE:
-\code{\link{esp_get_capimun}()},
-\code{\link{esp_get_countries_siane}()},
-\code{\link{esp_get_munic_siane}()},
-\code{\link{esp_get_prov_siane}()},
-\code{\link{esp_get_spain_siane}()},
-\code{\link{esp_siane_bulk_download}()}
+Datasets sourced from CartoBase ANE (Atlas Nacional de España):
+\code{\link[=esp_get_capimun]{esp_get_capimun()}},
+\code{\link[=esp_get_countries_siane]{esp_get_countries_siane()}},
+\code{\link[=esp_get_munic_siane]{esp_get_munic_siane()}},
+\code{\link[=esp_get_prov_siane]{esp_get_prov_siane()}},
+\code{\link[=esp_get_spain_siane]{esp_get_spain_siane()}},
+\code{\link[=esp_siane_bulk_download]{esp_siane_bulk_download()}}
 }
 \concept{political}
 \concept{siane}

@@ -3,49 +3,46 @@
 #' @description
 #' Helper function for [esp_get_tiles()] that helps to create a custom provider.
 #'
-#' @encoding UTF-8
-#' @family images
-#' @seealso [esp_get_tiles()].
+#' @details
+#' This function is meant to work with services provided under the
+#' [OGC Standard](https://www.ogc.org/standards/wms/).
 #'
-#' For a list of potential providers from Spain check
-#' [IDEE Directory](https://www.idee.es/segun-tipo-de-servicio).
+#' Note that:
+#' - \CRANpkg{mapSpain} does not provide advice on the value of `q`.
+#' - Currently, for **WMTS** requests only services with
+#'   `tilematrixset=GoogleMapsCompatible` are supported.
+#'
+#' @param id An identifier for the user. Used for identifying cached tiles.
+#' @param q The base URL of the service.
+#' @param service The type of tile service, either `"WMS"` or `"WMTS"`.
+#' @param layers The name of the layer to retrieve.
+#' @param ... Additional arguments to the query, such as `version`, `format`,
+#'   `crs/srs` and `style`, depending on the capabilities of the service.
 #'
 #' @return
 #' A named list with two elements `id` and `q`.
 #'
+#' @seealso [esp_get_tiles()].
+#'
+#' For a list of potential providers from Spain, check the
+#' [IDEE Directory](https://www.idee.es/segun-tipo-de-servicio).
+#'
+#' @family images
+#' @encoding UTF-8
 #' @export
-#'
-#' @param id An identifier for the user. It will be used for identifying
-#'   cached tiles.
-#' @param q The base url of the service.
-#' @param service The type of tile service, either `"WMS"` or `"WMTS"`.
-#' @param layers The name of the layer to retrieve.
-#' @param ... Additional arguments to the query, like `version`, `format`,
-#'   `crs/srs`, `style`, etc. depending on the capabilities of the service.
-#'
-#' @details
-#' This function is meant to work with services provided as of the
-#' [OGC Standard](https://www.ogc.org/standards/wms/).
-#'
-#' Note that:
-#' - \CRANpkg{mapSpain} will not provide advice on the argument `q` to be
-#'   provided.
-#' - Currently, on **WMTS** requests only services with
-#'   `tilematrixset=GoogleMapsCompatible` are supported.
 #'
 #' @examplesIf esp_check_access()
 #' \dontrun{
-#' custom_wms <- esp_make_provider(
-#'   id = "an_id_for_caching",
-#'   q = "https://idecyl.jcyl.es/geoserver/ge/wms?",
-#'   service = "WMS",
-#'   version = "1.3.0",
-#'   layers = "geolog_cyl_litologia"
+#' custom_wmts <- esp_make_provider(
+#'   id = "example",
+#'   q = "https://www.ign.es/wmts/ign-base?",
+#'   service = "WMTS",
+#'   layer = "IGNBaseTodo"
 #' )
 #'
 #' x <- esp_get_ccaa("Castilla y León", epsg = 3857)
 #'
-#' mytile <- esp_get_tiles(x, type = custom_wms)
+#' mytile <- esp_get_tiles(x, type = custom_wmts)
 #'
 #' tidyterra::autoplot(mytile) +
 #'   ggplot2::geom_sf(data = x, fill = NA)
@@ -59,10 +56,10 @@ esp_make_provider <- function(id, q, service, layers, ...) {
   dots <- list(...)
   names(dots) <- tolower(names(dots))
 
-  # Ignore tilematrixset
+  # Ignore `tilematrixset`.
   dots <- dots[names(dots) != "tilematrixset"]
 
-  # Minimal for WMS
+  # Set minimal WMS parameters.
 
   if (toupper(service) == "WMS") {
     def_params <- list(
@@ -86,10 +83,10 @@ esp_make_provider <- function(id, q, service, layers, ...) {
     )
   }
 
-  # Modify
+  # Merge custom query parameters.
   end <- modifyList(def_params, dots)
 
-  # Here adjust crs values
+  # Adjust CRS/SRS parameter names.
 
   if (end$service == "WMS") {
     if (all(!is.null(end$version), end$version < "1.3.0")) {
@@ -101,10 +98,10 @@ esp_make_provider <- function(id, q, service, layers, ...) {
     }
   }
 
-  # Create final list
+  # Create the final provider list.
   final <- list(id = id)
 
-  # Create query
+  # Create the query URL.
   q <- gsub("\\?\\?$", "?", paste0(end$q, "?"))
   rest <- end[names(end) != "q"]
   q_end <- paste0(q, paste0(names(rest), "=", rest, collapse = "&"))

@@ -16,21 +16,22 @@ esp_get_grid_ESDAC(
 )
 }
 \arguments{
-\item{resolution}{numeric. Resolution of the grid in kms Can be \code{1} or \code{10}.}
+\item{resolution}{Numeric. Resolution of the grid in kilometers. Can be \code{1}
+or \code{10}.}
 
-\item{update_cache}{logical. Should the cached file be refreshed? Default
-is \code{FALSE}. When set to \code{TRUE}, it will force a new download.}
+\item{update_cache}{Logical. If \code{TRUE}, refreshes the cached file and forces
+a new download. Defaults to \code{FALSE}.}
 
-\item{cache_dir}{character string. A path to a cache directory. See
+\item{cache_dir}{Character string. A path to a cache directory. See
 \strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
 
-\item{verbose}{logical. If \code{TRUE} displays informational messages.}
+\item{verbose}{A logical value. If \code{TRUE} displays informational messages.}
 }
 \value{
-A \code{\link[sf:sf]{sf}} \code{POLYGON}.
+A \code{\link[sf:st_sf]{sf}} \code{POLYGON}.
 }
 \description{
-Loads a \code{\link[sf:sf]{sf}} \code{POLYGON} with the geographic grids of Spain as
+Loads a \code{\link[sf:st_sf]{sf}} \code{POLYGON} with the geographic grids of Spain as
 provided by the European Soil Data Centre (ESDAC).
 }
 \examples{
@@ -60,8 +61,8 @@ Commission, Joint Research Centre.
 }
 }
 \seealso{
-Other geographical grids:
-\code{\link{esp_get_grid_BDN}()},
-\code{\link{esp_get_grid_MTN}()}
+Geographical grid datasets:
+\code{\link[=esp_get_grid_BDN]{esp_get_grid_BDN()}},
+\code{\link[=esp_get_grid_MTN]{esp_get_grid_MTN()}}
 }
 \concept{grids}

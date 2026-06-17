@@ -1,33 +1,33 @@
 #' Displace a [`sf`][sf::st_sf] object located in the Canary Islands
 #'
 #' @description
-#' Helper function to displace an external [`sf`][sf::st_sf] object (potentially
-#' representing a location in the Canary Islands) to align it with the objects
-#' provided by [`sf`][sf::st_sf] with the option `moveCAN = TRUE`.
-#'
-#' @param x An [`sf`][sf::st_sf] object. It can be an `sf` or `sfc` object.
-#' @param moveCAN A logical `TRUE/FALSE` or a vector of coordinates
-#'   `c(lat, lon)`.  It places the Canary Islands close to Spain's mainland.
-#'   Initial position can be adjusted using the vector of coordinates.
-#'
-#' @return A [`sf`][sf::st_sf] object of the same class and same CRS as `x`
-#' but displaced accordingly.
+#' Helper function to displace an external [`sf`][sf::st_sf] object,
+#' potentially representing a location in the Canary Islands, to align it with
+#' \CRANpkg{mapSpain} objects generated with `moveCAN = TRUE`.
 #'
 #' @details
-#' This is a helper function that intends to ease the representation of objects
-#' located in the Canary Islands that have been obtained from other sources
-#' rather than the package \CRANpkg{mapSpain}.
+#' This helper function makes it easier to represent objects located in the
+#' Canary Islands that have been obtained from sources other than
+#' \CRANpkg{mapSpain}.
 #'
 #' # Displacing the Canary Islands
 #'
 #' While `moveCAN` is useful for visualization, it will alter the actual
 #' geographic position of the Canary Islands. When using the output for
-#' spatial analysis or using tiles (e.g. with [esp_get_tiles()] or
-#' [addProviderEspTiles()])  this option should be set to `FALSE` in order to
-#' get the actual coordinates, instead of the modified ones.
+#' spatial analysis or tiles (for example, with [esp_get_tiles()] or
+#' [addProviderEspTiles()]), set this option to `FALSE` to get the actual
+#' coordinates instead of the modified ones.
 #'
-#' @encoding UTF-8
+#' @param x An [`sf`][sf::st_sf] object. It can be an `sf` or `sfc` object.
+#' @param moveCAN A logical `TRUE/FALSE` or a vector of coordinates
+#'   `c(lat, lon)`. It places the Canary Islands close to Spain's mainland.
+#'   Initial position can be adjusted using the vector of coordinates.
+#'
+#' @return A [`sf`][sf::st_sf] object of the same class and same CRS as `x`,
+#'   displaced accordingly.
+#'
 #' @family can_helpers
+#' @encoding UTF-8
 #' @export
 #'
 #' @examples
@@ -40,7 +40,7 @@
 #'
 #' teide_sf <- st_as_sf(teide, coords = c("lon", "lat"), crs = 4326)
 #'
-#' # If we use any mapSpain produced object with moveCAN = TRUE...
+#' # A mapSpain object with moveCAN = TRUE is displaced.
 #'
 #' esp <- esp_get_spain(moveCAN = c(13, 0))
 #'
@@ -54,7 +54,7 @@
 #'     subtitle = "But not the external Teide object"
 #'   )
 #'
-#' # But we can
+#' # Displace the external object too.
 #'
 #' teide_sf_disp <- esp_move_can(teide_sf, moveCAN = c(13, 0))
 #'
@@ -70,27 +70,22 @@ esp_move_can <- function(x, moveCAN = TRUE) {
   x <- validate_non_empty_arg(x)
 
   if (!any(inherits(x, "sf"), inherits(x, "sfc"))) {
-    cli::cli_abort(
-      paste0(
-        "{.arg x} should be an {.cls sf} ",
-        "or {.cls sfc} object, not {.obj_type_friendly {x}}."
-      )
-    )
+    cli::cli_abort(paste0(
+      "{.arg x} must be an {.cls sf} ",
+      "or {.cls sfc} object, not {.obj_type_friendly {x}}."
+    ))
   }
 
   is_sfc <- inherits(x, "sfc")
 
-  # If no object then return the same
+  # Return empty geometries unchanged.
   g <- sf::st_geometry(x)
 
   if (length(g) == 0) {
     return(x)
   }
 
-  moving <- FALSE
-  moving <- isTRUE(moveCAN) | length(moveCAN) > 1
-
-  if (moving) {
+  if (is_moving_can(moveCAN)) {
     offset <- c(550000, 920000)
 
     if (length(moveCAN) > 1) {
@@ -106,18 +101,18 @@ esp_move_can <- function(x, moveCAN = TRUE) {
       data_3857 <- sf::st_sf(x = 1, geometry = data_3857)
     }
 
-    # Move can
+    # Move the Canary Islands.
     geom_mov <- sf::st_geometry(data_3857) + offset
     df <- sf::st_drop_geometry(data_3857)
     can <- sf::st_sf(df, geometry = geom_mov, crs = 3857)
 
-    # Regenerate CRS
+    # Regenerate the CRS.
     x_out <- sf::st_transform(can, sf::st_crs(x))
 
     if (is_sfc) {
       x_out <- sf::st_geometry(x_out)
     } else {
-      # Rename sf col
+      # Rename the sf column.
       sf::st_geometry(x_out) <- attr(x, "sf_column")
     }
   } else {
@@ -126,13 +121,12 @@ esp_move_can <- function(x, moveCAN = TRUE) {
   x_out
 }
 
-# Internal version, helper fun
+# Internal helper.
 move_can <- function(data_sf, moveCAN = TRUE) {
   if (isFALSE(moveCAN)) {
     return(data_sf)
   }
-  # Checks
-  moving <- FALSE
+  # Identify Canary Islands features.
   prepare_can <- data_sf
   if ("codauto" %in% names(data_sf)) {
     prepare_can$is_can <- prepare_can$codauto == "05"
@@ -141,7 +135,7 @@ move_can <- function(data_sf, moveCAN = TRUE) {
     prepare_can$is_can <- grepl("^ES7", data_sf$NUTS_ID)
   }
 
-  moving <- (isTRUE(moveCAN) | length(moveCAN) >= 2) & any(prepare_can$is_can)
+  moving <- is_moving_can(moveCAN) & any(prepare_can$is_can)
 
   if (moving) {
     penin <- prepare_can[!prepare_can$is_can, ]
@@ -149,7 +143,7 @@ move_can <- function(data_sf, moveCAN = TRUE) {
 
     can <- esp_move_can(can, moveCAN = moveCAN)
 
-    # Regenerate
+    # Restore original columns.
     keep_n <- names(data_sf)
     data_sf <- rbind_fill(list(penin, can))
     data_sf <- data_sf[, keep_n]

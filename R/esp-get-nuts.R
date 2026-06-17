@@ -1,57 +1,77 @@
 #' Territorial Spanish units for statistics (NUTS) dataset
 #'
 #' @description
-#' The GISCO statistical unit dataset represents the NUTS (nomenclature of
-#' territorial units for statistics) and statistical regions using
+#' The GISCO statistical unit dataset represents NUTS (Nomenclature of
+#' Territorial Units for Statistics) and statistical regions using
 #' multipart polygon, polyline and point topology. The NUTS geographical
 #' information is completed by attribute tables and a set of cartographic
-#' help lines to better visualise multipart polygonal regions.
+#' help lines to better visualize multipart polygonal regions.
 #'
-#' The NUTS are a hierarchical system divided into 3 levels:
-#'  - NUTS 1: major socio-economic regions
-#'  - NUTS 2: basic regions for the application of regional policies
-#'  - NUTS 3: small regions for specific diagnoses.
+#' NUTS is a hierarchical system divided into three levels:
 #'
-#' Also, there is a NUTS 0 level, which usually corresponds to the national
+#' - NUTS 1: major socioeconomic regions.
+#' - NUTS 2: basic regions for the application of regional policies.
+#' - NUTS 3: small regions for specific diagnoses.
+#'
+#' There is also a NUTS 0 level, which usually corresponds to the national
 #' boundaries.
 #'
-#' @encoding UTF-8
-#' @family political
-#' @family nuts
-#' @family gisco
-#' @inheritParams giscoR::gisco_get_nuts
-#' @inherit giscoR::gisco_get_nuts
-#' @export
+#' @details
+#' The NUTS nomenclature is a hierarchical classification of statistical
+#' regions and subdivides the EU economic territory into regions of three
+#' different levels (NUTS 1, 2 and 3, moving respectively from larger to smaller
+#' territorial units). NUTS 1 is the most aggregated level. An additional
+#' country level (NUTS 0) is also available for countries where the nation at
+#' statistical level does not coincide with the administrative boundaries.
 #'
-#' @seealso [giscoR::gisco_get_nuts()], [esp_dict_region_code()].
+#' The NUTS classification has been officially established through Commission
+#' Delegated Regulation 2019/1755. An unofficial NUTS-like classification has
+#' been defined for the EFTA countries, candidate countries and potential
+#' candidates based on a bilateral agreement between Eurostat and the respective
+#' statistical agencies.
 #'
-#' @param year year character string or number. Release year of the file. See
+#' @param year Year character string or number. Release year of the file. See
 #'   [giscoR::gisco_get_nuts()] for valid values.
-#' @param epsg character string or number. Projection of the map: 4-digit
+#' @param epsg Character string or number. Projection of the map: 4-digit
 #'   [EPSG code](https://epsg.io/). One of:
-#'   * `"4258"`: [ETRS89](https://epsg.io/4258)
-#'   * `"4326"`: [WGS84](https://epsg.io/4326).
-#'   * `"3035"`: [ETRS89 / ETRS-LAEA](https://epsg.io/3035).
-#'   * `"3857"`: [Pseudo-Mercator](https://epsg.io/3857).
-#' @param cache logical. Whether to do caching. Default is `TRUE`. See
-#'   **Caching strategies** section in [esp_set_cache_dir()].
-#' @param update_cache logical. Should the cached file be refreshed? Default
-#'   is `FALSE`. When set to `TRUE`, it will force a new download.
-#' @param cache_dir character string. A path to a cache directory. See
+#'   - `"4258"`: [ETRS89](https://epsg.io/4258).
+#'   - `"4326"`: [WGS84](https://epsg.io/4326).
+#'   - `"3035"`: [ETRS89 / ETRS-LAEA](https://epsg.io/3035).
+#'   - `"3857"`: [Pseudo-Mercator](https://epsg.io/3857).
+#' @param cache Logical. Whether to cache downloaded files. Default is `TRUE`.
+#'   See **Caching strategies** section in [esp_set_cache_dir()].
+#' @param update_cache Logical. If `TRUE`, refreshes the cached file and forces
+#'   a new download. Defaults to `FALSE`.
+#' @param cache_dir Character string. A path to a cache directory. See
 #'   **Caching strategies** section in [esp_set_cache_dir()].
 #' @param region Optional. A vector of region names, NUTS or ISO codes
 #'   (see [esp_dict_region_code()]).
 #'
-#' @param spatialtype character string. Type of geometry to be returned.
+#' @param spatialtype Character string. Type of geometry to be returned.
 #'   Options available are:
-#'   * "RG": Regions - `MULTIPOLYGON/POLYGON` object.
-#'   * "LB": Labels - `POINT` object.
+#'   - `"RG"`: regions, returned as a `MULTIPOLYGON/POLYGON` object.
+#'   - `"LB"`: labels, returned as a `POINT` object.
 #' @param moveCAN A logical `TRUE/FALSE` or a vector of coordinates
 #'   `c(lat, lon)`. It places the Canary Islands close to Spain's mainland.
 #'   Initial position can be adjusted using the vector of coordinates. See
 #'   **Displacing the Canary Islands** in [esp_move_can()].
-#' @param ext character. Extension of the file (default `"gpkg"`). See
+#' @param ext Character. Extension of the file (default `"gpkg"`). See
 #'   [giscoR::gisco_get_nuts()].
+#'
+#' @inheritParams giscoR::gisco_get_nuts
+#' @inherit giscoR::gisco_get_nuts return source
+#'
+#' @note
+#' Please check the download and usage provisions on
+#' [giscoR::gisco_attributions()].
+#'
+#' @seealso [giscoR::gisco_get_nuts()], [esp_dict_region_code()].
+#'
+#' @family political
+#' @family nuts
+#' @family gisco
+#' @encoding UTF-8
+#' @export
 #'
 #' @examples
 #' nuts1 <- esp_get_nuts(nuts_level = 1, moveCAN = TRUE)
@@ -61,7 +81,7 @@
 #' ggplot(nuts1) +
 #'   geom_sf() +
 #'   labs(
-#'     title = "NUTS1: Displacing Canary Islands",
+#'     title = "NUTS 1: Displacing Canary Islands",
 #'     caption = giscoR::gisco_attributions()
 #'   )
 #'
@@ -70,7 +90,7 @@
 #' ggplot(nuts1_alt) +
 #'   geom_sf() +
 #'   labs(
-#'     title = "NUTS1: Displacing Canary Islands",
+#'     title = "NUTS 1: Displacing Canary Islands",
 #'     subtitle = "to the right",
 #'     caption = giscoR::gisco_attributions()
 #'   )
@@ -80,8 +100,8 @@
 #' ggplot(nuts1_orig) +
 #'   geom_sf() +
 #'   labs(
-#'     title = "NUTS1",
-#'     subtitle = "Canary Islands on the true location",
+#'     title = "NUTS 1",
+#'     subtitle = "Canary Islands in their true location",
 #'     caption = giscoR::gisco_attributions()
 #'   )
 #'
@@ -118,15 +138,15 @@ esp_get_nuts <- function(
   moveCAN = TRUE,
   ext = "gpkg"
 ) {
-  # Dispatch everything to gisco_get_nuts except EPSG, that is specific
-  epsg <- match_arg_pretty(epsg, c("4258", "4326", "3035", "3857"))
+  # Dispatch to gisco_get_nuts and handle the package-specific EPSG value.
+  epsg <- validate_epsg(epsg, c("4258", "4326", "3035", "3857"))
   gisco_epsg <- ifelse(epsg == "4258", "4326", epsg)
   cache_dir <- create_cache_dir(cache_dir)
   spatialtype <- match_arg_pretty(spatialtype)
 
   nuts_level <- match_arg_pretty(nuts_level)
 
-  # See if the call uses the default params
+  # Check whether the call uses the default parameters.
 
   if (
     all(
@@ -144,7 +164,7 @@ esp_get_nuts <- function(
       "info",
       verbose,
       "Loaded from {.help mapSpain::esp_nuts_2024} dataset.",
-      "Use {.arg update_cache = TRUE} to re-load from file"
+      "Use {.arg update_cache} set to {.val {TRUE}} to reload from file."
     )
   } else {
     data_sf <- giscor_get_nuts(
@@ -174,7 +194,7 @@ esp_get_nuts <- function(
     data_sf <- data_sf[data_sf$LEVL_CODE == nuts_level, ]
   }
 
-  # Get region id
+  # Get the region identifier.
   region <- ensure_null(region)
   if (all(!is.null(region), "NUTS_ID" %in% names(data_sf))) {
     nuts_id <- convert_to_nuts(region)
@@ -185,17 +205,14 @@ esp_get_nuts <- function(
     data_sf <- data_sf[data_sf$NUTS_ID %in% nuts_id, ]
 
     if (nrow(data_sf) == 0) {
-      cli::cli_alert_warning(
-        paste0(
-          "No matches for {.arg region = {region}}."
-        )
-      )
-      cli::cli_alert_info("Returning empty {.cls sf} object.")
-      return(data_sf)
+      return(return_empty_sf(
+        data_sf,
+        "No matches for {.arg region} {.str {region}}."
+      ))
     }
   }
 
-  # Move CAN
+  # Move the Canary Islands.
   data_sf <- move_can(data_sf, moveCAN)
 
   data_sf <- sanitize_sf(data_sf)

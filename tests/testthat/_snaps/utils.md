@@ -39,7 +39,7 @@
       my_fun("error here")
     Condition
       Error:
-      ! `arg_one` should be one of "10", "1000", "3000" or "5000", not "error here".
+      ! `arg_one` must be "10", "1000", "3000", or "5000", not "error here".
 
 ---
 
@@ -47,7 +47,7 @@
       my_fun(c("an", "error"))
     Condition
       Error:
-      ! `arg_one` should be one of "10", "1000", "3000" or "5000", not "an" or "error".
+      ! `arg_one` must be "10", "1000", "3000", or "5000", not "an" or "error".
 
 ---
 
@@ -55,7 +55,7 @@
       my_fun("5")
     Condition
       Error:
-      ! `arg_one` should be one of "10", "1000", "3000" or "5000", not "5".
+      ! `arg_one` must be "10", "1000", "3000", or "5000", not "5".
       i Did you mean "5000"?
 
 ---
@@ -64,7 +64,7 @@
       my_fun("00")
     Condition
       Error:
-      ! `arg_one` should be one of "10", "1000", "3000" or "5000", not "00".
+      ! `arg_one` must be "10", "1000", "3000", or "5000", not "00".
 
 ---
 
@@ -72,7 +72,7 @@
       my_fun2(c(1, 2))
     Condition
       Error:
-      ! `year` should be "20", not "1" or "2".
+      ! `year` must be "20", not "1" or "2".
 
 ---
 
@@ -80,7 +80,7 @@
       my_fun3("3")
     Condition
       Error:
-      ! `an_arg` should be one of "30" or "20", not "3".
+      ! `an_arg` must be "30" or "20", not "3".
       i Did you mean "30"?
 
 ---
@@ -89,7 +89,7 @@
       my_fun2(c(1, 2))
     Condition
       Error:
-      ! `year` should be "20", not "1" or "2".
+      ! `year` must be "20", not "1" or "2".
 
 # Filter dates
 
@@ -97,7 +97,7 @@
       siane_filter_year(data_sf, "1900")
     Condition
       Error in `siane_filter_year()`:
-      ! Year "1900" not available. Select a year/date between 2005-12-31 and <current date>.
+      ! Year or date "1900" is not available. Use a value between 2005-12-31 and <current date>.
 
 ---
 
@@ -105,7 +105,7 @@
       siane_filter_year(data_sf, "2050")
     Condition
       Error in `siane_filter_year()`:
-      ! Year "2050" not available. Select a year/date between 2005-12-31 and <current date>.
+      ! Year or date "2050" is not available. Use a value between 2005-12-31 and <current date>.
 
 ---
 
@@ -113,7 +113,7 @@
       siane_filter_year(data_sf, "1900-12")
     Condition
       Error in `siane_filter_year()`:
-      ! Date "1900-12-12-31" doesn't seem to be valid. Use "YYYY" or "YYYY-MM-DD" format. See `base::as.Date()`.
+      ! Date "1900-12-12-31" is not valid. Use the "YYYY" or "YYYY-MM-DD" format. See `base::as.Date()`.
 
 # Not empty
 
@@ -121,7 +121,7 @@
       a_fun()
     Condition
       Error in `a_fun()`:
-      ! `a` can't be missing.
+      ! `a` must be supplied.
 
 ---
 
@@ -129,5 +129,5 @@
       a_fun(a = 1)
     Condition
       Error in `a_fun()`:
-      ! `b` can't be missing.
+      ! `b` must be supplied.
 

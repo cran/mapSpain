@@ -54,7 +54,7 @@ test_that("Mock restart", {
     stored_val <- readLines(cache_config)
     esp_clear_cache(cached_data = FALSE, config = TRUE)
     expect_false(file.exists(cache_config))
-    expect_true(Sys.getenv("MAPSPAIN_CACHE_DIR") == "")
+    expect_false(nzchar(Sys.getenv("MAPSPAIN_CACHE_DIR")))
 
     # We are clear now, we should detect default cache location
     default_loc <- detect_cache_dir_muted()
@@ -65,7 +65,7 @@ test_that("Mock restart", {
     # Now we should restore the cache
     expect_message(
       esp_set_cache_dir(stored_val, overwrite = TRUE, install = TRUE),
-      "cache dir is"
+      "cache directory is"
     )
 
     # But for the next test we delete the envar
@@ -79,7 +79,7 @@ test_that("Mock restart", {
 
   expect_identical(muted, created)
   expect_identical(muted, muted2)
-  expect_false(Sys.getenv("MAPSPAIN_CACHE_DIR") == "")
+  expect_true(nzchar(Sys.getenv("MAPSPAIN_CACHE_DIR")))
 
   # Restore cache
   if (tester_has_config_installed) {
@@ -139,12 +139,7 @@ test_that("Mock migration", {
 
   # OK, now re-configure the cache
   if (tester_has_config_installed) {
-    esp_set_cache_dir(
-      getvar,
-      install = TRUE,
-      overwrite = TRUE,
-      verbose = FALSE
-    )
+    esp_set_cache_dir(getvar, install = TRUE, overwrite = TRUE, verbose = FALSE)
   } else {
     esp_set_cache_dir(getvar, install = FALSE, verbose = FALSE)
   }

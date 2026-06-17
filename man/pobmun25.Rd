@@ -6,7 +6,7 @@
 \alias{pobmun25}
 \title{Population of Spain by municipality (2025)}
 \format{
-A \link[tibble:tbl_df-class]{tibble} object with
+A \link[tibble:tbl_df]{tibble} object with
 8,132 rows containing
 population data by municipality in Spain for 2025.
 
@@ -15,13 +15,13 @@ population data by municipality in Spain for 2025.
 \item{provincia}{Name of the province.}
 \item{cmun}{INE code of the municipality.}
 \item{name}{Name of the municipality.}
-\item{pob25}{Total population (2025)}
-\item{men}{Male population (2025)}
-\item{women}{Female population (2025)}
+\item{pob25}{Total population (2025).}
+\item{men}{Male population (2025).}
+\item{women}{Female population (2025).}
 }
 }
 \source{
-INE: Instituto Nacional de Estadistica
+INE, Instituto Nacional de Estadística.
 \url{https://www.ine.es/dyngs/INEbase/categoria.htm?c=Estadistica_P&cid=1254734710990}.
 }
 \description{
@@ -31,7 +31,7 @@ Population of Spain by municipality (2025)
 data("pobmun25")
 }
 \seealso{
-Other datasets: 
+Included package datasets:
 \code{\link{esp_codelist}},
 \code{\link{esp_nuts_2024}},
 \code{\link{esp_tiles_providers}}

@@ -3,29 +3,29 @@
 \encoding{UTF-8}
 \name{esp_get_munic_siane}
 \alias{esp_get_munic_siane}
-\title{Municipalities of Spain - SIANE}
+\title{Municipalities of Spain from SIANE}
 \source{
-CartoBase ANE provided by Instituto Geografico Nacional (IGN),
+CartoBase ANE (Atlas Nacional de España) provided by Instituto Geográfico Nacional (IGN),
 \url{http://www.ign.es/web/ign/portal}. Years available are 2005 up to today.
 
 Copyright:
 \url{https://centrodedescargas.cnig.es/CentroDescargas/cartobase-ane}
 
-It's necessary to always acknowledge authorship using the following formulas:
+Always acknowledge authorship using the following statements:
 \enumerate{
-\item When the original digital product is not modified or altered, it can
-be expressed in one of the following ways:
+\item When the original digital product is not modified or altered, use one of
+the following statements:
 \itemize{
-\item CartoBase ANE 2006-2024 CC-BY 4.0 ign.es
-\item CartoBase ANE 2006-2024 CC-BY 4.0 Instituto Geográfico Nacional
+\item CartoBase ANE 2006-2024 CC-BY 4.0 ign.es.
+\item CartoBase ANE 2006-2024 CC-BY 4.0 Instituto Geográfico Nacional.
 }
 \item When a new product is generated:
-}
 \itemize{
-\item Obra derivada de CartoBase ANE 2006-2024 CC-BY 4.0 ign.es
+\item Obra derivada de CartoBase ANE 2006-2024 CC-BY 4.0 ign.es.
+}
 }
 
-Data distributed via a custom CDN, see
+Data distributed through the \code{sianedata} data branch, see
 \url{https://github.com/rOpenSpain/mapSpain/tree/sianedata}.
 }
 \usage{
@@ -44,43 +44,43 @@ esp_get_munic_siane(
 )
 }
 \arguments{
-\item{year}{character string or number. Release year, it must be in
-formats \code{YYYY} (assuming end of year) or \code{YYYY-MM-DD}. Historical
-information starts as of 2005.}
+\item{year}{Character string or number. Release year. It must use format
+\code{YYYY} (assuming end of year) or \code{YYYY-MM-DD}. Historical information
+starts as of 2005.}
 
-\item{epsg}{character string or number. Projection of the map: 4-digit
+\item{epsg}{Character string or number. Projection of the map: 4-digit
 \href{https://epsg.io/}{EPSG code}. One of:
 \itemize{
-\item \code{"4258"}: \href{https://epsg.io/4258}{ETRS89}
+\item \code{"4258"}: \href{https://epsg.io/4258}{ETRS89}.
 \item \code{"4326"}: \href{https://epsg.io/4326}{WGS84}.
 \item \code{"3035"}: \href{https://epsg.io/3035}{ETRS89 / ETRS-LAEA}.
 \item \code{"3857"}: \href{https://epsg.io/3857}{Pseudo-Mercator}.
 }}
 
-\item{cache}{logical. Whether to do caching. Default is \code{TRUE}. See
+\item{cache}{Logical. Whether to cache downloaded files. Default is \code{TRUE}.
+See \strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
+
+\item{update_cache}{Logical. If \code{TRUE}, refreshes the cached file and forces
+a new download. Defaults to \code{FALSE}.}
+
+\item{cache_dir}{Character string. A path to a cache directory. See
 \strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
 
-\item{update_cache}{logical. Should the cached file be refreshed? Default
-is \code{FALSE}. When set to \code{TRUE}, it will force a new download.}
+\item{verbose}{A logical value. If \code{TRUE} displays informational messages.}
 
-\item{cache_dir}{character string. A path to a cache directory. See
-\strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
-
-\item{verbose}{logical. If \code{TRUE} displays informational messages.}
-
-\item{resolution}{character string or number. Resolution of the geospatial
+\item{resolution}{Character string or number. Resolution of the geospatial
 data. One of:
 \itemize{
-\item "10": 1:10 million.
-\item "6.5": 1:6.5 million.
-\item "3": 1:3 million.
+\item \code{"10"}: 1:10 million.
+\item \code{"6.5"}: 1:6.5 million.
+\item \code{"3"}: 1:3 million.
 }}
 
 \item{region}{Optional. A vector of region names, NUTS or ISO codes
 (see \code{\link[=esp_dict_region_code]{esp_dict_region_code()}}).}
 
-\item{munic}{character string. A name or \code{\link[base:grep]{regex}} expression
-with the names of the required municipalities. \code{NULL} will return all
+\item{munic}{Character string. A name or \code{\link[base:grep]{regex}} expression
+with the names of the required municipalities. Use \code{NULL} to return all
 municipalities.}
 
 \item{moveCAN}{A logical \code{TRUE/FALSE} or a vector of coordinates
@@ -88,31 +88,31 @@ municipalities.}
 Initial position can be adjusted using the vector of coordinates. See
 \strong{Displacing the Canary Islands} in \code{\link[=esp_move_can]{esp_move_can()}}.}
 
-\item{rawcols}{logical. Setting this to \code{TRUE} will add the raw columns of
-the resulting object as provided by IGN.}
+\item{rawcols}{Logical. If \code{TRUE}, adds the raw columns of the resulting
+object as provided by IGN.}
 }
 \value{
-A \code{\link[sf:sf]{sf}} object.
+A \code{\link[sf:st_sf]{sf}} object.
 }
 \description{
-This dataset shows boundaries of municipalities in Spain.
+Get boundaries of municipalities in Spain.
 }
 \details{
 When using \code{region} you can use and mix names and NUTS codes (levels 1, 2 or
 3), ISO codes (corresponding to level 2 or 3) or \code{"cpro"}
 (see \link{esp_codelist}).
 
-When calling a higher level (province, CCAA or NUTS1), all the municipalities
-of that level will be added.
+When calling a higher level (province, Autonomous Community or City, or
+NUTS 1), all municipalities of that level are added.
 }
 \note{
 Although \CRANpkg{mapSpain} supplies cartographically suitable datasets,
 a historical database of Spanish municipal boundaries is also available,
-offering higher‑resolution geometries that may be more appropriate for
-GIS‑oriented workflows:
+offering higher-resolution geometries that may be more appropriate for
+GIS-oriented workflows:
 \itemize{
-\item Goerlich, F. J., & Pérez Vázquez, P. (2025). \emph{Base de datos histórica de
-contornos municipales de España –LAU2boundaries4Spain–} [Data set].
+\item Goerlich, F. J. & Pérez Vázquez, P. (2025). \emph{Base de datos histórica de
+contornos municipales de España -LAU2boundaries4Spain-} [Data set].
 Zenodo. \doi{10.5281/zenodo.15345101},
 \url{https://www.uv.es/goerlich/Ivie/LAU2boundaries4Spain.html}.
 }
@@ -120,12 +120,12 @@ Zenodo. \doi{10.5281/zenodo.15345101},
 \examples{
 \dontshow{if (esp_check_access()) withAutoprint(\{ # examplesIf}
 \donttest{
-# Municipalities that have changed in the past: three cuts
+# Municipalities that have changed in the past: three snapshots.
 munis2005 <- esp_get_munic_siane(year = 2005, rawcols = TRUE)
 munis2015 <- esp_get_munic_siane(year = 2015, rawcols = TRUE)
 munis2024 <- esp_get_munic_siane(year = 2024, rawcols = TRUE)
 
-# manipulate
+# Manipulate data.
 library(dplyr)
 allmunis_unique <- bind_rows(munis2005, munis2015, munis2024) |>
   distinct()
@@ -151,40 +151,40 @@ allmunis_unique |>
   facet_wrap(~fecha_alta) +
   labs(
     title = id_all$name,
-    subtitle = "Changes on boundaries over time",
+    subtitle = "Boundary changes over time",
     fill = ""
   )
 }
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-Other datasets representing political borders:
-\code{\link{esp_get_capimun}()},
-\code{\link{esp_get_ccaa}()},
-\code{\link{esp_get_ccaa_siane}()},
-\code{\link{esp_get_comarca}()},
-\code{\link{esp_get_countries_siane}()},
+Political and administrative boundary datasets:
+\code{\link[=esp_get_capimun]{esp_get_capimun()}},
+\code{\link[=esp_get_ccaa]{esp_get_ccaa()}},
+\code{\link[=esp_get_ccaa_siane]{esp_get_ccaa_siane()}},
+\code{\link[=esp_get_comarca]{esp_get_comarca()}},
+\code{\link[=esp_get_countries_siane]{esp_get_countries_siane()}},
 \code{\link{esp_get_gridmap}},
-\code{\link{esp_get_munic}()},
-\code{\link{esp_get_nuts}()},
-\code{\link{esp_get_prov}()},
-\code{\link{esp_get_prov_siane}()},
+\code{\link[=esp_get_munic]{esp_get_munic()}},
+\code{\link[=esp_get_nuts]{esp_get_nuts()}},
+\code{\link[=esp_get_prov]{esp_get_prov()}},
+\code{\link[=esp_get_prov_siane]{esp_get_prov_siane()}},
 \code{\link{esp_get_simpl}},
-\code{\link{esp_get_spain}()},
-\code{\link{esp_get_spain_siane}()},
-\code{\link{esp_siane_bulk_download}()}
+\code{\link[=esp_get_spain]{esp_get_spain()}},
+\code{\link[=esp_get_spain_siane]{esp_get_spain_siane()}},
+\code{\link[=esp_siane_bulk_download]{esp_siane_bulk_download()}}
 
-Political borders from CartoBase ANE:
-\code{\link{esp_get_capimun}()},
-\code{\link{esp_get_ccaa_siane}()},
-\code{\link{esp_get_countries_siane}()},
-\code{\link{esp_get_prov_siane}()},
-\code{\link{esp_get_spain_siane}()},
-\code{\link{esp_siane_bulk_download}()}
+Datasets sourced from CartoBase ANE (Atlas Nacional de España):
+\code{\link[=esp_get_capimun]{esp_get_capimun()}},
+\code{\link[=esp_get_ccaa_siane]{esp_get_ccaa_siane()}},
+\code{\link[=esp_get_countries_siane]{esp_get_countries_siane()}},
+\code{\link[=esp_get_prov_siane]{esp_get_prov_siane()}},
+\code{\link[=esp_get_spain_siane]{esp_get_spain_siane()}},
+\code{\link[=esp_siane_bulk_download]{esp_siane_bulk_download()}}
 
-Datasets representing municipalities:
-\code{\link{esp_get_capimun}()},
-\code{\link{esp_get_munic}()}
+Municipality-level datasets:
+\code{\link[=esp_get_capimun]{esp_get_capimun()}},
+\code{\link[=esp_get_munic]{esp_get_munic()}}
 }
 \concept{municipalities}
 \concept{political}

@@ -1,12 +1,12 @@
-#' Provinces of Spain - SIANE
+#' Provinces of Spain from SIANE
 #'
-#' @encoding UTF-8
-#' @family political
-#' @family siane
 #' @inheritParams esp_get_ccaa_siane
 #' @inheritParams esp_get_prov
 #' @inherit esp_get_prov description details
 #' @inherit esp_get_ccaa_siane source return
+#' @family political
+#' @family siane
+#' @encoding UTF-8
 #' @export
 #'
 #' @examplesIf esp_check_access()
@@ -28,7 +28,7 @@ esp_get_prov_siane <- function(
   moveCAN = TRUE,
   rawcols = FALSE
 ) {
-  init_epsg <- match_arg_pretty(epsg, c("4326", "4258", "3035", "3857"))
+  init_epsg <- validate_epsg(epsg)
   res <- match_arg_pretty(resolution)
   res <- gsub("6.5", "6m5", res)
 
@@ -46,43 +46,15 @@ esp_get_prov_siane <- function(
     "_admin_prov_a_y.gpkg"
   )
 
-  # Not cached are read from url
-  if (!cache) {
-    msg <- paste0("{.url ", url_penin, "}.")
-    make_msg("info", verbose, "Reading from", msg)
-
-    data_sf_penin <- read_geo_file_sf(url_penin)
-
-    msg <- paste0("{.url ", url_can, "}.")
-    make_msg("info", verbose, "Reading from", msg)
-
-    data_sf_can <- read_geo_file_sf(url_can)
-
-    data_sf <- rbind_fill(list(data_sf_penin, data_sf_can))
-  } else {
-    file_local_penin <- download_url(
-      url_penin,
-      cache_dir = cache_dir,
-      subdir = "siane",
-      update_cache = update_cache,
-      verbose = verbose
-    )
-
-    file_local_can <- download_url(
-      url_can,
-      cache_dir = cache_dir,
-      subdir = "siane",
-      update_cache = update_cache,
-      verbose = verbose
-    )
-
-    # Download
-    data_sf <- lapply(c(file_local_penin, file_local_can), read_geo_file_sf)
-
-    data_sf <- rbind_fill(data_sf)
-    if (is.null(data_sf)) {
-      return(NULL)
-    }
+  data_sf <- read_siane_files(
+    c(url_penin, url_can),
+    cache = cache,
+    update_cache = update_cache,
+    cache_dir = cache_dir,
+    verbose = verbose
+  )
+  if (is.null(data_sf)) {
+    return(NULL)
   }
 
   data_sf <- siane_filter_year(data_sf = data_sf, year = year)
@@ -90,46 +62,27 @@ esp_get_prov_siane <- function(
   initcols <- colnames(sf::st_drop_geometry(data_sf))
   data_sf$cpro <- data_sf$id_prov
 
-  prov <- ensure_null(prov)
-  if (!is.null(prov)) {
-    tonuts <- convert_to_nuts_prov(prov)
+  data_sf <- filter_by_cpro_region(data_sf, prov)
 
-    df <- unique(mapSpain::esp_codelist[, c("nuts3.code", "cpro")])
-    df <- df[df$nuts3.code %in% tonuts, "cpro"]
-    toprov <- unique(df$cpro)
-    data_sf <- data_sf[data_sf$cpro %in% toprov, ]
-  }
-
-  # Get df
+  # Get province metadata.
   df <- get_prov_codes_df()
   data_sf <- merge(data_sf, df, all.x = TRUE)
 
-  # Paste nuts2
-  dfnuts <- mapSpain::esp_codelist
-  dfnuts <- unique(dfnuts[, c(
-    "cpro",
-    "nuts2.code",
-    "nuts2.name",
-    "nuts1.code",
-    "nuts1.name"
-  )])
-  data_sf <- merge(data_sf, dfnuts, all.x = TRUE)
+  # Add NUTS 2 metadata.
+  data_sf <- merge(data_sf, get_prov_nuts_codes_df(), all.x = TRUE)
 
-  # Move CAN
+  # Move the Canary Islands.
   data_sf <- move_can(data_sf, moveCAN)
 
-  # Transform
+  # Transform to the requested CRS.
   data_sf <- sf::st_transform(data_sf, as.double(init_epsg))
 
-  # Order
+  # Order by Autonomous Community or City and province.
   data_sf <- data_sf[order(data_sf$codauto), ]
 
-  namesend <- unique(c(
-    initcols,
-    colnames(esp_get_prov())
-  ))
+  namesend <- unique(c(initcols, colnames(esp_get_prov())))
 
-  # Review this error, can't fully reproduce
+  # Review this error, which is not fully reproducible.
 
   namesend <- namesend[namesend %in% names(data_sf)]
 
@@ -144,34 +97,4 @@ esp_get_prov_siane <- function(
 
   data_sf <- sanitize_sf(data_sf)
   data_sf
-}
-
-get_prov_codes_df <- function() {
-  getnames <- c(
-    "codauto",
-    "cpro",
-    "iso2.prov.code",
-    "nuts.prov.code",
-    "ine.prov.name",
-    "iso2.prov.name.es",
-    "iso2.prov.name.ca",
-    "iso2.prov.name.ga",
-    "iso2.prov.name.eu",
-    "cldr.prov.name.en",
-    "cldr.prov.name.es",
-    "cldr.prov.name.ca",
-    "cldr.prov.name.ga",
-    "cldr.prov.name.eu",
-    "prov.shortname.en",
-    "prov.shortname.es",
-    "prov.shortname.ca",
-    "prov.shortname.ga",
-    "prov.shortname.eu"
-  )
-
-  df_prov <- mapSpain::esp_codelist
-  df_prov <- df_prov[, getnames]
-  df_end <- unique(df_prov)
-  df_end <- df_end[order(df_end$codauto), ]
-  df_end
 }

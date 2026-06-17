@@ -1,35 +1,31 @@
 validate_provider <- function(type = "PNOA") {
   if (!any(is.list(type), is.character(type))) {
-    cli::cli_abort(
-      paste0(
-        "{.arg type} should be a named list (see ",
-        "{.fn mapSpain::esp_make_provider} or the name of a provider (see ",
-        "{.fn mapSpain::esp_tiles_providers}, not {.obj_class_friendly {type}}."
-      )
-    )
+    cli::cli_abort(paste0(
+      "{.arg type} must be a named list (see ",
+      "{.fn mapSpain::esp_make_provider}) or the name of a provider (see ",
+      "{.fn mapSpain::esp_tiles_providers}), not {.obj_class_friendly {type}}."
+    ))
   }
 
-  # Validate list
+  # Validate custom provider lists.
   if (is.list(type)) {
-    # Need to have at least id and q
+    # Require at least `id` and `q`.
     valid <- c("id", "q")
     has_valid <- valid %in% names(type)
     if (!all(has_valid)) {
-      cli::cli_abort(
-        paste0(
-          "A custom provider must be a named list with elements {.str {valid}}",
-          ", missing {.str {valid[!has_valid]}} element{?/s}. See ",
-          "{.fn mapSpain::esp_make_provider}."
-        )
-      )
+      cli::cli_abort(paste0(
+        "A custom provider must be a named list with elements {.str {valid}}",
+        ", missing {.str {valid[!has_valid]}} element{?/s}. See ",
+        "{.fn mapSpain::esp_make_provider}."
+      ))
     }
 
     formatted_type <- provider_to_list(type)
     return(formatted_type)
   }
-  # Check providers
+  # Check built-in providers.
 
-  # These are already split, just add some additional info
+  # Add derived fields to the provider definition.
   prov_list <- mapSpain::esp_tiles_providers
   type <- match_arg_pretty(type, names(prov_list))
 
@@ -39,10 +35,10 @@ validate_provider <- function(type = "PNOA") {
   min_zoom <- ensure_null(prov_list[type][[1]]$leaflet$minZoom)
   db_prov$min_zoom <- min_zoom
 
-  # Order
+  # Order tile options.
   ord <- unique(c(c("attribution", "id", "q"), names(db_prov)))
   db_prov <- db_prov[ord]
-  # Remove NULLs/NAs
+  # Remove NULL and NA values.
   db_prov <- lapply(db_prov, ensure_null)
   db_prov <- db_prov[lengths(db_prov) > 0]
   db_prov
@@ -80,7 +76,7 @@ provider_to_list <- function(type) {
   urlsplit <- modifyList(urlsplit, parts)
 
   if (guess_provider_type(urlsplit) == "WMTS") {
-    # Ensure these parameters
+    # Ensure required WMTS parameters.
 
     urlsplit$tilematrixset <- "GoogleMapsCompatible"
     urlsplit$tilematrix <- "{z}"
@@ -95,23 +91,23 @@ guess_provider_type <- function(prov_list) {
   serv <- unlist(prov_list[tolower(names(prov_list)) == "service"])
 
   serv <- ensure_null(serv)
-  # Assuming WMTS, e.g.
+  # Assuming WMTS, for example:
   # https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png
   if (is.null(serv)) {
     return("WMTS")
   }
-  toupper(serv)
+
   serv <- unname(unlist(serv))
-  serv
+  toupper(serv)
 }
 
 get_tile_crs <- function(prov_list) {
-  # Get CRS of Tile
-  crs <- unlist(
-    prov_list[tolower(names(prov_list)) %in% c("crs", "srs", "tilematrixset")]
-  )
+  # Get the tile CRS.
+  crs <- unlist(prov_list[
+    tolower(names(prov_list)) %in% c("crs", "srs", "tilematrixset")
+  ])
   crs <- ensure_null(crs)
-  # Caso some WMTS
+  # Handle WMTS providers without an explicit CRS.
   if (is.null(crs)) {
     crs <- "EPSG:3857"
   }
@@ -134,8 +130,7 @@ modify_provider_list <- function(prov_list, options = NULL) {
   type_prov <- guess_provider_type(prov_list)
 
   if (type_prov == "WMS" && "version" %in% names(options)) {
-    # Exception: need to change names depending on the version of WMS
-
+    # WMS 1.3.0 and later use `crs`, earlier versions use `srs`.
     v_wms <- unlist(modifyList(
       list(v = prov_list$version),
       list(v = options$version)
@@ -150,14 +145,14 @@ modify_provider_list <- function(prov_list, options = NULL) {
     }
   }
 
-  # Ignore TileMatrix fields in WMTS
+  # Ignore TileMatrix fields in WMTS.
   if (type_prov == "WMTS") {
     options <- options[names(options) != "tilematrix"]
   }
 
   prov_list <- modifyList(prov_list, options)
 
-  # Modify id
+  # Modify `id`.
   newdir <- paste0(names(options), "=", options, collapse = "&")
   new_id <- file.path(prov_list$id, cli::hash_raw_md5(charToRaw(newdir)))
 
@@ -166,16 +161,16 @@ modify_provider_list <- function(prov_list, options = NULL) {
 }
 
 get_tile_ext <- function(prov_list) {
-  # Special case for MapBox
+  # Handle MapBox as a special case.
   if (grepl("mapbox", prov_list$q, fixed = TRUE)) {
     return("png")
   }
 
   fmt <- ensure_null(prov_list$format)
 
-  # Caso of non OGC WMTS
+  # Handle non-OGC WMTS providers.
   if (is.null(fmt)) {
-    # Maybe ?
+    # Infer the extension from the URL.
     if (grepl("?", prov_list$q, fixed = TRUE)) {
       no_api_key <- unlist(strsplit(prov_list$q, "?", fixed = TRUE))[1]
       ext <- tools::file_ext(no_api_key)
@@ -192,7 +187,7 @@ get_tile_ext <- function(prov_list) {
 get_tile_bbox <- function(geom, bbox_expand = 0.05, prov_type = "WMS") {
   bbox <- as.double(sf::st_bbox(geom))
 
-  # Expand in planar coordinates
+  # Expand in planar coordinates.
   dimx <- (bbox[3] - bbox[1])
   dimy <- (bbox[4] - bbox[2])
   center <- c(bbox[1] + dimx / 2, bbox[2] + dimy / 2)

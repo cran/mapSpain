@@ -5,9 +5,9 @@
 \alias{esp_get_simpl}
 \alias{esp_get_simpl_prov}
 \alias{esp_get_simpl_ccaa}
-\title{Simplified map of provinces and autonomous communities of Spain}
+\title{Simplified map of provinces and Autonomous Communities and Cities of Spain}
 \source{
-INE: PC_Axis files
+INE: PC-Axis files.
 }
 \usage{
 esp_get_simpl_prov(
@@ -25,33 +25,34 @@ esp_get_simpl_ccaa(
 )
 }
 \arguments{
-\item{prov, ccaa}{character. A vector of names and/or codes for provinces
-and autonomous communities or \code{NULL} to get all the data. See \strong{Details}.}
+\item{prov, ccaa}{Character. A vector of names, codes or both for provinces
+and Autonomous Communities and Cities, or \code{NULL} to get all the data. See
+\strong{Details}.}
 
-\item{update_cache}{logical. Should the cached file be refreshed? Default
-is \code{FALSE}. When set to \code{TRUE}, it will force a new download.}
+\item{update_cache}{Logical. If \code{TRUE}, refreshes the cached file and forces
+a new download. Defaults to \code{FALSE}.}
 
-\item{cache_dir}{character string. A path to a cache directory. See
+\item{cache_dir}{Character string. A path to a cache directory. See
 \strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
 
-\item{verbose}{logical. If \code{TRUE} displays informational messages.}
+\item{verbose}{A logical value. If \code{TRUE} displays informational messages.}
 }
 \value{
-A \code{\link[sf:sf]{sf}} object.
+A \code{\link[sf:st_sf]{sf}} object.
 }
 \description{
-Simplified map with the boundaries of the
-provinces or autonomous communities of Spain, as provided by the \strong{INE}
-(Instituto Nacional de Estadistica).
+Simplified map with the boundaries of the provinces or Autonomous
+Communities of Spain, as provided by the \strong{INE} (Instituto Nacional de
+Estadística).
 }
 \details{
-Results are provided \strong{without CRS}, as provided by source.
+Results are provided \strong{without CRS}, as provided by the source.
 
-You can use and mix names, ISO codes, \code{"codauto"/ "cpro"} codes (see
+You can use and mix names, ISO codes, \code{"codauto"} or \code{"cpro"} codes (see
 \link{esp_codelist}) and NUTS codes of different levels.
 
-When using a code corresponding to a higher level (e.g.
-\code{esp_get_prov("Andalucia")}) all the corresponding units of that level are
+When using a code corresponding to a higher level (for example,
+\code{esp_get_prov("Andalucia")}), all the corresponding units of that level are
 provided (in this case, all the provinces of Andalusia).
 }
 \examples{
@@ -63,16 +64,16 @@ library(ggplot2)
 
 ggplot(prov_simp) +
   geom_sf(aes(fill = ine.ccaa.name)) +
-  labs(fill = "CCAA")
+  labs(fill = "Autonomous Communities and Cities")
 
-# Provs of Single CCAA
+# Provinces of a single Autonomous Community or City.
 
 and_simple <- esp_get_simpl_prov("Andalucia")
 
 ggplot(and_simple) +
   geom_sf()
 
-# CCAAs
+# Autonomous Communities and Cities.
 
 ccaa_simp <- esp_get_simpl_ccaa()
 
@@ -83,22 +84,22 @@ ggplot(ccaa_simp) +
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-\code{\link{esp_get_gridmap}}.
+\code{\link[=esp_get_gridmap]{esp_get_gridmap()}}.
 
-Other datasets representing political borders:
-\code{\link{esp_get_capimun}()},
-\code{\link{esp_get_ccaa}()},
-\code{\link{esp_get_ccaa_siane}()},
-\code{\link{esp_get_comarca}()},
-\code{\link{esp_get_countries_siane}()},
+Political and administrative boundary datasets:
+\code{\link[=esp_get_capimun]{esp_get_capimun()}},
+\code{\link[=esp_get_ccaa]{esp_get_ccaa()}},
+\code{\link[=esp_get_ccaa_siane]{esp_get_ccaa_siane()}},
+\code{\link[=esp_get_comarca]{esp_get_comarca()}},
+\code{\link[=esp_get_countries_siane]{esp_get_countries_siane()}},
 \code{\link{esp_get_gridmap}},
-\code{\link{esp_get_munic}()},
-\code{\link{esp_get_munic_siane}()},
-\code{\link{esp_get_nuts}()},
-\code{\link{esp_get_prov}()},
-\code{\link{esp_get_prov_siane}()},
-\code{\link{esp_get_spain}()},
-\code{\link{esp_get_spain_siane}()},
-\code{\link{esp_siane_bulk_download}()}
+\code{\link[=esp_get_munic]{esp_get_munic()}},
+\code{\link[=esp_get_munic_siane]{esp_get_munic_siane()}},
+\code{\link[=esp_get_nuts]{esp_get_nuts()}},
+\code{\link[=esp_get_prov]{esp_get_prov()}},
+\code{\link[=esp_get_prov_siane]{esp_get_prov_siane()}},
+\code{\link[=esp_get_spain]{esp_get_spain()}},
+\code{\link[=esp_get_spain_siane]{esp_get_spain_siane()}},
+\code{\link[=esp_siane_bulk_download]{esp_siane_bulk_download()}}
 }
 \concept{political}

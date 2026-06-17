@@ -4,7 +4,7 @@
       esp_dict_region_code(vals, "aa")
     Condition
       Error:
-      ! `origin` should be one of "text", "nuts", "iso2", "codauto" or "cpro", not "aa".
+      ! `origin` must be "text", "nuts", "iso2", "codauto", or "cpro", not "aa".
 
 ---
 
@@ -12,14 +12,14 @@
       esp_dict_region_code(vals, destination = "aa")
     Condition
       Error:
-      ! `destination` should be one of "text", "nuts", "iso2", "codauto" or "cpro", not "aa".
+      ! `destination` must be "text", "nuts", "iso2", "codauto", or "cpro", not "aa".
 
 ---
 
     Code
       esp_dict_region_code(vals)
     Message
-      i No conversion. `origin` equal to `destination` ("text")
+      i No conversion, `origin` is equal to `destination` ("text").
     Output
       [1] "Errioxa" "Coruna"  "Gerona"  "Madrid" 
 
@@ -79,7 +79,7 @@
     Code
       esp_dict_region_code(valsmix, destination = "codauto")
     Message
-      ! No match on `destination = "codauto"` found for "Centro", "Seville", and "Menorca".
+      ! No match found for "Centro", "Seville", and "Menorca" with `destination` "codauto".
     Output
       [1] NA   "01" NA   NA  
 
@@ -88,7 +88,7 @@
     Code
       esp_dict_region_code(valsmix, destination = "iso2")
     Message
-      ! No match on `destination = "iso2"` found for "Centro" and "Menorca".
+      ! No match found for "Centro" and "Menorca" with `destination` "iso2".
     Output
       [1] NA      "ES-AN" "ES-SE" NA     
 
@@ -98,7 +98,7 @@
       esp_dict_translate(vals, "xx")
     Condition
       Error:
-      ! `lang` should be one of "es", "en", "ca", "ga" or "eu", not "xx".
+      ! `lang` must be "es", "en", "ca", "ga", or "eu", not "xx".
 
 ---
 

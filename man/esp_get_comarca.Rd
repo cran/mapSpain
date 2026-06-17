@@ -3,7 +3,7 @@
 \encoding{UTF-8}
 \name{esp_get_comarca}
 \alias{esp_get_comarca}
-\title{'Comarcas' of Spain}
+\title{Comarcas of Spain}
 \source{
 INE: PC_Axis files, IGN, Ministry of Agriculture, Fisheries and Food (MAPA).
 }
@@ -20,93 +20,86 @@ esp_get_comarca(
 )
 }
 \arguments{
-\item{region}{character string. A vector of names and/or codes for provinces
-or \code{NULL} to get all the comarcas. See \strong{Details}.}
+\item{region}{Character string. A vector of names, codes or both for
+provinces, or \code{NULL} to get all the comarcas. See \strong{Details}.}
 
-\item{comarca}{character string. A name or \code{\link[base:grep]{regex}} expression
-with the names of the required comarcas. \code{NULL} will return all the
-possible comarcas.}
+\item{comarca}{Character string. A name or \code{\link[base:grep]{regex}}
+expression with the names of the required comarcas. Use \code{NULL} to return
+all possible comarcas.}
 
 \item{moveCAN}{A logical \code{TRUE/FALSE} or a vector of coordinates
 \code{c(lat, lon)}. It places the Canary Islands close to Spain's mainland.
 Initial position can be adjusted using the vector of coordinates. See
 \strong{Displacing the Canary Islands} in \code{\link[=esp_move_can]{esp_move_can()}}.}
 
-\item{type}{character string. One of \code{"INE"}, \code{"IGN"}, \code{"AGR"}, \code{"LIV"}.
-Type of comarca to return, see \strong{Details}.}
+\item{type}{Character string. One of \code{"INE"}, \code{"IGN"}, \code{"AGR"}, \code{"LIV"}.
+Type of comarca to return. See \strong{Details}.}
 
-\item{epsg}{character string or number. Projection of the map: 4-digit
+\item{epsg}{Character string or number. Projection of the map: 4-digit
 \href{https://epsg.io/}{EPSG code}. One of:
 \itemize{
-\item \code{"4258"}: \href{https://epsg.io/4258}{ETRS89}
+\item \code{"4258"}: \href{https://epsg.io/4258}{ETRS89}.
 \item \code{"4326"}: \href{https://epsg.io/4326}{WGS84}.
 \item \code{"3035"}: \href{https://epsg.io/3035}{ETRS89 / ETRS-LAEA}.
 \item \code{"3857"}: \href{https://epsg.io/3857}{Pseudo-Mercator}.
 }}
 
-\item{update_cache}{logical. Should the cached file be refreshed? Default
-is \code{FALSE}. When set to \code{TRUE}, it will force a new download.}
+\item{update_cache}{Logical. If \code{TRUE}, refreshes the cached file and forces
+a new download. Defaults to \code{FALSE}.}
 
-\item{cache_dir}{character string. A path to a cache directory. See
+\item{cache_dir}{Character string. A path to a cache directory. See
 \strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
 
-\item{verbose}{logical. If \code{TRUE} displays informational messages.}
+\item{verbose}{A logical value. If \code{TRUE} displays informational messages.}
 }
 \value{
-A \code{\link[sf:sf]{sf}} object.
+A \code{\link[sf:st_sf]{sf}} object.
 }
 \description{
-Returns
-\href{https://en.wikipedia.org/wiki/Comarcas_of_Spain}{Comarcas of Spain}. Comarcas are
-traditional informal territorial division, comprising several municipalities
-sharing geographical, economic or cultural traits, typically with not well
-defined limits.
+Get \href{https://en.wikipedia.org/wiki/Comarcas_of_Spain}{comarcas of Spain}.
+Comarcas are traditional informal territorial divisions comprising several
+municipalities that share geographical, economic or cultural traits,
+typically with poorly defined limits.
 }
 \details{
 When using \code{region} you can use and mix names and NUTS codes
 (levels 1, 2 or 3), ISO codes (corresponding to level 2 or 3) or
-"cpro" (see \link{esp_codelist}).
+\code{"cpro"} (see \link{esp_codelist}).
 
-When calling a higher level (Province, Autonomous Community or NUTS1),
-all the comarcas of that level will be added.
+When calling a higher level (province, Autonomous Community or City, or
+NUTS 1), all comarcas of that level are added.
 }
 \note{
 The use of the information contained on the
-\href{https://www.ine.es/en/index.htm}{INE website} may be carried out by users or
-re-use agents, at their own risk, and they will be the sole liable parties
+\href{https://www.ine.es/en/index.htm}{INE website} may be carried out by users
+or re-use agents, at their own risk, and they will be the sole liable parties
 in the case of having to answer to third parties due to damages arising
 from such use.
 }
 \section{About comarcas}{
-'Comarcas' (English equivalent: district, county, area or zone) does not
+Comarcas (English equivalent: district, county, area or zone) do not
 always have a formal legal status. They correspond mainly to natural areas
-(valleys, river basins, etc.) or even to historical regions or ancient
+(valleys, river basins and similar areas), historical regions or ancient
 kingdoms.
 
 In the case of Spain, comarcas only have an administrative character legally
 recognized in Catalonia, the Basque Country, Navarra (named merindades
-instead), in the region of El Bierzo (Castilla y Leon) and Aragon. Galicia,
-the Principality of Asturias, and Andalusia have functional comarcas.
+instead), the region of El Bierzo (Castilla y Leon) and Aragon. Galicia,
+the Principality of Asturias and Andalusia have functional comarcas.
 }
 
 \section{Types}{
-\code{esp_get_comarca()} can retrieve several types of comarcas, each one
-provided under different classification criteria.
+\code{esp_get_comarca()} can retrieve several types of comarcas, each provided
+under different classification criteria.
 \itemize{
-\item \code{"INE"}: Comarcas as defined by the National Statistics Institute (INE).
-\item \code{"IGN"}: Official comarcas, only available on some Autonomous Communities,
-provided by the National Geographic Institute.
+\item \code{"INE"}: Comarcas defined by the National Statistics Institute (INE).
+\item \code{"IGN"}: Official comarcas, only available for some Autonomous
+Communities and Cities, provided by the National Geographic Institute.
 \item \code{"AGR"}: Agrarian comarcas defined by the Ministry of Agriculture,
 Fisheries and Food (MAPA).
 \item \code{"LIV"}: Livestock comarcas defined by the Ministry of Agriculture,
 Fisheries and Food (MAPA).
 }
-}
-
-\section{Note}{
-
-Please check the download and usage provisions on \code{\link[giscoR:gisco_attributions]{gisco_attributions()}}.
-
 }
 
 \examples{
@@ -119,14 +112,14 @@ library(ggplot2)
 ggplot(comarcas) +
   geom_sf()
 
-# IGN provides recognized comarcas
+# IGN provides recognized comarcas.
 
 rec <- esp_get_comarca(type = "IGN")
 
 ggplot(rec) +
   geom_sf(aes(fill = t_comarca))
 
-# Legal Comarcas of Catalunya
+# Legal comarcas of Catalunya.
 
 comarcas_cat <- esp_get_comarca("Catalunya", type = "IGN")
 
@@ -137,20 +130,20 @@ ggplot(comarcas_cat) +
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-Other datasets representing political borders:
-\code{\link{esp_get_capimun}()},
-\code{\link{esp_get_ccaa}()},
-\code{\link{esp_get_ccaa_siane}()},
-\code{\link{esp_get_countries_siane}()},
+Political and administrative boundary datasets:
+\code{\link[=esp_get_capimun]{esp_get_capimun()}},
+\code{\link[=esp_get_ccaa]{esp_get_ccaa()}},
+\code{\link[=esp_get_ccaa_siane]{esp_get_ccaa_siane()}},
+\code{\link[=esp_get_countries_siane]{esp_get_countries_siane()}},
 \code{\link{esp_get_gridmap}},
-\code{\link{esp_get_munic}()},
-\code{\link{esp_get_munic_siane}()},
-\code{\link{esp_get_nuts}()},
-\code{\link{esp_get_prov}()},
-\code{\link{esp_get_prov_siane}()},
+\code{\link[=esp_get_munic]{esp_get_munic()}},
+\code{\link[=esp_get_munic_siane]{esp_get_munic_siane()}},
+\code{\link[=esp_get_nuts]{esp_get_nuts()}},
+\code{\link[=esp_get_prov]{esp_get_prov()}},
+\code{\link[=esp_get_prov_siane]{esp_get_prov_siane()}},
 \code{\link{esp_get_simpl}},
-\code{\link{esp_get_spain}()},
-\code{\link{esp_get_spain_siane}()},
-\code{\link{esp_siane_bulk_download}()}
+\code{\link[=esp_get_spain]{esp_get_spain()}},
+\code{\link[=esp_get_spain_siane]{esp_get_spain_siane()}},
+\code{\link[=esp_siane_bulk_download]{esp_siane_bulk_download()}}
 }
 \concept{political}

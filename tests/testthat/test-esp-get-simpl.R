@@ -7,13 +7,13 @@ test_that("Test offline", {
   })
   expect_message(
     n <- esp_get_simpl_prov(update_cache = TRUE),
-    "Offline"
+    "No internet connection"
   )
   expect_null(n)
 
   expect_message(
     n <- esp_get_simpl_ccaa(update_cache = TRUE),
-    "Offline"
+    "No internet connection"
   )
   expect_null(n)
 
@@ -29,16 +29,10 @@ test_that("Test 404", {
   local_mocked_bindings(is_404 = function(...) {
     TRUE
   })
-  expect_message(
-    n <- esp_get_simpl_prov(update_cache = TRUE),
-    "Error"
-  )
+  expect_message(n <- esp_get_simpl_prov(update_cache = TRUE), "Error")
   expect_null(n)
 
-  expect_message(
-    n <- esp_get_simpl_ccaa(update_cache = TRUE),
-    "Error"
-  )
+  expect_message(n <- esp_get_simpl_ccaa(update_cache = TRUE), "Error")
   expect_null(n)
 
   local_mocked_bindings(is_404 = function(...) {

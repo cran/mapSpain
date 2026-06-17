@@ -6,8 +6,8 @@
 \title{Add a tile layer from Spanish public administrations to a \CRANpkg{leaflet}
 map}
 \source{
-\url{https://dieghernan.github.io/leaflet-providersESP/} leaflet plugin,
-\strong{v1.3.3}.
+\url{https://dieghernan.github.io/leaflet-providersESP/}, a plugin for
+\CRANpkg{leaflet}, \strong{v1.3.3}.
 }
 \usage{
 addProviderEspTiles(
@@ -21,7 +21,7 @@ addProviderEspTiles(
 \arguments{
 \item{map}{the map to add the tile layer to}
 
-\item{provider}{the name of the provider, see \link{esp_tiles_providers} or
+\item{provider}{The name of the provider, see \link{esp_tiles_providers} or
 \url{https://dieghernan.github.io/leaflet-providersESP/preview/}.}
 
 \item{layerId}{the layer id to assign}
@@ -61,11 +61,15 @@ leafmap <- leaflet(width = "100\%", height = "60vh") |>
 leafmap
 }
 \seealso{
-\code{\link[leaflet:leaflet]{leaflet::leaflet()}}, \code{\link[leaflet:map-layers]{leaflet::addTiles()}}, \code{\link[leaflet:map-layers]{leaflet::addWMSTiles()}},
-\link{esp_tiles_providers}.
+\itemize{
+\item \code{\link[leaflet:leaflet]{leaflet::leaflet()}}.
+\item \code{\link[leaflet:addTiles]{leaflet::addTiles()}}.
+\item \code{\link[leaflet:addWMSTiles]{leaflet::addWMSTiles()}}.
+\item \link{esp_tiles_providers}.
+}
 
-Other functions for creating maps with images:
-\code{\link{esp_get_tiles}()},
-\code{\link{esp_make_provider}()}
+Static map tiles and imagery:
+\code{\link[=esp_get_tiles]{esp_get_tiles()}},
+\code{\link[=esp_make_provider]{esp_make_provider()}}
 }
 \concept{images}

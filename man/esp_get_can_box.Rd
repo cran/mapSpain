@@ -19,7 +19,7 @@ esp_get_can_box(
 esp_get_can_provinces(moveCAN = TRUE, epsg = "4258")
 }
 \arguments{
-\item{style}{character string. One of \code{"right"}, \code{"left"}, \code{"box"} or
+\item{style}{Character string. One of \code{"right"}, \code{"left"}, \code{"box"} or
 \code{"poly"}. Default is \code{"right"}, see \strong{Details}.}
 
 \item{moveCAN}{A logical \code{TRUE/FALSE} or a vector of coordinates
@@ -27,17 +27,17 @@ esp_get_can_provinces(moveCAN = TRUE, epsg = "4258")
 Initial position can be adjusted using the vector of coordinates. See
 \strong{Displacing the Canary Islands} in \code{\link[=esp_move_can]{esp_move_can()}}.}
 
-\item{epsg}{character string or number. Projection of the map: 4-digit
+\item{epsg}{Character string or number. Projection of the map: 4-digit
 \href{https://epsg.io/}{EPSG code}. One of:
 \itemize{
-\item \code{"4258"}: \href{https://epsg.io/4258}{ETRS89}
+\item \code{"4258"}: \href{https://epsg.io/4258}{ETRS89}.
 \item \code{"4326"}: \href{https://epsg.io/4326}{WGS84}.
 \item \code{"3035"}: \href{https://epsg.io/3035}{ETRS89 / ETRS-LAEA}.
 \item \code{"3857"}: \href{https://epsg.io/3857}{Pseudo-Mercator}.
 }}
 }
 \value{
-An \code{\link[sf:sf]{sf}} object: a \code{POLYGON} (when \code{style = "poly"}) or a
+An \code{\link[sf:st_sf]{sf}} object: a \code{POLYGON} (when \code{style = "poly"}) or a
 \code{LINESTRING} (other styles).
 }
 \description{
@@ -72,7 +72,7 @@ ggplot(provs) +
   theme_linedraw()
 
 \donttest{
-# Displacing the Canary Islands by a custom offset
+# Displacing the Canary Islands by a custom offset.
 displace <- c(15, 0)
 provs_disp <- esp_get_prov(moveCAN = displace)
 box_disp <- esp_get_can_box(style = "left", moveCAN = displace)
@@ -83,7 +83,7 @@ ggplot(provs_disp) +
   geom_sf(data = line_disp, linewidth = 0.15) +
   theme_linedraw()
 
-# Example using the polygon style together with other layers
+# Example using the polygon style together with other layers.
 library(giscoR)
 res <- "20"
 countries <- gisco_get_countries(
@@ -107,7 +107,7 @@ ggplot(countries) +
 }
 }
 \seealso{
-Other helpers for the Canary Islands:
-\code{\link{esp_move_can}()}
+Helpers for Canary Islands insets and displacement:
+\code{\link[=esp_move_can]{esp_move_can()}}
 }
 \concept{can_helpers}

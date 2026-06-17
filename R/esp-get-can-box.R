@@ -8,24 +8,25 @@
 #'
 #' @details
 #' The `style` parameter controls the geometry returned:
+#'
 #' - `"box"`: a rectangular boundary returned as a `LINESTRING`.
 #' - `"poly"`: a slightly expanded rectangle returned as a filled `POLYGON`.
 #' - `"left"` / `"right"`: decorative `LINESTRING` variants that follow
 #'   the western or eastern side of the islands respectively.
 #'
-#' @encoding UTF-8
-#' @family can_helpers
-#' @rdname esp_get_can_box
-#' @name esp_get_can_box
-#' @inheritParams esp_get_nuts
-#' @export
-#'
-#' @param style character string. One of `"right"`, `"left"`, `"box"` or
+#' @param style Character string. One of `"right"`, `"left"`, `"box"` or
 #'   `"poly"`. Default is `"right"`, see **Details**.
 #'
+#' @inheritParams esp_get_nuts
 #' @return
 #' An [`sf`][sf::st_sf] object: a `POLYGON` (when `style = "poly"`) or a
 #' `LINESTRING` (other styles).
+#'
+#' @family can_helpers
+#' @encoding UTF-8
+#' @rdname esp_get_can_box
+#' @name esp_get_can_box
+#' @export
 #'
 #' @examples
 #' provs <- esp_get_prov()
@@ -40,7 +41,7 @@
 #'   theme_linedraw()
 #'
 #' \donttest{
-#' # Displacing the Canary Islands by a custom offset
+#' # Displacing the Canary Islands by a custom offset.
 #' displace <- c(15, 0)
 #' provs_disp <- esp_get_prov(moveCAN = displace)
 #' box_disp <- esp_get_can_box(style = "left", moveCAN = displace)
@@ -51,7 +52,7 @@
 #'   geom_sf(data = line_disp, linewidth = 0.15) +
 #'   theme_linedraw()
 #'
-#' # Example using the polygon style together with other layers
+#' # Example using the polygon style together with other layers.
 #' library(giscoR)
 #' res <- "20"
 #' countries <- gisco_get_countries(
@@ -78,13 +79,13 @@ esp_get_can_box <- function(
   moveCAN = TRUE,
   epsg = 4258
 ) {
-  # checks
+  # Validate inputs.
 
   style <- match_arg_pretty(style)
 
   epsg <- as.character(epsg)
 
-  epsg <- match_arg_pretty(epsg, c("4258", "4326", "3035", "3857"))
+  epsg <- validate_epsg(epsg, c("4258", "4326", "3035", "3857"))
 
   df <- mapSpain::esp_nuts_2024
   can <- df[df$NUTS_ID == "ES7", ]
@@ -101,7 +102,7 @@ esp_get_can_box <- function(
   } else if (style == "right") {
     bbox <- bbox + c(0, 0, 0.5, 0.3)
 
-    # Create points
+    # Create points.
     p1 <- sf::st_point(c(bbox[3], bbox[2]))
     p2 <- sf::st_point(c(bbox[3], bbox[4] - 0.5))
     p3 <- sf::st_point(c(bbox[3] - 0.5, bbox[4]))
@@ -123,14 +124,11 @@ esp_get_can_box <- function(
     lall <- sf::st_sfc(lall, crs = sf::st_crs(can))
   }
 
-  moving <- FALSE
-  moving <- isTRUE(moveCAN) | length(moveCAN) > 1
-
-  if (moving) {
+  if (is_moving_can(moveCAN)) {
     lall <- esp_move_can(lall, moveCAN = moveCAN)
   }
 
-  # Transform
+  # Transform to the requested CRS.
 
   lall <- sf::st_transform(lall, as.numeric(epsg))
   lall <- sf::st_zm(lall)
@@ -139,8 +137,6 @@ esp_get_can_box <- function(
 }
 
 #' Canary Islands province separator line
-#'
-#' @rdname esp_get_can_box
 #'
 #' @description
 #' `esp_get_can_provinces()` returns a small `LINESTRING` used to mark the
@@ -151,13 +147,15 @@ esp_get_can_box <- function(
 #' Coordinates of `esp_get_can_provinces()` derived from CartoBase ANE
 #' (`se89_mult_admin_provcan_l.shp`).
 #'
+#' @rdname esp_get_can_box
+#'
 #' @export
 esp_get_can_provinces <- function(moveCAN = TRUE, epsg = "4258") {
   epsg <- as.character(epsg)
 
-  epsg <- match_arg_pretty(epsg, c("4258", "4326", "3035", "3857"))
+  epsg <- validate_epsg(epsg, c("4258", "4326", "3035", "3857"))
 
-  # From CartoBase ANE: se89_mult_admin_provcan_l
+  # From CartoBase ANE: se89_mult_admin_provcan_l.
   m <- c(
     sf::st_point(c(-16.29902, 27.71454)),
     sf::st_point(c(-15.69362, 28.78078))
@@ -166,14 +164,11 @@ esp_get_can_provinces <- function(moveCAN = TRUE, epsg = "4258") {
   lall <- sf::st_linestring(sf::st_coordinates(m))
   lall <- sf::st_sfc(lall, crs = sf::st_crs(4326))
 
-  moving <- FALSE
-  moving <- isTRUE(moveCAN) | length(moveCAN) > 1
-
-  if (moving) {
+  if (is_moving_can(moveCAN)) {
     lall <- esp_move_can(lall, moveCAN = moveCAN)
   }
 
-  # Transform
+  # Transform to the requested CRS.
 
   lall <- sf::st_transform(lall, as.numeric(epsg))
   lall <- sf::st_zm(lall)

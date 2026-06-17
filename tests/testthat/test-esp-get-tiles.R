@@ -16,7 +16,7 @@ test_that("Test offline", {
       update_cache = TRUE,
       verbose = TRUE
     ),
-    "Offline"
+    "No internet connection"
   )
   expect_null(n)
 
@@ -28,7 +28,7 @@ test_that("Test offline", {
       update_cache = TRUE,
       verbose = TRUE
     ),
-    "Offline"
+    "No internet connection"
   )
   expect_null(n)
 
@@ -59,11 +59,7 @@ test_that("Test 404", {
   expect_null(n)
 
   expect_message(
-    n <- esp_get_tiles(
-      x,
-      update_cache = TRUE,
-      verbose = TRUE
-    ),
+    n <- esp_get_tiles(x, update_cache = TRUE, verbose = TRUE),
     "Error"
   )
   expect_null(n)
@@ -86,11 +82,7 @@ test_that("tiles error", {
 
   expect_snapshot(
     error = TRUE,
-    esp_get_tiles(
-      ff,
-      type = "IGNBase",
-      options = list(format = "image/aabbcc")
-    )
+    esp_get_tiles(ff, type = "IGNBase", options = list(format = "image/aabbcc"))
   )
 })
 
@@ -104,23 +96,15 @@ test_that("Colorize", {
   cdir <- file.path(tempdir(), "wms_test")
   unlink(cdir, recursive = TRUE, force = TRUE)
 
-  expect_length(
-    list.files(file.path(cdir, "Catastro")),
-    0
-  )
+  expect_length(list.files(file.path(cdir, "Catastro")), 0)
   # Single point
   point <- esp_get_capimun(munic = "^Segovia", cache_dir = cdir, epsg = 3857)
 
   # Buffer
   point <- sf::st_buffer(point, dist = 50)
 
-  expect_silent(
-    res <- esp_get_tiles(point, "Catastro", cache_dir = cdir)
-  )
-  expect_length(
-    list.files(file.path(cdir, "Catastro")),
-    1
-  )
+  expect_silent(res <- esp_get_tiles(point, "Catastro", cache_dir = cdir))
+  expect_length(list.files(file.path(cdir, "Catastro")), 1)
   # This file if read is only one layer
   r_orig <- terra::rast(
     list.files(file.path(cdir, "Catastro"), full.names = TRUE),
@@ -128,12 +112,12 @@ test_that("Colorize", {
   )
 
   expect_equal(terra::nlyr(r_orig), 1)
-  expect_equal(terra::has.colors(r_orig), TRUE)
+  expect_true(terra::has.colors(r_orig))
   expect_false(terra::has.RGB(r_orig))
 
   # But ours
   expect_s4_class(res, "SpatRaster")
-  expect_identical(names(res), c("red", "green", "blue", "alpha"))
+  expect_named(res, c("red", "green", "blue", "alpha"))
   expect_true(terra::has.RGB(res))
   expect_false(any(terra::has.colors(res)))
 
@@ -253,11 +237,16 @@ test_that("Transparency", {
   unlink(cdir, recursive = TRUE, force = TRUE)
 
   # Poly
-  poly <- esp_get_nuts(cache_dir = cdir, epsg = 3857, region = "Segovia")
+  poly <- esp_get_nuts(
+    cache_dir = cdir,
+    epsg = 3857,
+    region = "Galicia",
+    resolution = 60
+  )
 
   res <- esp_get_tiles(
     poly,
-    "RedTransporte",
+    "CaminoDeSantiago",
     cache_dir = cdir,
     transparent = TRUE,
     bbox_expand = 0.1
@@ -265,13 +254,13 @@ test_that("Transparency", {
 
   expect_identical(dim(res), c(512, 512, 4))
 
-  expect_identical(names(res), c("red", "green", "blue", "alpha"))
+  expect_named(res, c("red", "green", "blue", "alpha"))
   expect_true(anyNA(terra::values(res)))
 
   # No transparency...
   res2 <- esp_get_tiles(
     poly,
-    "RedTransporte",
+    "CaminoDeSantiago",
     cache_dir = cdir,
     transparent = FALSE,
     bbox_expand = 0.1
@@ -279,7 +268,7 @@ test_that("Transparency", {
 
   expect_identical(dim(res2), c(512, 512, 3))
 
-  expect_identical(names(res2), c("red", "green", "blue"))
+  expect_named(res2, c("red", "green", "blue"))
   expect_false(anyNA(terra::values(res2)))
 
   unlink(cdir, recursive = TRUE, force = TRUE)
@@ -292,10 +281,7 @@ test_that("WMS", {
   cdir <- file.path(tempdir(), "wms_test")
   unlink(cdir, recursive = TRUE, force = TRUE)
 
-  expect_length(
-    list.files(file.path(cdir, "CaminoDeSantiago")),
-    0
-  )
+  expect_length(list.files(file.path(cdir, "CaminoDeSantiago")), 0)
   # Single point
   point <- esp_get_capimun(munic = "^Segovia", cache_dir = cdir, epsg = 3857)
 
@@ -308,10 +294,7 @@ test_that("WMS", {
     )
   )
 
-  expect_length(
-    list.files(file.path(cdir, "CaminoDeSantiago")),
-    1
-  )
+  expect_length(list.files(file.path(cdir, "CaminoDeSantiago")), 1)
 
   v <- as.vector(terra::ext(res))
   p <- as.double(sf::st_bbox(point))
@@ -329,10 +312,7 @@ test_that("WMS", {
   )
 
   expect_identical(terra::crs(res2), terra::crs(point))
-  expect_length(
-    list.files(file.path(cdir, "CaminoDeSantiago")),
-    1
-  )
+  expect_length(list.files(file.path(cdir, "CaminoDeSantiago")), 1)
 
   # Modify res
   res3 <- esp_get_tiles(
@@ -370,7 +350,7 @@ test_that("WMS", {
   expect_identical(terra::crs(terra::vect(bbox)), terra::crs(cat_styles))
 
   expect_s4_class(cat_styles, "SpatRaster")
-  expect_identical(names(cat_styles), c("red", "green", "blue", "alpha"))
+  expect_named(cat_styles, c("red", "green", "blue", "alpha"))
 
   cat_styles_noalpha <- esp_get_tiles(
     bbox,
@@ -384,7 +364,7 @@ test_that("WMS", {
     cache_dir = cdir
   )
   expect_s4_class(cat_styles_noalpha, "SpatRaster")
-  expect_identical(names(cat_styles_noalpha), c("red", "green", "blue"))
+  expect_named(cat_styles_noalpha, c("red", "green", "blue"))
 
   unlink(cdir, recursive = TRUE, force = TRUE)
 })
@@ -396,10 +376,7 @@ test_that("WMTS", {
   cdir <- file.path(tempdir(), "wmts_test")
   unlink(cdir, recursive = TRUE, force = TRUE)
 
-  expect_length(
-    list.files(file.path(cdir, "Catastro")),
-    0
-  )
+  expect_length(list.files(file.path(cdir, "Catastro")), 0)
   # Single point
   point <- esp_get_capimun(munic = "^Segovia", cache_dir = cdir, epsg = 3857)
 
@@ -454,7 +431,6 @@ test_that("WMTS", {
   unlink(cdir, recursive = TRUE, force = TRUE)
 })
 
-
 test_that("Old tests", {
   skip_on_cran()
   skip_if_not_installed("terra")
@@ -496,7 +472,6 @@ test_that("Old tests", {
   unlink(cdir, recursive = TRUE, force = TRUE)
 })
 
-
 test_that("Custom WMS", {
   skip_on_cran()
   skip_if_not_installed("terra")
@@ -505,15 +480,13 @@ test_that("Custom WMS", {
   unlink(cdir, recursive = TRUE, force = TRUE)
 
   segovia <- esp_get_prov("segovia", epsg = 3857, cache_dir = cdir)
+
   custom_wms <- list(
     id = "new_cached_test",
     q = paste0(
-      "https://idecyl.jcyl.es/geoserver/ge/wms?request=GetMap",
-      "&service=WMS&version=1.3.0",
-      "&format=image/png",
-      "&CRS=epsg:3857",
-      "&layers=geolog_cyl_litologia",
-      "&styles="
+      "https://servicios.idee.es/wms-inspire/hidrografia?",
+      "service=WMS&version=1.1.1&request=GetMap&format=image/png&",
+      "transparent=true&layers=HY.PhysicalWaters.Catchments&srs=EPSG:3857"
     )
   )
 
@@ -521,7 +494,6 @@ test_that("Custom WMS", {
   expect_s4_class(tile, "SpatRaster")
   unlink(cdir, recursive = TRUE, force = TRUE)
 })
-
 
 test_that("Custom WMTS", {
   skip_on_cran()
@@ -587,7 +559,7 @@ test_that("External API (Thunder)", {
 
   # Skip if not API KEY
   apikey <- Sys.getenv("THUNDERFOREST_API_KEY", "")
-  if (apikey == "") {
+  if (!nzchar(apikey)) {
     skip("Need a ThunderForest API KEY")
   }
 
@@ -615,7 +587,7 @@ test_that("External API (Mapbox)", {
 
   # Skip if not API KEY
   apikey <- Sys.getenv("MAPBOX_API_KEY", "")
-  if (apikey == "") {
+  if (!nzchar(apikey)) {
     skip("Need a MapBox API KEY")
   }
 

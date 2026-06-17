@@ -3,29 +3,29 @@
 \encoding{UTF-8}
 \name{esp_get_hypsobath}
 \alias{esp_get_hypsobath}
-\title{Hypsometry and bathymetry of Spain - SIANE}
+\title{Hypsometry and bathymetry of Spain from SIANE}
 \source{
-CartoBase ANE provided by Instituto Geografico Nacional (IGN),
+CartoBase ANE (Atlas Nacional de España) provided by Instituto Geográfico Nacional (IGN),
 \url{http://www.ign.es/web/ign/portal}. Years available are 2005 up to today.
 
 Copyright:
 \url{https://centrodedescargas.cnig.es/CentroDescargas/cartobase-ane}
 
-It's necessary to always acknowledge authorship using the following formulas:
+Always acknowledge authorship using the following statements:
 \enumerate{
-\item When the original digital product is not modified or altered, it can
-be expressed in one of the following ways:
+\item When the original digital product is not modified or altered, use one of
+the following statements:
 \itemize{
-\item CartoBase ANE 2006-2024 CC-BY 4.0 ign.es
-\item CartoBase ANE 2006-2024 CC-BY 4.0 Instituto Geográfico Nacional
+\item CartoBase ANE 2006-2024 CC-BY 4.0 ign.es.
+\item CartoBase ANE 2006-2024 CC-BY 4.0 Instituto Geográfico Nacional.
 }
 \item When a new product is generated:
-}
 \itemize{
-\item Obra derivada de CartoBase ANE 2006-2024 CC-BY 4.0 ign.es
+\item Obra derivada de CartoBase ANE 2006-2024 CC-BY 4.0 ign.es.
+}
 }
 
-Data distributed via a custom CDN, see
+Data distributed through the \code{sianedata} data branch, see
 \url{https://github.com/rOpenSpain/mapSpain/tree/sianedata}.
 }
 \usage{
@@ -40,38 +40,38 @@ esp_get_hypsobath(
 )
 }
 \arguments{
-\item{epsg}{character string or number. Projection of the map: 4-digit
+\item{epsg}{Character string or number. Projection of the map: 4-digit
 \href{https://epsg.io/}{EPSG code}. One of:
 \itemize{
-\item \code{"4258"}: \href{https://epsg.io/4258}{ETRS89}
+\item \code{"4258"}: \href{https://epsg.io/4258}{ETRS89}.
 \item \code{"4326"}: \href{https://epsg.io/4326}{WGS84}.
 \item \code{"3035"}: \href{https://epsg.io/3035}{ETRS89 / ETRS-LAEA}.
 \item \code{"3857"}: \href{https://epsg.io/3857}{Pseudo-Mercator}.
 }}
 
-\item{cache}{logical. Whether to do caching. Default is \code{TRUE}. See
+\item{cache}{Logical. Whether to cache downloaded files. Default is \code{TRUE}.
+See \strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
+
+\item{update_cache}{Logical. If \code{TRUE}, refreshes the cached file and forces
+a new download. Defaults to \code{FALSE}.}
+
+\item{cache_dir}{Character string. A path to a cache directory. See
 \strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
 
-\item{update_cache}{logical. Should the cached file be refreshed? Default
-is \code{FALSE}. When set to \code{TRUE}, it will force a new download.}
+\item{verbose}{A logical value. If \code{TRUE} displays informational messages.}
 
-\item{cache_dir}{character string. A path to a cache directory. See
-\strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
-
-\item{verbose}{logical. If \code{TRUE} displays informational messages.}
-
-\item{resolution}{character string or number. Resolution of the geospatial
+\item{resolution}{Character string or number. Resolution of the geospatial
 data. One of:
 \itemize{
 \item "6.5": 1:6.5 million.
 \item "3": 1:3 million.
 }}
 
-\item{spatialtype}{character string. Spatial type of the output. Use
+\item{spatialtype}{Character string. Spatial type of the output. Use
 \code{"area"} for \code{POLYGON} or \code{"line"} for \code{LINESTRING}.}
 }
 \value{
-A \code{\link[sf:sf]{sf}} object.
+A \code{\link[sf:st_sf]{sf}} object.
 }
 \description{
 Dataset representing the hypsometry and bathymetry of Spain.
@@ -89,18 +89,18 @@ Metadata available on
 \examples{
 \dontshow{if (esp_check_access()) withAutoprint(\{ # examplesIf}
 \donttest{
-# This code will produce a nice plot - It will take a few seconds to run
+# This code produces a plot and takes a few seconds to run.
 library(ggplot2)
 
 hypsobath <- esp_get_hypsobath()
 
-# Tints from Wikipedia
+# Tints from Wikipedia.
 # https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Maps/Conventions/
 # Topographic_maps
 
 levels <- sort(unique(hypsobath$val_inf))
 
-# Create Manual pal
+# Create the manual palette.
 br_bath <- length(levels[levels < 0])
 br_terrain <- length(levels) - br_bath
 pal <- c(
@@ -108,7 +108,7 @@ pal <- c(
   tidyterra::hypso.colors(br_terrain, "wiki-2.0_hypso")
 )
 
-# Plot Canary Islands
+# Plot the Canary Islands.
 ggplot(hypsobath) +
   geom_sf(aes(fill = as.factor(val_inf)),
     color = NA
@@ -127,7 +127,7 @@ ggplot(hypsobath) +
   )) +
   theme(legend.position = "bottom")
 
-# Plot Mainland
+# Plot mainland Spain.
 ggplot(hypsobath) +
   geom_sf(aes(fill = as.factor(val_inf)),
     color = NA
@@ -146,8 +146,8 @@ ggplot(hypsobath) +
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-Other natural features:
-\code{\link{esp_get_hydrobasin}()},
+Natural feature datasets:
+\code{\link[=esp_get_hydrobasin]{esp_get_hydrobasin()}},
 \code{\link{esp_get_landwater}}
 }
 \concept{natural}

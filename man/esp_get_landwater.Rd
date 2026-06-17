@@ -5,29 +5,29 @@
 \alias{esp_get_landwater}
 \alias{esp_get_rivers}
 \alias{esp_get_wetlands}
-\title{Rivers and wetlands of Spain - SIANE}
+\title{Rivers and wetlands of Spain from SIANE}
 \source{
-CartoBase ANE provided by Instituto Geografico Nacional (IGN),
+CartoBase ANE (Atlas Nacional de España) provided by Instituto Geográfico Nacional (IGN),
 \url{http://www.ign.es/web/ign/portal}. Years available are 2005 up to today.
 
 Copyright:
 \url{https://centrodedescargas.cnig.es/CentroDescargas/cartobase-ane}
 
-It's necessary to always acknowledge authorship using the following formulas:
+Always acknowledge authorship using the following statements:
 \enumerate{
-\item When the original digital product is not modified or altered, it can
-be expressed in one of the following ways:
+\item When the original digital product is not modified or altered, use one of
+the following statements:
 \itemize{
-\item CartoBase ANE 2006-2024 CC-BY 4.0 ign.es
-\item CartoBase ANE 2006-2024 CC-BY 4.0 Instituto Geográfico Nacional
+\item CartoBase ANE 2006-2024 CC-BY 4.0 ign.es.
+\item CartoBase ANE 2006-2024 CC-BY 4.0 Instituto Geográfico Nacional.
 }
 \item When a new product is generated:
-}
 \itemize{
-\item Obra derivada de CartoBase ANE 2006-2024 CC-BY 4.0 ign.es
+\item Obra derivada de CartoBase ANE 2006-2024 CC-BY 4.0 ign.es.
+}
 }
 
-Data distributed via a custom CDN, see
+Data distributed through the \code{sianedata} data branch, see
 \url{https://github.com/rOpenSpain/mapSpain/tree/sianedata}.
 }
 \usage{
@@ -54,43 +54,42 @@ esp_get_wetlands(
 )
 }
 \arguments{
-\item{epsg}{character string or number. Projection of the map: 4-digit
+\item{epsg}{Character string or number. Projection of the map: 4-digit
 \href{https://epsg.io/}{EPSG code}. One of:
 \itemize{
-\item \code{"4258"}: \href{https://epsg.io/4258}{ETRS89}
+\item \code{"4258"}: \href{https://epsg.io/4258}{ETRS89}.
 \item \code{"4326"}: \href{https://epsg.io/4326}{WGS84}.
 \item \code{"3035"}: \href{https://epsg.io/3035}{ETRS89 / ETRS-LAEA}.
 \item \code{"3857"}: \href{https://epsg.io/3857}{Pseudo-Mercator}.
 }}
 
-\item{cache}{logical. Whether to do caching. Default is \code{TRUE}. See
+\item{cache}{Logical. Whether to cache downloaded files. Default is \code{TRUE}.
+See \strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
+
+\item{update_cache}{Logical. If \code{TRUE}, refreshes the cached file and forces
+a new download. Defaults to \code{FALSE}.}
+
+\item{cache_dir}{Character string. A path to a cache directory. See
 \strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
 
-\item{update_cache}{logical. Should the cached file be refreshed? Default
-is \code{FALSE}. When set to \code{TRUE}, it will force a new download.}
-
-\item{cache_dir}{character string. A path to a cache directory. See
-\strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
-
-\item{verbose}{logical. If \code{TRUE} displays informational messages.}
+\item{verbose}{A logical value. If \code{TRUE} displays informational messages.}
 
 \item{resolution}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} character string.
 Ignored, resolution \code{3} (the most detailed) will always be provided.}
 
 \item{spatialtype}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} character string.
-Use \code{\link[=esp_get_wetlands]{esp_get_wetlands()}} instead of \code{"spatialtype"} for
-wetlands.}
+Use \code{\link[=esp_get_wetlands]{esp_get_wetlands()}} instead of \code{"spatialtype"} for wetlands.}
 
 \item{moveCAN}{A logical \code{TRUE/FALSE} or a vector of coordinates
 \code{c(lat, lon)}. It places the Canary Islands close to Spain's mainland.
 Initial position can be adjusted using the vector of coordinates. See
 \strong{Displacing the Canary Islands} in \code{\link[=esp_move_can]{esp_move_can()}}.}
 
-\item{name}{character string or  \code{\link[base:grep]{regex}} expression. Name of
+\item{name}{Character string or \code{\link[base:grep]{regex}} expression. Name of
 the element(s) to be extracted.}
 }
 \value{
-A \code{\link[sf:sf]{sf}} object.
+A \code{\link[sf:st_sf]{sf}} object.
 }
 \description{
 Object representing rivers, lagoons, reservoirs and wetlands of Spain.
@@ -102,7 +101,7 @@ Metadata available on
 \examples{
 \dontshow{if (esp_check_access()) withAutoprint(\{ # examplesIf}
 \donttest{
-# Use of regex
+# Use of regex.
 
 regex1 <- esp_get_rivers(name = "Tajo|Segura")
 unique(regex1$rotulo)
@@ -110,9 +109,9 @@ unique(regex1$rotulo)
 regex2 <- esp_get_rivers(name = "Tajo$| Segura")
 unique(regex2$rotulo)
 
-# See the difference
+# See the difference.
 
-# Rivers in Spain
+# Rivers in Spain.
 iberian <- giscoR::gisco_get_countries(
   country = c("ES", "PT", "FR"), resolution = 3
 )
@@ -130,7 +129,7 @@ ggplot(iberian) +
     ylim = c(35, 44)
   )
 
-# Wetlands in South-West Andalucia
+# Wetlands in South-West Andalucia.
 and <- esp_get_prov(c("Huelva", "Sevilla", "Cadiz"))
 wetlands <- esp_get_wetlands()
 wetlands_south <- sf::st_filter(wetlands, and)
@@ -145,8 +144,8 @@ ggplot(and) +
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-Other natural features:
-\code{\link{esp_get_hydrobasin}()},
-\code{\link{esp_get_hypsobath}()}
+Natural feature datasets:
+\code{\link[=esp_get_hydrobasin]{esp_get_hydrobasin()}},
+\code{\link[=esp_get_hypsobath]{esp_get_hypsobath()}}
 }
 \concept{natural}

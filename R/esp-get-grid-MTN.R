@@ -1,18 +1,7 @@
-#' National geographic grids from IGN MTN ((Mapa Topografico Nacional)
+#' National geographic grids from IGN MTN (Mapa Topografico Nacional)
 #'
 #' @description
 #' Loads a [`sf`][sf::st_sf] `POLYGON` with the geographic grids of Spain.
-#'
-#' @source IGN data via a custom CDN (see
-#' <https://github.com/rOpenSpain/mapSpain/tree/sianedata/MTN>).
-#'
-#' @encoding UTF-8
-#' @family grids
-#' @inheritParams esp_get_grid_EEA
-#' @inherit esp_get_grid_EEA return
-#' @export
-#'
-#' @param grid Name of the grid to be loaded. See **Details**.
 #'
 #' @details
 #' Metadata available on
@@ -35,21 +24,21 @@
 #' knitr::kable(df, col.names = "**grid_name**")
 #' ```
 #'
-#' ## MTN Grids
+#' ## MTN grids
 #'
 #' A description of the MTN (Mapa Topografico Nacional) grids available:
 #'
 #' **MTN25_ED50_Peninsula_Baleares**
 #'
 #' MTN25 grid corresponding to the Peninsula and Balearic Islands, in ED50 and
-#' geographical coordinates (longitude, latitude) This is the real MTN25 grid,
+#' geographical coordinates (longitude, latitude). This is the real MTN25 grid,
 #' that is, the one that divides the current printed series of the map, taking
 #' into account special sheets and irregularities.
 #'
 #' **MTN50_ED50_Peninsula_Baleares**
 #'
 #' MTN50 grid corresponding to the Peninsula and Balearic Islands, in ED50 and
-#' geographical coordinates (longitude, latitude) This is the real MTN50 grid,
+#' geographical coordinates (longitude, latitude). This is the real MTN50 grid,
 #' that is, the one that divides the current printed series of the map, taking
 #' into account special sheets and irregularities.
 #'
@@ -87,6 +76,17 @@
 #' series of the map, taking into account the special distribution of the
 #' Canary Islands sheets.
 #'
+#' @param grid Name of the grid to be loaded. See **Details**.
+#'
+#' @inheritParams esp_get_grid_EEA
+#' @inherit esp_get_grid_EEA return
+#' @source IGN data distributed through the `sianedata/MTN` data branch (see
+#' <https://github.com/rOpenSpain/mapSpain/tree/sianedata/MTN>).
+#'
+#' @family grids
+#' @encoding UTF-8
+#' @export
+#'
 #' @examplesIf esp_check_access()
 #' \donttest{
 #' grid <- esp_get_grid_MTN(grid = "MTN50_ETRS89_Peninsula_Baleares_Canarias")
@@ -104,7 +104,7 @@ esp_get_grid_MTN <- function(
   cache_dir = NULL,
   verbose = FALSE
 ) {
-  # Check grid
+  # Check grid.
   valid_grid <- c(
     "MTN25_ED50_Peninsula_Baleares",
     "MTN25_ETRS89_ceuta_melilla_alboran",
@@ -116,22 +116,18 @@ esp_get_grid_MTN <- function(
   )
   init_grid <- match_arg_pretty(grid, valid_grid)
 
-  # Url
+  # Build the download URL.
   url <- paste0(
     "https://github.com/rOpenSpain/mapSpain/raw/sianedata/",
     "MTN/dist/MTN_grids.zip"
   )
-  file_local <- download_url(
+
+  download_unzip_read_geo_file(
     url,
-    cache_dir = cache_dir,
     subdir = "grid",
+    member = paste0(init_grid, ".gpkg"),
     update_cache = update_cache,
+    cache_dir = cache_dir,
     verbose = verbose
   )
-  if (is.null(file_local)) {
-    return(file_local)
-  }
-  path <- gsub(basename(file_local), "", file_local)
-  unzip(file_local, exdir = path, junkpaths = TRUE)
-  read_geo_file_sf(paste0(path, init_grid, ".gpkg"))
 }

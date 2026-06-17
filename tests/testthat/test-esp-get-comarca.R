@@ -8,7 +8,7 @@ test_that("Test offline", {
   })
   expect_message(
     n <- esp_get_comarca(update_cache = TRUE, verbose = FALSE),
-    "Offline"
+    "No internet connection"
   )
   expect_null(n)
 
@@ -25,10 +25,7 @@ test_that("Test 404", {
   local_mocked_bindings(is_404 = function(...) {
     TRUE
   })
-  expect_message(
-    n <- esp_get_comarca(update_cache = TRUE),
-    "Error"
-  )
+  expect_message(n <- esp_get_comarca(update_cache = TRUE), "Error")
   expect_null(n)
 
   local_mocked_bindings(is_404 = function(...) {
@@ -75,7 +72,7 @@ test_that("comarcas online", {
   n <- a$nuts1.name
 
   s <- esp_get_comarca(region = n, cache_dir = cdir)
-  expect_equal(length(unique(s$cpro)), 52)
+  expect_length(unique(s$cpro), 52)
 
   # Types
   n <- esp_get_comarca(comarca = "Ebro", cache_dir = cdir)

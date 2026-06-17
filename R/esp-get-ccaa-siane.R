@@ -1,49 +1,54 @@
-#' Autonomous Communities of Spain - SIANE
+#' Autonomous Communities and Cities of Spain from SIANE
 #'
+#' @param year Character string or number. Release year. It must use format
+#'   `YYYY` (assuming end of year) or `YYYY-MM-DD`. Historical information
+#'   starts as of 2005.
+#' @param resolution Character string or number. Resolution of the geospatial
+#'   data. One of:
+#'   - `"10"`: 1:10 million.
+#'   - `"6.5"`: 1:6.5 million.
+#'   - `"3"`: 1:3 million.
+#'
+#' @param rawcols Logical. If `TRUE`, adds the raw columns of the resulting
+#'   object as provided by IGN.
+#'
+#' @inheritParams esp_get_nuts
+#' @inheritParams esp_get_ccaa
+#' @inherit esp_get_ccaa description return details
 #' @source
-#' CartoBase ANE provided by Instituto Geografico Nacional (IGN),
-#' <http://www.ign.es/web/ign/portal>. Years available are 2005 up to today.
+#' ```{r, echo=FALSE, results='asis'}
+#' cat("CartoBase ANE (Atlas Nacional de Espa\u00f1a) provided by Instituto",
+#'   "Geográfico Nacional (IGN),\n<http://www.ign.es/web/ign/portal>. Years",
+#'   "available are 2005 up to today.",
+#'   sep = " "
+#' )
+#' ```
 #'
 #' Copyright:
 #' <https://centrodedescargas.cnig.es/CentroDescargas/cartobase-ane>
 #'
-#' It's necessary to always acknowledge authorship using the following formulas:
+#' Always acknowledge authorship using the following statements:
 #'
-#'  1. When the original digital product is not modified or altered, it can
-#'     be expressed in one of the following ways:
-#'     -  CartoBase ANE 2006-2024 CC-BY 4.0 ign.es
-#'     -  CartoBase ANE 2006-2024 CC-BY 4.0 Instituto Geográfico Nacional
-#'  2. When a new product is generated:
-#'    - Obra derivada de CartoBase ANE 2006-2024 CC-BY 4.0 ign.es
+#' 1. When the original digital product is not modified or altered, use one of
+#'    the following statements:
+#'    - CartoBase ANE 2006-2024 CC-BY 4.0 ign.es.
+#'    - CartoBase ANE 2006-2024 CC-BY 4.0 Instituto Geográfico Nacional.
+#' 2. When a new product is generated:
+#'    - Obra derivada de CartoBase ANE 2006-2024 CC-BY 4.0 ign.es.
 #'
-#' Data distributed via a custom CDN, see
+#' Data distributed through the `sianedata` data branch, see
 #' <https://github.com/rOpenSpain/mapSpain/tree/sianedata>.
 #'
-#' @encoding UTF-8
 #' @family political
 #' @family siane
-#' @inheritParams esp_get_nuts
-#' @inheritParams esp_get_ccaa
-#' @inherit esp_get_ccaa description return details
+#' @encoding UTF-8
 #' @export
-#'
-#' @param year character string or number. Release year, it must be in
-#'   formats `YYYY` (assuming end of year) or `YYYY-MM-DD`. Historical
-#'   information starts as of 2005.
-#' @param resolution character string or number. Resolution of the geospatial
-#'   data. One of:
-#'   * "10": 1:10 million.
-#'   * "6.5": 1:6.5 million.
-#'   * "3": 1:3 million.
-#'
-#' @param rawcols logical. Setting this to `TRUE` will add the raw columns of
-#'   the resulting object as provided by IGN.
 #'
 #' @examplesIf esp_check_access()
 #' ccaas1 <- esp_get_ccaa_siane()
 #' dplyr::glimpse(ccaas1)
 #'
-#' # Low res
+#' # Low resolution.
 #' ccaas_low <- esp_get_ccaa_siane(
 #'   rawcols = TRUE, moveCAN = FALSE,
 #'   resolution = 10, epsg = 3035
@@ -67,7 +72,7 @@ esp_get_ccaa_siane <- function(
   moveCAN = TRUE,
   rawcols = FALSE
 ) {
-  init_epsg <- match_arg_pretty(epsg, c("4326", "4258", "3035", "3857"))
+  init_epsg <- validate_epsg(epsg)
   res <- match_arg_pretty(resolution)
   res <- gsub("6.5", "6m5", res)
 
@@ -85,50 +90,22 @@ esp_get_ccaa_siane <- function(
     "_admin_ccaa_a_y.gpkg"
   )
 
-  # Not cached are read from url
-  if (!cache) {
-    msg <- paste0("{.url ", url_penin, "}.")
-    make_msg("info", verbose, "Reading from", msg)
-
-    data_sf_penin <- read_geo_file_sf(url_penin)
-
-    msg <- paste0("{.url ", url_can, "}.")
-    make_msg("info", verbose, "Reading from", msg)
-
-    data_sf_can <- read_geo_file_sf(url_can)
-
-    data_sf <- rbind_fill(list(data_sf_penin, data_sf_can))
-  } else {
-    file_local_penin <- download_url(
-      url_penin,
-      cache_dir = cache_dir,
-      subdir = "siane",
-      update_cache = update_cache,
-      verbose = verbose
-    )
-
-    file_local_can <- download_url(
-      url_can,
-      cache_dir = cache_dir,
-      subdir = "siane",
-      update_cache = update_cache,
-      verbose = verbose
-    )
-
-    # Download
-    data_sf <- lapply(c(file_local_penin, file_local_can), read_geo_file_sf)
-
-    data_sf <- rbind_fill(data_sf)
-    if (is.null(data_sf)) {
-      return(NULL)
-    }
+  data_sf <- read_siane_files(
+    c(url_penin, url_can),
+    cache = cache,
+    update_cache = update_cache,
+    cache_dir = cache_dir,
+    verbose = verbose
+  )
+  if (is.null(data_sf)) {
+    return(NULL)
   }
 
   data_sf <- siane_filter_year(data_sf = data_sf, year = year)
 
   initcols <- colnames(sf::st_drop_geometry(data_sf))
 
-  # Add codauto
+  # Add `codauto`.
   data_sf$lab <- data_sf$rotulo
 
   data_sf$lab <- gsub("Ciudad de ", "", data_sf$lab, fixed = TRUE)
@@ -136,54 +113,49 @@ esp_get_ccaa_siane <- function(
   data_sf$lab <- gsub("/Euskadi", "", data_sf$lab, fixed = TRUE)
   data_sf$codauto <- esp_dict_region_code(data_sf$lab, destination = "codauto")
 
-  # Filter CCAA
+  # Filter Autonomous Communities and Cities.
   nuts_id <- ensure_null(ccaa)
 
   if (!is.null(nuts_id)) {
     nuts_id <- convert_to_nuts_ccaa(nuts_id)
-    # Get df
+    # Get Autonomous Community or City metadata.
     df <- mapSpain::esp_codelist
     dfl2 <- df[df$nuts2.code %in% nuts_id, ]$codauto
     dfl3 <- df[df$nuts3.code %in% nuts_id, ]$codauto
 
     finalcodauto <- as.vector(c(dfl2, dfl3))
 
-    # Filter
+    # Apply the filter.
     data_sf <- data_sf[data_sf$codauto %in% finalcodauto, ]
   }
 
-  # Get df final with vars
+  # Build final metadata with selected variables.
   df <- get_ccaa_codes_df()
 
-  # Merge
+  # Merge metadata.
   data_sf <- merge(data_sf, df, all.x = TRUE)
 
-  # Paste nuts1
-  dfnuts <- mapSpain::esp_codelist
-  dfnuts <- unique(dfnuts[, c("nuts2.code", "nuts1.code", "nuts1.name")])
-  data_sf <- merge(data_sf, dfnuts, all.x = TRUE)
+  # Add NUTS 1 metadata.
+  data_sf <- merge(data_sf, get_nuts1_codes_df(), all.x = TRUE)
 
-  # Move CAN
+  # Move the Canary Islands.
   data_sf <- move_can(data_sf, moveCAN)
 
-  # Back and finish
-  # Transform
+  # Restore and finish geometries.
+  # Transform to the requested CRS.
   data_sf <- sf::st_transform(data_sf, as.double(init_epsg))
 
-  # Order
+  # Order by Autonomous Community or City.
   data_sf <- data_sf[order(data_sf$codauto), ]
 
-  # Select columns
+  # Select columns.
   if (rawcols) {
-    data_sf <- data_sf[
-      ,
-      unique(c(
-        initcols,
-        colnames(df),
-        "nuts1.code",
-        "nuts1.name"
-      ))
-    ]
+    data_sf <- data_sf[, unique(c(
+      initcols,
+      colnames(df),
+      "nuts1.code",
+      "nuts1.name"
+    ))]
   } else {
     data_sf <- data_sf[, unique(c(colnames(df), "nuts1.code", "nuts1.name"))]
   }

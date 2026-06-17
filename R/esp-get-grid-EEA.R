@@ -3,13 +3,12 @@
 #' @description
 #' `r lifecycle::badge('defunct')`
 #'
-#' This function is defunct as the source file is not available any more.
+#' This function is defunct because the source file is no longer available.
 #'
-#' @family deprecated functions
-#' @keywords internal
-#' @encoding UTF-8
-#' @export
+#' @param resolution Resolution of the grid in kilometers. Can be `1`, `10`
+#'   or `100`.
 #'
+#' @inheritParams esp_get_grid_BDN
 #' @return A [`sf`][sf::st_sf] `POLYGON`.
 #'
 #' @source
@@ -22,9 +21,11 @@
 #'
 #' ```
 #'
-#' @param resolution Resolution of the grid in kms. Can be `1`, `10` or `100`.
+#' @family deprecated functions
+#' @keywords internal
+#' @encoding UTF-8
+#' @export
 #'
-#' @inheritParams esp_get_grid_BDN
 esp_get_grid_EEA <- function(
   resolution = 100,
   type = "main",
@@ -36,8 +37,7 @@ esp_get_grid_EEA <- function(
     "1.0.0",
     what = "mapSpain::esp_get_grid_EEA()",
     details = paste0(
-      "The source file is not available for download",
-      " any more"
+      "The source file is no longer available for download."
     )
   )
 }
