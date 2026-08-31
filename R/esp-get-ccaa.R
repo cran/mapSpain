@@ -1,7 +1,7 @@
 #' Autonomous Communities and Cities of Spain from GISCO
 #'
 #' @description
-#' Get
+#' Return
 #' [Autonomous Communities and Cities of
 #' Spain](https://en.wikipedia.org/wiki/Autonomous_communities_of_Spain) at a
 #' specified scale.
@@ -15,6 +15,7 @@
 #' When calling a NUTS 1 level, all Autonomous Communities and Cities of that
 #' level are added.
 #'
+#' @inheritSection esp_set_cache_dir Caching
 #' @param ccaa Character string. A vector of names, codes or both for
 #'   Autonomous Communities and Cities, or `NULL` to get all Autonomous
 #'   Communities and Cities.
@@ -22,17 +23,19 @@
 #'
 #' @inheritParams esp_get_nuts
 #' @inheritDotParams esp_get_nuts -nuts_level -region
-#' @inherit esp_get_nuts
+#' @inherit esp_get_nuts return source
 #'
-#' @family political
+#' @seealso [esp_get_ccaa_siane()].
+#'
 #' @family gisco
-#' @encoding UTF-8
+#' @concept political
 #' @rdname esp_get_ccaa
 #' @name esp_get_ccaa
 #'
+#' @encoding UTF-8
 #' @export
 #'
-#' @examples
+#' @examplesIf requireNamespace("ggplot2", quietly = TRUE)
 #' ccaa <- esp_get_ccaa()
 #'
 #' library(ggplot2)

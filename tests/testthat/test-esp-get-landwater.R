@@ -1,4 +1,4 @@
-test_that("Test offline", {
+test_that("Land and water functions return NULL while offline", {
   skip_on_cran()
   skip_if_siane_offline()
 
@@ -26,33 +26,29 @@ test_that("Test offline", {
   })
 })
 
-test_that("Test 404", {
+test_that("Land and water functions return NULL for HTTP 404", {
   skip_on_cran()
   skip_if_siane_offline()
 
   local_mocked_bindings(is_404 = function(...) {
     TRUE
   })
-  expect_message(n <- esp_get_rivers(update_cache = TRUE), "Error")
+  expect_message(n <- esp_get_rivers(update_cache = TRUE), "HTTP error")
   expect_null(n)
-  expect_message(n <- esp_get_wetlands(update_cache = TRUE), "Error")
+  expect_message(n <- esp_get_wetlands(update_cache = TRUE), "HTTP error")
   expect_null(n)
-  expect_message(n <- get_river_names(update_cache = TRUE), "Error")
+  expect_message(n <- get_river_names(update_cache = TRUE), "HTTP error")
   expect_null(n)
   local_mocked_bindings(is_404 = function(...) {
     FALSE
   })
 })
 
-test_that("Cache vs non-cached rivers", {
+test_that("esp_get_rivers() returns identical cached and uncached data", {
   skip_on_cran()
   skip_if_siane_offline()
 
-  cdir <- file.path(tempdir(), "testrivers")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
-
+  cdir <- withr::local_tempdir(pattern = "testrivers-")
   expect_identical(list.files(cdir, recursive = TRUE), character(0))
   expect_message(
     db_online <- esp_get_rivers(
@@ -84,15 +80,11 @@ test_that("Cache vs non-cached rivers", {
   unlink(cdir, recursive = TRUE, force = TRUE)
 })
 
-test_that("Cache vs non-cached wetlands", {
+test_that("esp_get_wetlands() returns identical cached and uncached data", {
   skip_on_cran()
   skip_if_siane_offline()
 
-  cdir <- file.path(tempdir(), "testwetland")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
-
+  cdir <- withr::local_tempdir(pattern = "testwetland-")
   expect_identical(list.files(cdir, recursive = TRUE), character(0))
   expect_message(
     db_online <- esp_get_wetlands(
@@ -120,15 +112,11 @@ test_that("Cache vs non-cached wetlands", {
   unlink(cdir, recursive = TRUE, force = TRUE)
 })
 
-test_that("Filtering names", {
+test_that("River and wetland functions filter names and transform CRS", {
   skip_on_cran()
   skip_if_siane_offline()
 
-  cdir <- file.path(tempdir(), "testwetland_online")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
-
+  cdir <- withr::local_tempdir(pattern = "testwetland-online-")
   expect_silent(l <- esp_get_rivers(cache_dir = cdir, epsg = 3857))
   expect_s3_class(l, "sf")
   expect_s3_class(l, "tbl_df")
@@ -160,15 +148,11 @@ test_that("Filtering names", {
   unlink(cdir, recursive = TRUE, force = TRUE)
 })
 
-test_that("Deprecations", {
+test_that("esp_get_rivers() redirects deprecated options", {
   skip_on_cran()
   skip_if_siane_offline()
 
-  cdir <- file.path(tempdir(), "testwetland_dep")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
-
+  cdir <- withr::local_tempdir(pattern = "testwetland-dep-")
   expect_snapshot(l <- esp_get_rivers(cache_dir = cdir, resolution = 10))
   expect_s3_class(l, "sf")
   expect_s3_class(l, "tbl_df")

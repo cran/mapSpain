@@ -1,4 +1,4 @@
-test_that("Test null", {
+test_that("esp_get_nuts() propagates missing source data", {
   skip_on_cran()
   skip_if_siane_offline()
   skip_if_gisco_offline()
@@ -21,7 +21,7 @@ test_that("Test null", {
   local_mocked_bindings(giscor_get_nuts = the_fun)
 })
 
-test_that("Test local NUTS", {
+test_that("esp_get_nuts() filters bundled data by regional identifiers", {
   expect_silent(esp_get_nuts())
   expect_silent(esp_get_nuts(resolution = 1))
   expect_silent(esp_get_nuts(nuts_level = 2, moveCAN = FALSE))
@@ -33,16 +33,9 @@ test_that("Test local NUTS", {
   expect_silent(esp_get_nuts(region = "Canarias"))
   expect_silent(esp_get_nuts(region = "ES1"))
   expect_message(esp_get_nuts(verbose = TRUE))
-  expect_error(esp_get_nuts(resolution = 32))
-  expect_error(esp_get_nuts(spatialtype = "XX"))
-  expect_error(esp_get_nuts(nuts_level = "XX"))
-
-  # Check all nuts codes
-  a <- unique(c(
-    esp_codelist$nuts1.code,
-    esp_codelist$nuts2.code,
-    esp_codelist$nuts3.code
-  ))
+  expect_error(esp_get_nuts(resolution = 32), class = "rlang_error")
+  expect_error(esp_get_nuts(spatialtype = "XX"), class = "rlang_error")
+  expect_error(esp_get_nuts(nuts_level = "XX"), class = "rlang_error")
 
   l1 <- unique(esp_codelist$nuts1.code)
   ff <- esp_get_nuts(region = l1)
@@ -68,18 +61,17 @@ test_that("Test local NUTS", {
   expect_silent(esp_get_nuts(resolution = "20"))
 })
 
-test_that("Valid inputs", {
+test_that("esp_get_nuts() validates levels and file extensions", {
   skip_on_cran()
   skip_if_gisco_offline()
 
-  cdir <- file.path(tempdir(), "testnuts")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
-
+  cdir <- withr::local_tempdir(pattern = "testnuts-")
   # validate ext
 
-  expect_error(esp_get_nuts(ext = "docx", cache_dir = cdir), regexp = "geojson")
+  expect_error(
+    esp_get_nuts(ext = "docx", cache_dir = cdir),
+    class = "rlang_error"
+  )
 
   # validate level
   expect_snapshot(
@@ -101,15 +93,11 @@ test_that("Valid inputs", {
   unlink(cdir, recursive = TRUE, force = TRUE)
 })
 
-test_that("Cached dataset vs updated", {
+test_that("esp_get_nuts() agrees across bundled and downloaded data", {
   skip_on_cran()
   skip_if_gisco_offline()
 
-  cdir <- file.path(tempdir(), "testnuts")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
-
+  cdir <- withr::local_tempdir(pattern = "testnuts-")
   expect_identical(list.files(cdir, recursive = TRUE), character(0))
   expect_snapshot(db_cached <- esp_get_nuts(verbose = TRUE, region = "Murcia"))
 
@@ -117,10 +105,10 @@ test_that("Cached dataset vs updated", {
   db_cached_l1 <- esp_get_nuts(nuts_level = 1)
   db_cached_l2 <- esp_get_nuts(nuts_level = 2)
   db_cached_l3 <- esp_get_nuts(nuts_level = 3)
-  expect_true(all(db_cached_l1$LEVL_CODE == 1))
-  expect_true(all(db_cached_l2$LEVL_CODE == 2))
+  expect_all_equal(db_cached_l1$LEVL_CODE, 1)
+  expect_all_equal(db_cached_l2$LEVL_CODE, 2)
 
-  expect_true(all(db_cached_l3$LEVL_CODE == 3))
+  expect_all_equal(db_cached_l3$LEVL_CODE, 3)
   expect_identical(list.files(cdir, recursive = TRUE), character(0))
   # Force download
 
@@ -139,30 +127,26 @@ test_that("Cached dataset vs updated", {
   )
 
   expect_identical(db_cached$NUTS_ID, db_cached2$NUTS_ID)
-  expect_true("geo" %in% names(db_cached))
-  expect_true("geo" %in% names(db_cached2))
+  expect_contains(names(db_cached), "geo")
+  expect_contains(names(db_cached2), "geo")
   # Cleanup
   unlink(cdir, recursive = TRUE, force = TRUE)
 })
-test_that("Spatial types", {
+test_that("esp_get_nuts() validates and filters spatial types", {
   skip_on_cran()
   skip_if_gisco_offline()
 
-  cdir <- file.path(tempdir(), "testnuts")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
-
+  cdir <- withr::local_tempdir(pattern = "testnuts-")
   # LB
   lb <- esp_get_nuts(spatialtype = "LB", cache_dir = cdir)
-  expect_true(unique(sf::st_geometry_type(lb)) == "POINT") # Can filter
-  expect_true("CNTR_CODE" %in% names(lb))
+  expect_identical(as.character(unique(sf::st_geometry_type(lb))), "POINT")
+  expect_contains(names(lb), "CNTR_CODE")
   lb_filter <- esp_get_nuts(
     spatialtype = "LB",
     region = "Segovia",
     cache_dir = cdir
   )
-  expect_true(all(lb_filter$NUTS_ID == "ES416"))
+  expect_all_equal(lb_filter$NUTS_ID, "ES416")
 
   # BN
   expect_snapshot(
@@ -173,15 +157,11 @@ test_that("Spatial types", {
   unlink(cdir, recursive = TRUE, force = TRUE)
 })
 
-test_that("Extensions", {
+test_that("esp_get_nuts() downloads supported file extensions", {
   skip_on_cran()
   skip_if_gisco_offline()
 
-  cdir <- file.path(tempdir(), "testnuts")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
-
+  cdir <- withr::local_tempdir(pattern = "testnuts-")
   expect_identical(list.files(cdir, recursive = TRUE), character(0))
 
   db_geojson <- esp_get_nuts(
@@ -212,13 +192,10 @@ test_that("Extensions", {
   unlink(cdir, recursive = TRUE, force = TRUE)
 })
 
-test_that("Test NUTS online", {
+test_that("esp_get_nuts() downloads historical datasets", {
   skip_on_cran()
   skip_if_gisco_offline()
-  cdir <- file.path(tempdir(), "testnuts")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
+  cdir <- withr::local_tempdir(pattern = "testnuts-")
   expect_silent(
     a1 <- esp_get_nuts(resolution = "60", year = 2021, cache_dir = cdir)
   )

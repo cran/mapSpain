@@ -1,18 +1,19 @@
 #' Railways of Spain from SIANE
 #'
 #' @description
-#' Loads a [`sf`][sf::st_sf] `LINESTRING` or `POINT` object representing the
-#' nodes and railway lines of Spain.
+#' This function loads an [`sf`][sf::st_sf] `LINESTRING` or `POINT` object
+#' representing the nodes and railway lines of Spain.
 #'
+#' @inheritSection esp_set_cache_dir Caching
 #' @param year Ignored.
 #' @param spatialtype `r lifecycle::badge("deprecated")` character string.
-#'   Use [mapSpain::esp_get_stations()] instead of `"point"` for stations.
+#'   Use [esp_get_stations()] instead of `"point"` for stations.
 #'
 #' @inheritParams esp_get_ccaa_siane
 #' @inherit esp_get_ccaa_siane return source
 #' @family infrastructure
-#' @encoding UTF-8
 #' @rdname esp_get_railway
+#' @encoding UTF-8
 #' @export
 #'
 #' @examplesIf esp_check_access()
@@ -66,7 +67,7 @@ esp_get_railway <- function(
     )
 
     cli::cli_alert_info(
-      "Redirecting the arguments to {.fn mapSpain::esp_get_stations}."
+      "Redirecting arguments to {.fn mapSpain::esp_get_stations}."
     )
 
     data_sf <- esp_get_stations(
@@ -99,34 +100,22 @@ esp_get_railway <- function(
   data_sf <- merge_db_value_desc(
     data_sf,
     "tipoffcc",
-    c(
-      "t_ffcc",
-      "t_ffcc_desc"
-    )
+    c("t_ffcc", "t_ffcc_desc")
   )
   data_sf <- merge_db_value_desc(
     data_sf,
     "estadofisico",
-    c(
-      "estado_fis",
-      "estado_fis_desc"
-    )
+    c("estado_fis", "estado_fis_desc")
   )
   data_sf <- merge_db_value_desc(
     data_sf,
     "anchovia",
-    c(
-      "ancho_via",
-      "ancho_via_desc"
-    )
+    c("ancho_via", "ancho_via_desc")
   )
   data_sf <- merge_db_value_desc(
     data_sf,
     "numerovias",
-    c(
-      "num_vias",
-      "num_vias_desc"
-    )
+    c("num_vias", "num_vias_desc")
   )
 
   data_sf <- data_sf[order(data_sf$t_ffcc, data_sf$ancho_via), ]

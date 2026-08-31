@@ -1,4 +1,4 @@
-test_that("Test offline", {
+test_that("BDN grid helpers return NULL while offline", {
   skip_on_cran()
   skip_if_siane_offline()
 
@@ -21,19 +21,19 @@ test_that("Test offline", {
   })
 })
 
-test_that("Test 404", {
+test_that("BDN grid helpers return NULL for HTTP 404 responses", {
   skip_on_cran()
   skip_if_siane_offline()
 
   local_mocked_bindings(is_404 = function(...) {
     TRUE
   })
-  expect_message(n <- esp_get_grid_BDN(update_cache = TRUE), "Error")
+  expect_message(n <- esp_get_grid_BDN(update_cache = TRUE), "HTTP error")
   expect_null(n)
 
   expect_message(
     n <- esp_get_grid_BDN_ccaa(ccaa = "Murcia", update_cache = TRUE),
-    "Error"
+    "HTTP error"
   )
   expect_null(n)
   local_mocked_bindings(is_404 = function(...) {
@@ -41,18 +41,18 @@ test_that("Test 404", {
   })
 })
 
-test_that("Errors", {
+test_that("BDN grid helpers reject invalid selections", {
   expect_snapshot(error = TRUE, esp_get_grid_BDN("50"))
   expect_snapshot(error = TRUE, esp_get_grid_BDN(type = "50"))
   expect_snapshot(error = TRUE, esp_get_grid_BDN_ccaa("Sevilla"))
   expect_snapshot(error = TRUE, esp_get_grid_BDN_ccaa())
 })
 
-test_that("BDN grid online", {
+test_that("esp_get_grid_BDN() returns grids at requested resolutions", {
   skip_on_cran()
   skip_if_siane_offline()
 
-  tdir <- file.path(tempdir(), "testthat_test")
+  tdir <- withr::local_tempfile(pattern = "testthat-grid-bdn-")
   tdir <- create_cache_dir(tdir)
 
   # Grid 10 vs 5
@@ -84,11 +84,11 @@ test_that("BDN grid online", {
   expect_false(dir.exists(tdir))
 })
 
-test_that("BDN grid online CCAA", {
+test_that("esp_get_grid_BDN_ccaa() returns grids for autonomous communities", {
   skip_on_cran()
   skip_if_siane_offline()
 
-  tdir <- file.path(tempdir(), "testthat_test")
+  tdir <- withr::local_tempfile(pattern = "testthat-grid-bdn-")
   tdir <- create_cache_dir(tdir)
   expect_message(
     s <- esp_get_grid_BDN_ccaa("Ceuta", cache_dir = tdir, verbose = TRUE)

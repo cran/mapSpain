@@ -1,4 +1,4 @@
-test_that("Test offline", {
+test_that("esp_get_capimun() returns NULL while offline", {
   skip_on_cran()
   skip_if_siane_offline()
 
@@ -16,14 +16,14 @@ test_that("Test offline", {
   })
 })
 
-test_that("Test 404", {
+test_that("esp_get_capimun() returns NULL for HTTP 404 responses", {
   skip_on_cran()
   skip_if_siane_offline()
 
   local_mocked_bindings(is_404 = function(...) {
     TRUE
   })
-  expect_message(n <- esp_get_capimun(update_cache = TRUE), "Error")
+  expect_message(n <- esp_get_capimun(update_cache = TRUE), "HTTP error")
   expect_null(n)
 
   local_mocked_bindings(is_404 = function(...) {
@@ -31,14 +31,11 @@ test_that("Test 404", {
   })
 })
 
-test_that("Cache vs non-cached", {
+test_that("esp_get_capimun() returns identical cached and uncached data", {
   skip_on_cran()
   skip_if_siane_offline()
 
-  cdir <- file.path(tempdir(), "testcapimun")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
+  cdir <- withr::local_tempdir(pattern = "testcapimun-")
 
   expect_identical(list.files(cdir, recursive = TRUE), character(0))
   expect_message(
@@ -65,19 +62,13 @@ test_that("Cache vs non-cached", {
       "siane/se89_3_urban_capimuni_p_y.gpkg"
     )
   )
-
-  # Cleanup
-  unlink(cdir, recursive = TRUE, force = TRUE)
 })
 
-test_that("Filter munis and regions", {
+test_that("esp_get_capimun() filters municipalities and regions", {
   skip_on_cran()
   skip_if_siane_offline()
 
-  cdir <- file.path(tempdir(), "testcapimun")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
+  cdir <- withr::local_tempdir(pattern = "testcapimun-")
 
   db_cached <- esp_get_capimun(munic = "Melque", cache_dir = cdir)
   expect_shape(db_cached, nrow = 1)
@@ -134,7 +125,4 @@ test_that("Filter munis and regions", {
   )
   expect_identical(ten_move, ten_move_par)
   expect_false(identical(ten_move, ten_nomove))
-
-  # Cleanup
-  unlink(cdir, recursive = TRUE, force = TRUE)
 })

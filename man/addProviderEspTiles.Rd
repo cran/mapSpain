@@ -21,7 +21,7 @@ addProviderEspTiles(
 \arguments{
 \item{map}{the map to add the tile layer to}
 
-\item{provider}{The name of the provider, see \link{esp_tiles_providers} or
+\item{provider}{The name of the provider. See \link{esp_tiles_providers} or
 \url{https://dieghernan.github.io/leaflet-providersESP/preview/}.}
 
 \item{layerId}{the layer id to assign}
@@ -69,6 +69,7 @@ leafmap
 }
 
 Static map tiles and imagery:
+\code{\link[=esp_get_attributions]{esp_get_attributions()}},
 \code{\link[=esp_get_tiles]{esp_get_tiles()}},
 \code{\link[=esp_make_provider]{esp_make_provider()}}
 }

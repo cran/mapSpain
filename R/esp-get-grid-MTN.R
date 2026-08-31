@@ -1,7 +1,8 @@
-#' National geographic grids from IGN MTN (Mapa Topografico Nacional)
+#' National geographic grids from IGN MTN (Mapa Topográfico Nacional)
 #'
 #' @description
-#' Loads a [`sf`][sf::st_sf] `POLYGON` with the geographic grids of Spain.
+#' This function loads an [`sf`][sf::st_sf] `POLYGON` with the geographic
+#' grids of Spain.
 #'
 #' @details
 #' Metadata available on
@@ -26,7 +27,7 @@
 #'
 #' ## MTN grids
 #'
-#' A description of the MTN (Mapa Topografico Nacional) grids available:
+#' A description of the available MTN (Mapa Topográfico Nacional) grids:
 #'
 #' **MTN25_ED50_Peninsula_Baleares**
 #'
@@ -44,7 +45,7 @@
 #'
 #' **MTN25_ETRS89_ceuta_melilla_alboran**
 #'
-#'  MTN25 grid corresponding to Ceuta, Melilla, Alboran and Spanish territories
+#' MTN25 grid corresponding to Ceuta, Melilla, Alboran and Spanish territories
 #' in North Africa, adjusted to the new official geodetic reference system
 #' ETRS89, in geographical coordinates (longitude, latitude).
 #'
@@ -76,10 +77,11 @@
 #' series of the map, taking into account the special distribution of the
 #' Canary Islands sheets.
 #'
+#' @inheritSection esp_set_cache_dir Caching
 #' @param grid Name of the grid to be loaded. See **Details**.
 #'
-#' @inheritParams esp_get_grid_EEA
-#' @inherit esp_get_grid_EEA return
+#' @inheritParams esp_get_nuts
+#' @inherit esp_get_grid_BDN return
 #' @source IGN data distributed through the `sianedata/MTN` data branch (see
 #' <https://github.com/rOpenSpain/mapSpain/tree/sianedata/MTN>).
 #'

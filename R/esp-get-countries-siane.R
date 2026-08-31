@@ -1,27 +1,26 @@
 #' Countries of the world from SIANE
 #'
 #' @description
-#' This dataset contains the administrative boundaries at country level of the
-#' world.
+#' This dataset contains worldwide country-level administrative boundaries.
 #'
 #' The data included in this cartographic database do not imply any opinion of
 #' the IGN regarding its legal status.
 #'
-#' @param country Character vector of country codes. It can be a vector of
-#'   country names, ISO3 country codes or ISO2 country codes. See also
+#' @inheritSection esp_set_cache_dir Caching
+#' @param country Character vector of country codes. Accepts country names,
+#'   ISO3 country codes or ISO2 country codes. See also
 #'   [countrycode::countrycode()].
 #'
 #' @inheritParams esp_get_ccaa_siane
-#' @inheritParams esp_get_prov
 #' @inherit esp_get_ccaa_siane source return
 #' @seealso [giscoR::gisco_get_countries()].
 #'
-#' @family political
 #' @family siane
+#' @concept political
 #' @encoding UTF-8
 #' @export
 #'
-#' @examplesIf esp_check_access()
+#' @examplesIf esp_check_access() && requireNamespace("ggplot2", quietly = TRUE)
 #' cntries <- esp_get_countries_siane()
 #'
 #' library(ggplot2)
@@ -67,19 +66,21 @@ esp_get_countries_siane <- function(
   data_sf
 }
 
-#' Filter data sf by country
+#' Filter an `sf` object by country
 #'
-#' @param data_sf An `sf` object.
+#' @param data_sf An [`sf`][sf::st_sf] object.
 #' @param country Character vector of country codes or names.
+#' @param call The execution environment to use in error messages.
 #'
-#' @return An `sf` object with rows filtered by the provided country vector.
+#' @return An [`sf`][sf::st_sf] object with rows filtered by the provided
+#'   country vector.
 #'
 #' @noRd
-filter_country <- function(data_sf, country = NULL) {
+filter_country <- function(data_sf, country = NULL, call = parent.frame()) {
   if (!"id_iso3" %in% names(data_sf)) {
-    return(data_sf) # nocov
+    return(data_sf)
   }
-  fil_codes <- convert_country_code(country)
+  fil_codes <- convert_country_code(country, call = call)
   if (is.null(fil_codes)) {
     return(data_sf)
   }

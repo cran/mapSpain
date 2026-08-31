@@ -1,5 +1,6 @@
 #' Municipalities of Spain from SIANE
 #'
+#' @inheritSection esp_set_cache_dir Caching
 #' @inheritParams esp_get_ccaa_siane
 #' @inheritParams esp_get_munic
 #' @inherit esp_get_munic description details return
@@ -16,9 +17,11 @@
 #'   Zenodo. \doi{10.5281/zenodo.15345101},
 #'   <https://www.uv.es/goerlich/Ivie/LAU2boundaries4Spain.html>.
 #'
-#' @family political
+#' @seealso [esp_get_munic()].
+#'
 #' @family siane
 #' @family municipalities
+#' @concept political
 #' @encoding UTF-8
 #' @export
 #'

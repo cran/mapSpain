@@ -1,11 +1,11 @@
-test_that("Errors", {
+test_that("esp_move_can() requires an sf or sfc object", {
   teide <- data.frame(name = "Teide Peak", lon = -16.6437593, lat = 28.2722883)
 
   expect_snapshot(error = TRUE, esp_move_can(teide))
   expect_snapshot(error = TRUE, esp_move_can())
 })
 
-test_that("sfc", {
+test_that("esp_move_can() preserves sfc structure and CRS while moving", {
   teide <- data.frame(
     name = rep("test", 20),
     lon = seq(-16.1, -15.8, length.out = 20),
@@ -52,7 +52,7 @@ test_that("sfc", {
   expect_equal(sort(unique(as.integer(mat2))), c(9L, 14L))
 })
 
-test_that("sf", {
+test_that("esp_move_can() preserves sf attributes and geometry columns", {
   teide <- data.frame(
     name = rep("test", 20),
     lon = seq(-16.1, -15.8, length.out = 20),
@@ -73,7 +73,7 @@ test_that("sf", {
   moved_n <- esp_move_can(teide_sf2, moveCAN = FALSE)
   expect_identical(moved_n, teide_sf2)
 
-  expect_true(all(sf::st_is_valid(moved_n)))
+  expect_all_true(sf::st_is_valid(moved_n))
 
   # Moved
   moved2 <- esp_move_can(teide_sf, moveCAN = TRUE)
@@ -88,10 +88,10 @@ test_that("sf", {
   expect_identical(sf::st_crs(moved3), sf::st_crs(teide_sf_3857))
   expect_identical(names(moved3), names(teide_sf_3857))
 
-  expect_true(all(sf::st_is_valid(moved3)))
+  expect_all_true(sf::st_is_valid(moved3))
 })
 
-test_that("Empty", {
+test_that("esp_move_can() preserves empty sf and sfc objects", {
   teide <- data.frame(
     name = rep("test", 20),
     lon = seq(-16.1, -15.8, length.out = 20),
@@ -109,7 +109,7 @@ test_that("Empty", {
   expect_identical(teide_null_sfc, esp_move_can(teide_null_sfc, moveCAN = TRUE))
 })
 
-test_that("Internal", {
+test_that("move_can() identifies Canary geometries from regional codes", {
   test <- data.frame(name = "test", lon = 0, lat = 0)
 
   test_sf <- sf::st_as_sf(test, coords = c("lon", "lat"), crs = 3857)
@@ -153,7 +153,7 @@ test_that("Internal", {
   expect_identical(sf::st_coordinates(res2), sf::st_coordinates(res3))
 })
 
-test_that("Several", {
+test_that("move_can() moves only Canary rows in mixed datasets", {
   test <- data.frame(name = c("test", "2"), lon = c(0, 0), lat = c(0, 0))
 
   test_sf <- sf::st_as_sf(test, coords = c("lon", "lat"), crs = 3857)

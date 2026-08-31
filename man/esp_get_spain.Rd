@@ -6,10 +6,8 @@
 \alias{esp_get_country}
 \title{Boundaries of Spain from GISCO}
 \source{
-\url{https://gisco-services.ec.europa.eu/distribution/v2/}.
-
-Copyright:
-\url{https://ec.europa.eu/eurostat/web/gisco/geodata/administrative-units}.
+GISCO NUTS distribution API:
+\url{https://gisco-services.ec.europa.eu/distribution/v2/nuts/}.
 }
 \usage{
 esp_get_spain(moveCAN = TRUE, ...)
@@ -33,15 +31,16 @@ Initial position can be adjusted using the vector of coordinates. See
 \item \code{"3035"}: \href{https://epsg.io/3035}{ETRS89 / ETRS-LAEA}.
 \item \code{"3857"}: \href{https://epsg.io/3857}{Pseudo-Mercator}.
 }}
-    \item{\code{cache}}{Logical. Whether to cache downloaded files. Default is \code{TRUE}.
-See \strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
+    \item{\code{cache}}{Logical. Whether to cache downloaded files. Defaults to \code{TRUE}.
+See \strong{Caching}.}
     \item{\code{update_cache}}{Logical. If \code{TRUE}, refreshes the cached file and forces
 a new download. Defaults to \code{FALSE}.}
     \item{\code{cache_dir}}{Character string. A path to a cache directory. See
-\strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
+\strong{Caching}.}
     \item{\code{ext}}{Character. Extension of the file (default \code{"gpkg"}). See
 \code{\link[giscoR:gisco_get_nuts]{giscoR::gisco_get_nuts()}}.}
-    \item{\code{verbose}}{A logical value. If \code{TRUE} displays informational messages.}
+    \item{\code{verbose}}{A logical value indicating whether to display informational
+messages.}
     \item{\code{resolution}}{A character string or numeric value with the geospatial
 data resolution. One of:
 \itemize{
@@ -64,10 +63,16 @@ specified scale.
 Dataset derived from NUTS data provided by GISCO. Check \code{\link[=esp_get_nuts]{esp_get_nuts()}} for
 details.
 }
-\note{
-Please check the download and usage provisions on
-\code{\link[giscoR:gisco_attributions]{giscoR::gisco_attributions()}}.
+\section{Caching}{
+
+
+Functions that download data store files in \code{cache_dir}. When \code{cache_dir}
+is \code{NULL}, they use the active package cache, which defaults to a temporary
+directory. Set \code{update_cache = TRUE} to replace an existing cached file.
+See \strong{Caching strategies} in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}} to configure a
+persistent cache.
 }
+
 \examples{
 \dontshow{if (esp_check_access()) withAutoprint(\{ # examplesIf}
 \donttest{
@@ -90,26 +95,12 @@ ggplot(moved_can) +
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-Political and administrative boundary datasets:
-\code{\link[=esp_get_capimun]{esp_get_capimun()}},
-\code{\link[=esp_get_ccaa]{esp_get_ccaa()}},
-\code{\link[=esp_get_ccaa_siane]{esp_get_ccaa_siane()}},
-\code{\link[=esp_get_comarca]{esp_get_comarca()}},
-\code{\link[=esp_get_countries_siane]{esp_get_countries_siane()}},
-\code{\link{esp_get_gridmap}},
-\code{\link[=esp_get_munic]{esp_get_munic()}},
-\code{\link[=esp_get_munic_siane]{esp_get_munic_siane()}},
-\code{\link[=esp_get_nuts]{esp_get_nuts()}},
-\code{\link[=esp_get_prov]{esp_get_prov()}},
-\code{\link[=esp_get_prov_siane]{esp_get_prov_siane()}},
-\code{\link{esp_get_simpl}},
-\code{\link[=esp_get_spain_siane]{esp_get_spain_siane()}},
-\code{\link[=esp_siane_bulk_download]{esp_siane_bulk_download()}}
+\code{\link[=esp_get_spain_siane]{esp_get_spain_siane()}}.
 
 NUTS boundary datasets:
 \code{\link[=esp_get_nuts]{esp_get_nuts()}}
 
-Datasets sourced from GISCO:
+GISCO boundary data:
 \code{\link[=esp_get_ccaa]{esp_get_ccaa()}},
 \code{\link[=esp_get_munic]{esp_get_munic()}},
 \code{\link[=esp_get_nuts]{esp_get_nuts()}},

@@ -1,4 +1,4 @@
-test_that("Test offline", {
+test_that("esp_get_hypsobath() returns NULL while offline", {
   skip_on_cran()
   skip_if_siane_offline()
   skip_if_gisco_offline()
@@ -16,7 +16,7 @@ test_that("Test offline", {
     httr2::is_online()
   })
 })
-test_that("Test 404", {
+test_that("esp_get_hypsobath() returns NULL for HTTP 404 responses", {
   skip_on_cran()
   skip_if_siane_offline()
   skip_if_gisco_offline()
@@ -24,7 +24,7 @@ test_that("Test 404", {
   local_mocked_bindings(is_404 = function(...) {
     TRUE
   })
-  expect_message(n <- esp_get_hypsobath(update_cache = TRUE), "Error")
+  expect_message(n <- esp_get_hypsobath(update_cache = TRUE), "HTTP error")
   expect_null(n)
 
   local_mocked_bindings(is_404 = function(...) {
@@ -32,15 +32,11 @@ test_that("Test 404", {
   })
 })
 
-test_that("Cache vs non-cached", {
+test_that("esp_get_hypsobath() returns identical cached and uncached data", {
   skip_on_cran()
   skip_if_siane_offline()
 
-  cdir <- file.path(tempdir(), "testhypsocache")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
-
+  cdir <- withr::local_tempdir(pattern = "testhypsocache-")
   expect_identical(list.files(cdir, recursive = TRUE), character(0))
   expect_message(
     db_online <- esp_get_hypsobath(
@@ -68,18 +64,17 @@ test_that("Cache vs non-cached", {
   unlink(cdir, recursive = TRUE, force = TRUE)
 })
 
-test_that("hypsobath online", {
-  expect_error(esp_get_hypsobath(epsg = 3367))
-  expect_error(esp_get_hypsobath(spatialtype = "f"))
-  expect_error(esp_get_hypsobath(resolution = "10"))
+test_that("esp_get_hypsobath() rejects invalid options", {
+  expect_snapshot(error = TRUE, esp_get_hypsobath(epsg = 3367))
+  expect_snapshot(error = TRUE, esp_get_hypsobath(spatialtype = "f"))
+  expect_snapshot(error = TRUE, esp_get_hypsobath(resolution = "10"))
+})
 
+test_that("esp_get_hypsobath() returns requested geometry and resolution", {
   skip_on_cran()
   skip_if_siane_offline()
   skip_if_gisco_offline()
-  cdir <- file.path(tempdir(), "testhypsobath")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
+  cdir <- withr::local_tempdir(pattern = "testhypsobath-")
   expect_silent(esp_get_hypsobath(
     spatialtype = "line",
     resolution = 6.5,
@@ -94,7 +89,7 @@ test_that("hypsobath online", {
     cache_dir = cdir
   )
 
-  expect_true(sf::st_crs(l) == sf::st_crs(3857))
+  expect_identical(sf::st_crs(l), sf::st_crs(3857))
   expect_silent(esp_get_hypsobath(
     spatialtype = "area",
     resolution = "6.5",

@@ -1,4 +1,56 @@
-test_that("Test offline", {
+test_that("esp_timeout() reads valid environment values and uses defaults", {
+  withr::local_options(list(mapspain_timeout = NULL))
+  withr::local_envvar(c(MAPSPAIN_TIMEOUT = "600"))
+
+  expect_equal(esp_timeout(), 600)
+
+  withr::local_envvar(c(MAPSPAIN_TIMEOUT = NA))
+  expect_equal(esp_timeout(), 300L)
+
+  withr::local_envvar(c(MAPSPAIN_TIMEOUT = "invalid"))
+  expect_equal(esp_timeout(), 300L)
+})
+
+test_that("esp_timeout() gives package options precedence over environment", {
+  withr::local_options(list(mapspain_timeout = 30))
+  withr::local_envvar(c(MAPSPAIN_TIMEOUT = "600"))
+
+  expect_equal(esp_timeout(), 30)
+})
+
+test_that("download_url() applies the configured HTTP timeout", {
+  withr::local_options(list(mapspain_timeout = NULL))
+  withr::local_envvar(c(MAPSPAIN_TIMEOUT = "600"))
+
+  seen <- list()
+  local_mocked_bindings(
+    is_online_fun = function(...) TRUE,
+    esp_req_perform = function(req, path = NULL, ...) {
+      seen[[length(seen) + 1]] <<- req$options
+      if (is.null(path)) {
+        return(httr2::response(
+          status_code = 200,
+          headers = list("content-length" = "2")
+        ))
+      }
+
+      writeLines("ok", path)
+      httr2::response(status_code = 200)
+    }
+  )
+
+  cdir <- withr::local_tempdir(pattern = "testthat_envvar")
+  out <- download_url(
+    "https://example.com/envvar.txt",
+    cache_dir = cdir,
+    verbose = FALSE
+  )
+
+  expect_type(out, "character")
+  expect_equal(seen[[1]]$timeout_ms, 600000)
+})
+
+test_that("download_url() returns NULL without creating files while offline", {
   skip_on_cran()
   skip_if_siane_offline()
   local_mocked_bindings(is_online_fun = function(...) {
@@ -9,10 +61,7 @@ test_that("Test offline", {
     "https://github.com/rOpenSpain/mapSpain/raw/sianedata/dist/",
     "se89_3_urban_capimuni_p_y.gpkg"
   )
-  cdir <- file.path(tempdir(), "testthat_ex")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
+  cdir <- withr::local_tempdir(pattern = "testthat-ex-")
   expect_snapshot(
     fend <- download_url(
       url,
@@ -31,15 +80,11 @@ test_that("Test offline", {
   })
 })
 
-test_that("Test 404", {
+test_that("download_url() returns NULL for HTTP 404 and downloads valid URLs", {
   skip_on_cran()
   skip_if_siane_offline()
 
-  cdir <- file.path(tempdir(), "testthat_ex")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
-
+  cdir <- withr::local_tempdir(pattern = "testthat-ex-")
   local_mocked_bindings(is_404 = function(...) {
     TRUE
   })
@@ -54,7 +99,7 @@ test_that("Test 404", {
       cache_dir = cdir,
       update_cache = TRUE
     ),
-    "Error "
+    "HTTP error"
   )
   expect_null(s)
 
@@ -73,12 +118,9 @@ test_that("Test 404", {
   )
   expect_length(s, 1)
   expect_type(s, "character")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
 })
 
-test_that("Caching tests", {
+test_that("download_url() reuses and refreshes cached files", {
   skip_on_cran()
   skip_if_siane_offline()
 
@@ -86,10 +128,7 @@ test_that("Caching tests", {
     "https://github.com/rOpenSpain/mapSpain/raw/sianedata/dist/",
     "se89_3_urban_capimuni_p_y.gpkg"
   )
-  cdir <- file.path(tempdir(), "testthat_ex")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
+  cdir <- withr::local_tempdir(pattern = "testthat-ex-")
   expect_message(
     fend <- download_url(
       url,
@@ -128,7 +167,7 @@ test_that("Caching tests", {
   unlink(cdir, recursive = TRUE, force = TRUE)
 })
 
-test_that("Caching errors", {
+test_that("download_url() reports failures and large downloads", {
   skip_on_cran()
   skip_if_siane_offline()
 
@@ -136,10 +175,7 @@ test_that("Caching errors", {
     "https://github.com/rOpenSpain/mapSpain/raw/sianedata/dist/",
     "fake-file.txt"
   )
-  cdir <- file.path(tempdir(), "testthat_ex")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
+  cdir <- withr::local_tempdir(pattern = "testthat-ex-")
   expect_message(
     fend <- download_url(
       url,
@@ -148,7 +184,7 @@ test_that("Caching errors", {
       update_cache = FALSE,
       verbose = FALSE
     ),
-    "Error"
+    "HTTP error"
   )
 
   expect_null(fend)
@@ -174,34 +210,32 @@ test_that("Caching errors", {
   unlink(cdir, recursive = TRUE, force = TRUE)
 })
 
-test_that("Test import jsonlite", {
+test_that("for_import_jsonlite() loads jsonlite without returning a value", {
   skip_on_cran()
   skip_if_siane_offline()
   expect_silent(p <- for_import_jsonlite())
   expect_null(for_import_jsonlite())
 })
 
-test_that("Test timeout", {
+test_that("download_url() surfaces timeouts and recovers with valid settings", {
   skip_on_cran()
   skip_if_siane_offline()
+  skip_on_os("linux")
 
-  cdir <- file.path(tempdir(), "testthat_timeout")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
-
+  cdir <- withr::local_tempdir(pattern = "testthat-timeout-")
   url <- paste0(
     "https://github.com/rOpenSpain/mapSpain/raw/sianedata/dist/",
     "se89_3_admin_muni_a_x.gpkg"
   )
 
-  withr::local_options(mapspain_timeout = 0.01)
+  withr::local_options(c(mapspain_timeout = 0.001))
   expect_error(
     download_url(url = url, verbose = FALSE, cache_dir = cdir),
-    "Failed to perform HTTP request(.*)Timeout"
+    "Failed to perform HTTP request(.*)Timeout",
+    class = "httr2_failure"
   )
 
-  withr::local_options(mapspain_timeout = 300L)
+  withr::local_options(c(mapspain_timeout = 300L))
   expect_silent(
     ff <- download_url(url = url, verbose = FALSE, cache_dir = cdir)
   )

@@ -6,8 +6,8 @@
 convert_to_nuts <- function(region) {
   clean_region <- clean_region_arg(region)
   if (is.null(clean_region)) {
-    cli::cli_alert_warning(
-      "Empty {.arg region}. No NUTS codes found, returning NULL."
+    cli::cli_warn(
+      "Empty {.arg region}. No NUTS codes found. Returning {.code NULL}."
     )
     return(NULL)
   }
@@ -23,10 +23,7 @@ convert_to_nuts <- function(region) {
       next
     }
 
-    suppressMessages(
-      nuts_id[i] <- esp_dict_region_code(code, type, "nuts"),
-      "cliMessage"
-    )
+    suppressWarnings(nuts_id[i] <- esp_dict_region_code(code, type, "nuts"))
   }
   if (all(is.na(nuts_id))) {
     warn_no_spanish_codes("NUTS", clean_region)
@@ -66,13 +63,10 @@ convert_to_nuts_ccaa <- function(region) {
     }
 
     if (type == "codauto") {
-      suppressMessages(
-        code <- esp_dict_region_code(code, "codauto", "nuts"),
-        "cliMessage"
-      )
+      suppressWarnings(code <- esp_dict_region_code(code, "codauto", "nuts"))
     }
 
-    suppressMessages(res <- convert_to_nuts(code), "cliMessage")
+    suppressWarnings(res <- convert_to_nuts(code))
     if (is.null(res)) {
       res <- NA
     }
@@ -149,7 +143,7 @@ convert_to_nuts_prov <- function(region) {
 
     # Convert Canary Islands and Balearic Islands names to province codes.
     if (type == "text") {
-      suppressMessages(name_es <- esp_dict_translate(code, "es"), "cliMessage")
+      suppressWarnings(name_es <- esp_dict_translate(code, "es"))
 
       if (is.na(name_es)) {
         nuts_cpros[i] <- NA
@@ -194,7 +188,7 @@ convert_to_nuts_prov <- function(region) {
       nuts_cpros[i] <- cpro_nuts
     } else {
       # Convert to NUTS.
-      suppressMessages(res <- convert_to_nuts(code), "cliMessage")
+      suppressWarnings(res <- convert_to_nuts(code))
       if (is.null(res)) {
         res <- NA
       }

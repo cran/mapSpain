@@ -1,4 +1,4 @@
-test_that("Test offline", {
+test_that("Simplified boundary functions return NULL while offline", {
   skip_on_cran()
   skip_if_siane_offline()
 
@@ -22,17 +22,17 @@ test_that("Test offline", {
   })
 })
 
-test_that("Test 404", {
+test_that("Simplified boundary functions return NULL for HTTP 404", {
   skip_on_cran()
   skip_if_siane_offline()
 
   local_mocked_bindings(is_404 = function(...) {
     TRUE
   })
-  expect_message(n <- esp_get_simpl_prov(update_cache = TRUE), "Error")
+  expect_message(n <- esp_get_simpl_prov(update_cache = TRUE), "HTTP error")
   expect_null(n)
 
-  expect_message(n <- esp_get_simpl_ccaa(update_cache = TRUE), "Error")
+  expect_message(n <- esp_get_simpl_ccaa(update_cache = TRUE), "HTTP error")
   expect_null(n)
 
   local_mocked_bindings(is_404 = function(...) {
@@ -40,16 +40,12 @@ test_that("Test 404", {
   })
 })
 
-test_that("simplified online", {
+test_that("Simplified boundary functions validate and filter data", {
   skip_on_cran()
   skip_if_siane_offline()
   skip_if_gisco_offline()
 
-  cdir <- file.path(tempdir(), "test_simp")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
-
+  cdir <- withr::local_tempdir(pattern = "test-simp-")
   expect_silent(n <- esp_get_simpl_ccaa(cache_dir = cdir))
   expect_s3_class(n, "sf")
   expect_s3_class(n, "tbl_df")

@@ -1,4 +1,4 @@
-test_that("Test offline", {
+test_that("esp_get_grid_MTN() returns NULL while offline", {
   skip_on_cran()
   skip_if_siane_offline()
 
@@ -16,14 +16,14 @@ test_that("Test offline", {
   })
 })
 
-test_that("Test 404", {
+test_that("esp_get_grid_MTN() returns NULL for HTTP 404 responses", {
   skip_on_cran()
   skip_if_siane_offline()
 
   local_mocked_bindings(is_404 = function(...) {
     TRUE
   })
-  expect_message(n <- esp_get_grid_MTN(update_cache = TRUE), "Error")
+  expect_message(n <- esp_get_grid_MTN(update_cache = TRUE), "HTTP error")
   expect_null(n)
 
   local_mocked_bindings(is_404 = function(...) {
@@ -31,14 +31,14 @@ test_that("Test 404", {
   })
 })
 
-test_that("Errors", {
-  expect_error(esp_get_grid_MTN("abcde"))
+test_that("esp_get_grid_MTN() rejects unknown grids", {
+  expect_snapshot(error = TRUE, esp_get_grid_MTN("abcde"))
 })
 
-test_that("MTN grid online", {
+test_that("esp_get_grid_MTN() downloads a selected grid", {
   skip_on_cran()
   skip_if_siane_offline()
-  tdir <- file.path(tempdir(), "testthat_test")
+  tdir <- withr::local_tempfile(pattern = "testthat-grid-mtn-")
   tdir <- create_cache_dir(tdir)
 
   expect_message(esp_get_grid_MTN(cache_dir = tdir, verbose = TRUE))

@@ -3,10 +3,10 @@
 \encoding{UTF-8}
 \name{esp_get_capimun}
 \alias{esp_get_capimun}
-\title{City where the municipal public authorities are based from SIANE}
+\title{Municipal seats of government from SIANE}
 \source{
 CartoBase ANE (Atlas Nacional de España) provided by Instituto Geográfico Nacional (IGN),
-\url{http://www.ign.es/web/ign/portal}. Years available are 2005 up to today.
+\url{https://www.ign.es/web/ign/portal}. Data are available from 2005 to the present.
 
 Copyright:
 \url{https://centrodedescargas.cnig.es/CentroDescargas/cartobase-ane}
@@ -56,16 +56,17 @@ starts as of 2005.}
 \item \code{"3857"}: \href{https://epsg.io/3857}{Pseudo-Mercator}.
 }}
 
-\item{cache}{Logical. Whether to cache downloaded files. Default is \code{TRUE}.
-See \strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
+\item{cache}{Logical. Whether to cache downloaded files. Defaults to \code{TRUE}.
+See \strong{Caching}.}
 
 \item{update_cache}{Logical. If \code{TRUE}, refreshes the cached file and forces
 a new download. Defaults to \code{FALSE}.}
 
 \item{cache_dir}{Character string. A path to a cache directory. See
-\strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
+\strong{Caching}.}
 
-\item{verbose}{A logical value. If \code{TRUE} displays informational messages.}
+\item{verbose}{A logical value indicating whether to display informational
+messages.}
 
 \item{region}{Optional. A vector of region names, NUTS or ISO codes
 (see \code{\link[=esp_dict_region_code]{esp_dict_region_code()}}).}
@@ -79,15 +80,15 @@ municipalities.}
 Initial position can be adjusted using the vector of coordinates. See
 \strong{Displacing the Canary Islands} in \code{\link[=esp_move_can]{esp_move_can()}}.}
 
-\item{rawcols}{Logical. If \code{TRUE}, adds the raw columns of the resulting
+\item{rawcols}{Logical. If \code{TRUE}, retains the raw columns of the resulting
 object as provided by IGN.}
 }
 \value{
-A \code{\link[sf:st_sf]{sf}} object.
+An \code{\link[sf:st_sf]{sf}} \code{POINT} object.
 }
 \description{
-Get a \code{\link[sf:st_sf]{sf}} \code{POINT} with the location of the political powers for
-each municipality.
+This function returns an \code{\link[sf:st_sf]{sf}} \code{POINT} object that locates the
+seat of government for each municipality.
 
 Note that this differs from the centroid of the boundaries of the
 municipality, returned by \code{\link[=esp_get_munic_siane]{esp_get_munic_siane()}}.
@@ -97,25 +98,24 @@ When using \code{region} you can use and mix names and NUTS codes (levels 1, 2 o
 3), ISO codes (corresponding to level 2 or 3) or \code{"cpro"}
 (see \link{esp_codelist}).
 
-When calling a higher level (province, Autonomous Community or City, or
-NUTS 1), all municipalities of that level are added.
+When calling a higher level, such as a province, Autonomous Community,
+Autonomous City or NUTS 1 region, all municipalities of that level are
+added.
 }
-\note{
-Although \CRANpkg{mapSpain} supplies cartographically suitable datasets,
-a historical database of Spanish municipal boundaries is also available,
-offering higher-resolution geometries that may be more appropriate for
-GIS-oriented workflows:
-\itemize{
-\item Goerlich, F. J. & Pérez Vázquez, P. (2025). \emph{Base de datos histórica de
-contornos municipales de España -LAU2boundaries4Spain-} [Data set].
-Zenodo. \doi{10.5281/zenodo.15345101},
-\url{https://www.uv.es/goerlich/Ivie/LAU2boundaries4Spain.html}.
+\section{Caching}{
+
+
+Functions that download data store files in \code{cache_dir}. When \code{cache_dir}
+is \code{NULL}, they use the active package cache, which defaults to a temporary
+directory. Set \code{update_cache = TRUE} to replace an existing cached file.
+See \strong{Caching strategies} in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}} to configure a
+persistent cache.
 }
-}
+
 \examples{
 \dontshow{if (esp_check_access()) withAutoprint(\{ # examplesIf}
 \donttest{
-# Compare municipality centroids against esp_get_capimun().
+# Compare municipality centroids against municipal seats of government.
 
 # Get the municipality boundary.
 area <- esp_get_munic_siane(munic = "Valladolid", epsg = 3857)
@@ -146,23 +146,7 @@ ggplot(points) +
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-Political and administrative boundary datasets:
-\code{\link[=esp_get_ccaa]{esp_get_ccaa()}},
-\code{\link[=esp_get_ccaa_siane]{esp_get_ccaa_siane()}},
-\code{\link[=esp_get_comarca]{esp_get_comarca()}},
-\code{\link[=esp_get_countries_siane]{esp_get_countries_siane()}},
-\code{\link{esp_get_gridmap}},
-\code{\link[=esp_get_munic]{esp_get_munic()}},
-\code{\link[=esp_get_munic_siane]{esp_get_munic_siane()}},
-\code{\link[=esp_get_nuts]{esp_get_nuts()}},
-\code{\link[=esp_get_prov]{esp_get_prov()}},
-\code{\link[=esp_get_prov_siane]{esp_get_prov_siane()}},
-\code{\link{esp_get_simpl}},
-\code{\link[=esp_get_spain]{esp_get_spain()}},
-\code{\link[=esp_get_spain_siane]{esp_get_spain_siane()}},
-\code{\link[=esp_siane_bulk_download]{esp_siane_bulk_download()}}
-
-Datasets sourced from CartoBase ANE (Atlas Nacional de España):
+CartoBase ANE boundaries and utilities:
 \code{\link[=esp_get_ccaa_siane]{esp_get_ccaa_siane()}},
 \code{\link[=esp_get_countries_siane]{esp_get_countries_siane()}},
 \code{\link[=esp_get_munic_siane]{esp_get_munic_siane()}},

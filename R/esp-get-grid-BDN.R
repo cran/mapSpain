@@ -1,9 +1,9 @@
 #' National geographic grids from BDN (Nature Data Bank)
 #'
 #' @description
-#' Load an [`sf`][sf::st_sf] `POLYGON` object with the geographic grids of
-#' Spain as provided by the Banco de Datos de la Naturaleza (Nature Data Bank),
-#' under the Ministry of Environment (MITECO).
+#' This function loads an [`sf`][sf::st_sf] `POLYGON` object with the
+#' geographic grids of Spain provided by the Banco de Datos de la Naturaleza
+#' (Nature Data Bank), under the Ministry of Environment (MITECO).
 #'
 #' This dataset provides two accessors. [esp_get_grid_BDN()] extracts
 #' country-wide regular grids with resolutions of 5 x 5 or 10 x 10 kilometers
@@ -11,14 +11,15 @@
 #' 1 x 1 kilometer resolution grids for individual Autonomous Communities and
 #' Cities.
 #'
-#' These grids are useful for biodiversity analysis, environmental monitoring,
+#' These grids are useful for biodiversity analysis, environmental monitoring
 #' and spatial statistical applications.
 #'
 #' @details
 #' The BDN provides standardized geographic grids for Spain that follow the
 #' Nature Data Bank's specifications. The data are downloaded from the
-#' `sianedata/MITECO/dist` data branch and is regularly updated.
+#' `sianedata/MITECO/dist` data branch and are regularly updated.
 #'
+#' @inheritSection esp_set_cache_dir Caching
 #' @param resolution Numeric. Resolution of the grid in kilometers. Must be one
 #'   of:
 #'   - `5`: 5 x 5 kilometer cells.
@@ -28,7 +29,7 @@
 #'   - `"canary"`: Canary Islands.
 #'
 #' @inheritParams esp_get_nuts
-#' @inherit esp_get_nuts return
+#' @return An [`sf`][sf::st_sf] `POLYGON` object.
 #' @source
 #' Data sourced from the Banco de Datos de la Naturaleza (BDN). See the
 #' repository structure:

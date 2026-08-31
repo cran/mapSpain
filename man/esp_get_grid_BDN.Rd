@@ -47,21 +47,22 @@ of:
 a new download. Defaults to \code{FALSE}.}
 
 \item{cache_dir}{Character string. A path to a cache directory. See
-\strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
+\strong{Caching}.}
 
-\item{verbose}{A logical value. If \code{TRUE} displays informational messages.}
+\item{verbose}{A logical value indicating whether to display informational
+messages.}
 
 \item{ccaa}{Character string. A vector of names, codes or both for
 Autonomous Communities and Cities. See \strong{Details} on \code{\link[=esp_get_ccaa]{esp_get_ccaa()}}
 for accepted formats.}
 }
 \value{
-A \code{\link[sf:st_sf]{sf}} object.
+An \code{\link[sf:st_sf]{sf}} \code{POLYGON} object.
 }
 \description{
-Load an \code{\link[sf:st_sf]{sf}} \code{POLYGON} object with the geographic grids of
-Spain as provided by the Banco de Datos de la Naturaleza (Nature Data Bank),
-under the Ministry of Environment (MITECO).
+This function loads an \code{\link[sf:st_sf]{sf}} \code{POLYGON} object with the
+geographic grids of Spain provided by the Banco de Datos de la Naturaleza
+(Nature Data Bank), under the Ministry of Environment (MITECO).
 
 This dataset provides two accessors. \code{\link[=esp_get_grid_BDN]{esp_get_grid_BDN()}} extracts
 country-wide regular grids with resolutions of 5 x 5 or 10 x 10 kilometers
@@ -69,7 +70,7 @@ for mainland Spain or the Canary Islands. \code{\link[=esp_get_grid_BDN_ccaa]{es
 1 x 1 kilometer resolution grids for individual Autonomous Communities and
 Cities.
 
-These grids are useful for biodiversity analysis, environmental monitoring,
+These grids are useful for biodiversity analysis, environmental monitoring
 and spatial statistical applications.
 
 \code{esp_get_grid_BDN_ccaa()} provides higher-resolution 1 x 1 kilometer grids
@@ -79,8 +80,18 @@ with finer spatial detail.
 \details{
 The BDN provides standardized geographic grids for Spain that follow the
 Nature Data Bank's specifications. The data are downloaded from the
-\code{sianedata/MITECO/dist} data branch and is regularly updated.
+\code{sianedata/MITECO/dist} data branch and are regularly updated.
 }
+\section{Caching}{
+
+
+Functions that download data store files in \code{cache_dir}. When \code{cache_dir}
+is \code{NULL}, they use the active package cache, which defaults to a temporary
+directory. Set \code{update_cache = TRUE} to replace an existing cached file.
+See \strong{Caching strategies} in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}} to configure a
+persistent cache.
+}
+
 \examples{
 \dontshow{if (esp_check_access()) withAutoprint(\{ # examplesIf}
 \donttest{
@@ -100,7 +111,7 @@ ggplot(grid) +
 \seealso{
 \code{\link[=esp_get_ccaa]{esp_get_ccaa()}}
 
-Geographical grid datasets:
+Geographic grid data:
 \code{\link[=esp_get_grid_ESDAC]{esp_get_grid_ESDAC()}},
 \code{\link[=esp_get_grid_MTN]{esp_get_grid_MTN()}}
 }

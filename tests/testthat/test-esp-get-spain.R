@@ -1,4 +1,4 @@
-test_that("Test null", {
+test_that("esp_get_spain() propagates missing source data", {
   skip_on_cran()
   skip_if_siane_offline()
   skip_if_gisco_offline()
@@ -21,15 +21,12 @@ test_that("Test null", {
   local_mocked_bindings(esp_get_nuts = local_fun)
 })
 
-test_that("Check country", {
+test_that("esp_get_spain() returns Spain at requested detail and CRS", {
   skip_on_cran()
   skip_if_siane_offline()
   skip_if_gisco_offline()
 
-  cdir <- file.path(tempdir(), "testcntry")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
+  cdir <- withr::local_tempdir(pattern = "testcntry-")
   expect_silent(s <- esp_get_spain(cache_dir = cdir))
 
   expect_s3_class(s, "sf")
@@ -54,4 +51,8 @@ test_that("Check country", {
 
   expect_lt(object.size(s2), object.size(s))
   unlink(cdir, recursive = TRUE, force = TRUE)
+})
+
+test_that("esp_get_country() remains an alias for esp_get_spain()", {
+  expect_identical(esp_get_country, esp_get_spain)
 })

@@ -1,4 +1,4 @@
-test_that("Test offline", {
+test_that("esp_get_munic_siane() returns NULL while offline", {
   skip_on_cran()
   skip_if_siane_offline()
 
@@ -16,14 +16,14 @@ test_that("Test offline", {
   })
 })
 
-test_that("Test 404", {
+test_that("esp_get_munic_siane() returns NULL for HTTP 404 responses", {
   skip_on_cran()
   skip_if_siane_offline()
 
   local_mocked_bindings(is_404 = function(...) {
     TRUE
   })
-  expect_message(n <- esp_get_munic_siane(update_cache = TRUE), "Error")
+  expect_message(n <- esp_get_munic_siane(update_cache = TRUE), "HTTP error")
   expect_null(n)
 
   local_mocked_bindings(is_404 = function(...) {
@@ -31,15 +31,11 @@ test_that("Test 404", {
   })
 })
 
-test_that("Cache vs non-cached", {
+test_that("esp_get_munic_siane() returns identical cached and uncached data", {
   skip_on_cran()
   skip_if_siane_offline()
 
-  cdir <- file.path(tempdir(), "testmunicsiane")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
-
+  cdir <- withr::local_tempdir(pattern = "testmunicsiane-")
   expect_identical(list.files(cdir, recursive = TRUE), character(0))
   expect_message(
     db_online <- esp_get_munic_siane(
@@ -69,15 +65,11 @@ test_that("Cache vs non-cached", {
   unlink(cdir, recursive = TRUE, force = TRUE)
 })
 
-test_that("Filter munis and regions", {
+test_that("esp_get_munic_siane() filters municipalities and regions", {
   skip_on_cran()
   skip_if_siane_offline()
 
-  cdir <- file.path(tempdir(), "testmunicsiane")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
-
+  cdir <- withr::local_tempdir(pattern = "testmunicsiane-")
   db_cached <- esp_get_munic_siane(munic = "Melque", cache_dir = cdir)
   expect_shape(db_cached, nrow = 1)
   expect_identical(db_cached$ine.prov.name, "Segovia")
@@ -129,7 +121,7 @@ test_that("Filter munis and regions", {
     cache_dir = cdir
   )
   expect_identical(ten_move[1, ], ten_move_par[1, ])
-  expect_false(identical(ten_move[1, ], ten_nomove[, 1]))
+  expect_false(identical(ten_move[1, ], ten_nomove[1, ]))
 
   db_3035 <- esp_get_munic_siane(
     munic = "Nieva",

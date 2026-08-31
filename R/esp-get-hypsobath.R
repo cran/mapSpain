@@ -1,20 +1,22 @@
 #' Hypsometry and bathymetry of Spain from SIANE
 #'
 #' @description
-#' Dataset representing the hypsometry and bathymetry of Spain.
+#' This dataset represents the hypsometry and bathymetry of Spain.
+#'
 #' - **Hypsometry** represents the elevation and depth of features of the
 #'   Earth's surface relative to mean sea level.
-#' - **Bathymetry** is the measurement of the depth of water in oceans, rivers,
+#' - **Bathymetry** is the measurement of the depth of water in oceans, rivers
 #'   or lakes.
 #'
 #' @details
 #' Metadata available on
 #' <https://github.com/rOpenSpain/mapSpain/tree/sianedata/>.
 #'
+#' @inheritSection esp_set_cache_dir Caching
 #' @param resolution Character string or number. Resolution of the geospatial
 #'   data. One of:
-#'   - "6.5": 1:6.5 million.
-#'   - "3": 1:3 million.
+#'   - `"6.5"`: 1:6.5 million.
+#'   - `"3"`: 1:3 million.
 #'
 #' @param spatialtype Character string. Spatial type of the output. Use
 #'   `"area"` for `POLYGON` or `"line"` for `LINESTRING`.

@@ -88,11 +88,14 @@
 #' represented at the Autonomous Communities and Cities level with a single
 #' province, like Madrid, Asturias or Murcia, in this database.
 #'
+#' @seealso [esp_dict_region_code()].
+#'
 #' @family datasets
-#' @encoding UTF-8
 #' @docType data
 #' @name esp_codelist
+#' @keywords datasets
 #'
+#' @encoding UTF-8
 #' @examples
 #'
 #' data("esp_codelist")
@@ -117,7 +120,7 @@ NULL
 #' }
 #'
 #' @source
-#' INE, Instituto Nacional de Estadística.
+#' INE: Instituto Nacional de Estadística.
 #'
 #' ```{r, echo=FALSE, results='asis'}
 #' cat(paste0(
@@ -128,10 +131,11 @@ NULL
 #' ```
 #'
 #' @family datasets
-#' @encoding UTF-8
 #' @docType data
 #' @name pobmun25
+#' @keywords datasets
 #'
+#' @encoding UTF-8
 #' @examples
 #' data("pobmun25")
 NULL
@@ -163,20 +167,25 @@ NULL
 #' structure:
 #'
 #' Each list item is named with the provider alias. Each element contains two
-#' nested named lists: `static` with the parameters required to obtain static
-#' map tiles plus an additional item named `attribution`, and `leaflet` with
-#' additional parameters to pass to [addProviderEspTiles()].
+#' nested named lists. `static` contains the parameters required to obtain
+#' static map tiles and an additional item named `attribution`. `leaflet`
+#' contains additional parameters to pass to [addProviderEspTiles()].
 #'
 #' @source
 #' <https://dieghernan.github.io/leaflet-providersESP/>, a plugin for
 #' \CRANpkg{leaflet},
 #' **`r leaf_providers_esp_v`**.
 #'
+#' @seealso
+#' - [esp_get_tiles()] downloads static map tiles from these providers.
+#' - [addProviderEspTiles()] adds these providers to interactive maps.
+#'
 #' @family datasets
-#' @encoding UTF-8
 #' @docType data
 #' @name esp_tiles_providers
+#' @keywords datasets
 #'
+#' @encoding UTF-8
 #' @examples
 #' data("esp_tiles_providers")
 #' # Get a single provider.
@@ -188,7 +197,7 @@ NULL
 #'
 NULL
 
-#' NUTS 2024 for Spain [`sf`][sf::st_sf] object
+#' NUTS 2024 boundaries for Spain
 #'
 #' @description
 #' This dataset represents Spanish subdivisions at NUTS levels 0, 1, 2 and 3
@@ -203,7 +212,7 @@ NULL
 #' `r nrow(mapSpain::esp_nuts_2024)` rows and 10 variables:
 #' \describe{
 #'   \item{`NUTS_ID`}{NUTS identifier.}
-#'   \item{`LEVL_CODE`}{NUTS level code `(0, 1, 2, 3)`.}
+#'   \item{`LEVL_CODE`}{NUTS level code (`0`, `1`, `2` or `3`).}
 #'   \item{`CNTR_CODE`}{Eurostat country code.}
 #'   \item{`NAME_LATN`}{NUTS name in Latin characters.}
 #'   \item{`NUTS_NAME`}{NUTS name in the local alphabet.}
@@ -225,12 +234,13 @@ NULL
 #'
 #' ```
 #'
-#' @seealso [esp_get_nuts()]
+#' @seealso [esp_get_nuts()].
 #' @family datasets
-#' @encoding UTF-8
 #' @docType data
 #' @name esp_nuts_2024
+#' @keywords datasets
 #'
+#' @encoding UTF-8
 #' @examples
 #' data("esp_nuts_2024")
 #' head(esp_nuts_2024)

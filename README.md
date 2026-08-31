@@ -19,11 +19,11 @@
 [**mapSpain**](https://ropenspain.github.io/mapSpain/) provides
 administrative boundaries of Spain at several levels, including
 Autonomous Communities and Cities, provinces, municipalities and NUTS,
-as **sf** objects.
+as `sf` objects.
 
 **mapSpain** also includes tools to download and process static map
-tiles, plus a [**leaflet**](https://rstudio.github.io/leaflet/) plugin
-for Spanish public administration tile providers.
+tiles and a [**leaflet**](https://rstudio.github.io/leaflet/) plugin for
+Spanish public administration tile providers.
 
 The full package website, with examples and vignettes, is available at
 <https://ropenspain.github.io/mapSpain/>.
@@ -47,7 +47,7 @@ Check the documentation for the development version at
 <https://ropenspain.github.io/mapSpain/dev/>.
 
 You can install the development version of **mapSpain** from
-[r-universe](https://ropenspain.r-universe.dev/mapSpain):
+[**r-universe**](https://ropenspain.r-universe.dev/mapSpain):
 
 ``` r
 # Install mapSpain in R.
@@ -128,9 +128,9 @@ ggplot(ccaa_sf) +
 ```
 
 <img src="man/figures/README-static-1.png" style="width:100.0%"
-alt="Percentage of women by Autonomous Community or City in Spain (2025)" />
+alt="Percentage of women by Autonomous Communities and Cities in Spain (2025)" />
 
-You can combine **sf** objects with static map tiles.
+You can combine `sf` objects with static map tiles.
 
 ``` r
 # Get census data.
@@ -171,7 +171,7 @@ ggplot(remove_missing(shape_pop, na.rm = TRUE)) +
     expand = FALSE
   ) +
   labs(
-    title = "% women in Segovia by town (2025)",
+    title = "% women in Segovia by municipality (2025)",
     caption = paste0(
       "Source: INE, CC BY 4.0 www.iderioja.org, ",
       "CartoBase ANE 2006-2024 CC-BY 4.0 ign.es"
@@ -226,7 +226,7 @@ ggplot(all_countries) +
 <img src="man/figures/README-giscoR-1.png" style="width:100.0%"
 alt="Locator map of Spain" />
 
-## A note on caching
+## Caching
 
 Some datasets and tiles may be larger than 50 MB. You can use
 **mapSpain** to create a local cache directory with
@@ -249,12 +249,12 @@ Map Tiles for Spain</em>.
 <a href="https://ropenspain.github.io/mapSpain/">https://ropenspain.github.io/mapSpain/</a>.
 </p>
 
-A BibTeX entry for LaTeX users is:
+A **BibTeX** entry for **LaTeX** users is:
 
     @Manual{R-mapspain,
       title = {{mapSpain}: Administrative Boundaries and Static Map Tiles for Spain},
       year = {2026},
-      version = {1.2.0},
+      version = {1.2.1},
       author = {Diego Hernangómez},
       doi = {10.5281/zenodo.5366622},
       url = {https://ropenspain.github.io/mapSpain/},
@@ -263,7 +263,7 @@ A BibTeX entry for LaTeX users is:
 
 ## Contribute
 
-Check the GitHub page for the [source
+Check the **GitHub** page for the [source
 code](https://github.com/ropenspain/mapSpain/).
 
 ## Copyright notice
@@ -277,11 +277,12 @@ Geográfico Nacional.
 
 See <https://github.com/rOpenSpain/mapSpain/tree/sianedata>.
 
-This package also uses data from GISCO. GISCO
-[(FAQ)](https://ec.europa.eu/eurostat/web/gisco) is a geospatial open
-data repository with multiple datasets at several resolution levels.
+This package also uses data from
+[**GISCO**](https://ec.europa.eu/eurostat/web/gisco), Eurostat’s
+geospatial open data repository, which provides datasets at several
+resolution levels.
 
-*From GISCO \> Geodata \> Reference data \> Administrative Units /
+*From **GISCO** \> Geodata \> Reference data \> Administrative Units /
 Statistical Units*
 
 > When data downloaded from this page is used in any printed or

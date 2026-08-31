@@ -1,25 +1,26 @@
 #' Rivers and wetlands of Spain from SIANE
 #'
 #' @description
-#' Object representing rivers, lagoons, reservoirs and wetlands of Spain.
+#' This dataset represents rivers, lagoons, reservoirs and wetlands in Spain.
 #'
 #' @details
 #' Metadata available on
 #' <https://github.com/rOpenSpain/mapSpain/tree/sianedata/>.
 #'
+#' @inheritSection esp_set_cache_dir Caching
 #' @param resolution `r lifecycle::badge("deprecated")` character string.
-#'   Ignored, resolution `3` (the most detailed) will always be provided.
+#'   Ignored. Resolution `3` (the most detailed) will always be provided.
 #' @param spatialtype `r lifecycle::badge("deprecated")` character string.
 #'   Use [esp_get_wetlands()] instead of `"spatialtype"` for wetlands.
 #' @param name Character string or [`regex`][base::grep()] expression. Name of
-#'   the element(s) to be extracted.
+#'   the elements to extract.
 #' @inheritParams esp_get_ccaa_siane
 #' @inherit esp_get_ccaa_siane return source
 #' @family natural
-#' @encoding UTF-8
 #' @rdname esp_get_landwater
 #' @name esp_get_landwater
 #'
+#' @encoding UTF-8
 #' @export
 #'
 #' @examplesIf esp_check_access()
@@ -94,7 +95,7 @@ esp_get_rivers <- function(
     )
 
     cli::cli_alert_info(
-      "Redirecting the arguments to {.fn mapSpain::esp_get_wetlands}."
+      "Redirecting arguments to {.fn mapSpain::esp_get_wetlands}."
     )
 
     data_sf <- esp_get_wetlands(
@@ -134,18 +135,12 @@ esp_get_rivers <- function(
   data_sf <- merge_db_value_desc(
     data_sf,
     "persistenciahidrologica",
-    c(
-      "pers_hidro",
-      "pers_hidro_desc"
-    )
+    c("pers_hidro", "pers_hidro_desc")
   )
   data_sf <- merge_db_value_desc(
     data_sf,
     "origenhidrografico",
-    c(
-      "orig_hidro",
-      "orig_hidro_desc"
-    )
+    c("orig_hidro", "orig_hidro_desc")
   )
 
   # Move the Canary Islands.
@@ -215,19 +210,9 @@ esp_get_wetlands <- function(
   data_sf <- merge_db_value_desc(
     data_sf,
     "persistenciahidrologica",
-    c(
-      "pers_hidro",
-      "pers_hidro_desc"
-    )
+    c("pers_hidro", "pers_hidro_desc")
   )
-  data_sf <- merge_db_value_desc(
-    data_sf,
-    "tiporioa",
-    c(
-      "t_rio",
-      "t_rio_desc"
-    )
-  )
+  data_sf <- merge_db_value_desc(data_sf, "tiporioa", c("t_rio", "t_rio_desc"))
 
   name <- ensure_null(name)
   if (!is.null(name)) {

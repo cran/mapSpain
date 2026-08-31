@@ -1,4 +1,4 @@
-test_that("Test offline", {
+test_that("esp_get_hydrobasin() returns NULL while offline", {
   skip_on_cran()
   skip_if_siane_offline()
   skip_if_gisco_offline()
@@ -17,7 +17,7 @@ test_that("Test offline", {
   })
 })
 
-test_that("Test 404", {
+test_that("esp_get_hydrobasin() returns NULL for HTTP 404 responses", {
   skip_on_cran()
   skip_if_siane_offline()
   skip_if_gisco_offline()
@@ -25,22 +25,18 @@ test_that("Test 404", {
   local_mocked_bindings(is_404 = function(...) {
     TRUE
   })
-  expect_message(n <- esp_get_hydrobasin(update_cache = TRUE), "Error")
+  expect_message(n <- esp_get_hydrobasin(update_cache = TRUE), "HTTP error")
   expect_null(n)
 
   local_mocked_bindings(is_404 = function(...) {
     FALSE
   })
 })
-test_that("Cache vs non-cached", {
+test_that("esp_get_hydrobasin() returns identical cached and uncached data", {
   skip_on_cran()
   skip_if_siane_offline()
 
-  cdir <- file.path(tempdir(), "testhydrobascache")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
-
+  cdir <- withr::local_tempdir(pattern = "testhydrobascache-")
   expect_identical(list.files(cdir, recursive = TRUE), character(0))
   expect_message(
     db_online <- esp_get_hydrobasin(
@@ -68,7 +64,7 @@ test_that("Cache vs non-cached", {
   unlink(cdir, recursive = TRUE, force = TRUE)
 })
 
-test_that("hydrobasin online", {
+test_that("esp_get_hydrobasin() validates options and returns both domains", {
   expect_snapshot(error = TRUE, esp_get_hydrobasin(epsg = 3367))
   expect_snapshot(error = TRUE, esp_get_hydrobasin(domain = "f"))
 
@@ -76,14 +72,13 @@ test_that("hydrobasin online", {
   skip_if_siane_offline()
   skip_if_gisco_offline()
 
-  cdir <- file.path(tempdir(), "test_cuencas")
-  unlink(cdir, recursive = TRUE, force = TRUE)
+  cdir <- withr::local_tempdir(pattern = "test-cuencas-")
 
   expect_silent(
     l <- esp_get_hydrobasin(resolution = "10", epsg = 3857, cache_dir = cdir)
   )
 
-  expect_true(sf::st_crs(l) == sf::st_crs(3857))
+  expect_equal(sf::st_crs(l), sf::st_crs(3857))
   expect_silent(l2 <- esp_get_hydrobasin(resolution = "6.5", cache_dir = cdir))
 
   expect_s3_class(l2, "sf")
@@ -99,7 +94,7 @@ test_that("hydrobasin online", {
     )
   )
 
-  expect_true(sf::st_crs(l) == sf::st_crs(3857))
+  expect_equal(sf::st_crs(l), sf::st_crs(3857))
   expect_silent(
     l2 <- esp_get_hydrobasin(
       resolution = "6.5",

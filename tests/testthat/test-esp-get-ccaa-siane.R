@@ -1,4 +1,4 @@
-test_that("Test offline", {
+test_that("esp_get_ccaa_siane() returns NULL while offline", {
   skip_on_cran()
   skip_if_siane_offline()
   skip_if_gisco_offline()
@@ -17,7 +17,7 @@ test_that("Test offline", {
   })
 })
 
-test_that("Test 404", {
+test_that("esp_get_ccaa_siane() returns NULL for HTTP 404 responses", {
   skip_on_cran()
   skip_if_siane_offline()
   skip_if_gisco_offline()
@@ -25,7 +25,7 @@ test_that("Test 404", {
   local_mocked_bindings(is_404 = function(...) {
     TRUE
   })
-  expect_message(n <- esp_get_ccaa_siane(update_cache = TRUE), "Error")
+  expect_message(n <- esp_get_ccaa_siane(update_cache = TRUE), "HTTP error")
   expect_null(n)
 
   local_mocked_bindings(is_404 = function(...) {
@@ -33,15 +33,11 @@ test_that("Test 404", {
   })
 })
 
-test_that("Cache vs non-cached", {
+test_that("esp_get_ccaa_siane() returns identical cached and uncached data", {
   skip_on_cran()
   skip_if_siane_offline()
 
-  cdir <- file.path(tempdir(), "testccaa")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
-
+  cdir <- withr::local_tempdir(pattern = "testccaa-")
   expect_identical(list.files(cdir, recursive = TRUE), character(0))
   expect_message(
     db_online <- esp_get_ccaa_siane(
@@ -70,17 +66,17 @@ test_that("Cache vs non-cached", {
 })
 
 # Test siane
-test_that("ccaa online", {
+test_that("esp_get_ccaa_siane() validates and filters regional data", {
   skip_on_cran()
   skip_if_siane_offline()
   skip_if_gisco_offline()
 
-  cdir <- file.path(tempdir(), "testcapimun")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
+  cdir <- withr::local_tempdir(pattern = "testccaa-")
 
-  expect_error(esp_get_ccaa_siane(epsg = "FFF", cache_dir = cdir))
+  expect_error(
+    esp_get_ccaa_siane(epsg = "FFF", cache_dir = cdir),
+    class = "rlang_error"
+  )
 
   expect_silent(esp_get_ccaa_siane(cache_dir = cdir))
 
@@ -96,7 +92,10 @@ test_that("ccaa online", {
     ccaa = c("Galicia", "ES7", "Centro"),
     cache_dir = cdir
   ))
-  expect_error(esp_get_ccaa_siane(epsg = 39823, cache_dir = cdir))
+  expect_error(
+    esp_get_ccaa_siane(epsg = 39823, cache_dir = cdir),
+    class = "rlang_error"
+  )
   expect_silent(esp_get_ccaa_siane(cache_dir = cdir, resolution = 10))
   expect_silent(esp_get_ccaa_siane(
     moveCAN = c(1, 2),
@@ -107,13 +106,13 @@ test_that("ccaa online", {
     ccaa = c("Galicia", "ES7", "Centro"),
     cache_dir = cdir
   ))
-  expect_snapshot(
-    error = TRUE,
-    esp_get_ccaa_siane(ccaa = "Menorca", cache_dir = cdir)
+  expect_error(
+    esp_get_ccaa_siane(ccaa = "Menorca", cache_dir = cdir),
+    class = "rlang_error"
   )
-  expect_snapshot(
-    error = TRUE,
-    esp_get_ccaa_siane(ccaa = "ES6x", cache_dir = cdir)
+  expect_error(
+    esp_get_ccaa_siane(ccaa = "ES6x", cache_dir = cdir),
+    class = "rlang_error"
   )
 
   expect_equal(
@@ -150,7 +149,4 @@ test_that("ccaa online", {
 
   n <- esp_get_ccaa_siane(ccaa = f$codauto, cache_dir = cdir)
   expect_equal(nrow(n), 19)
-
-  # Cleanup
-  unlink(cdir, recursive = TRUE, force = TRUE)
 })

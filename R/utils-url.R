@@ -47,12 +47,12 @@ download_url <- function(
   make_msg("info", verbose, msg)
 
   req <- httr2::request(url)
-  req <- httr2::req_timeout(req, getOption("mapspain_timeout", 300L))
+  req <- httr2::req_timeout(req, esp_timeout())
   req <- httr2::req_error(req, is_error = function(x) {
     FALSE
   })
 
-  # Create a folder for caching httr2 requests.
+  # Create a folder for caching `httr2` requests.
   cache_httr2 <- file.path(tempdir(), "mapSpain", "cache_request")
   cache_httr2 <- create_cache_dir(cache_httr2)
 
@@ -75,13 +75,13 @@ download_url <- function(
 
   # Use HEAD to check whether the download is large enough to warn about.
   get_header <- httr2::req_method(req, "HEAD")
-  getsize <- httr2::req_perform(get_header)
+  getsize <- esp_req_perform(get_header)
 
   size_dwn <- as.numeric(httr2::resp_header(getsize, "content-length", 0))
   class(size_dwn) <- class(object.size("a"))
   thr <- 50 * (1024^2)
   if (size_dwn > thr) {
-    sz_dwn <- paste0(format(size_dwn, units = "auto"), ".")
+    sz_dwn <- paste0("{.val ", format(size_dwn, units = "auto"), "}.")
     make_msg("warning", TRUE, "Download size:", sz_dwn)
     req <- httr2::req_progress(req)
   }
@@ -97,16 +97,16 @@ download_url <- function(
     file_local <- tempfile(fileext = ".txt")
   }
 
-  resp <- httr2::req_perform(req, path = file_local)
+  resp <- esp_req_perform(req, path = file_local)
 
   if (httr2::resp_is_error(resp)) {
     unlink(file_local, force = TRUE)
     get_status_code <- httr2::resp_status(resp) # nolint
     get_status_desc <- httr2::resp_status_desc(resp) # nolint
 
-    cli::cli_alert_danger(c(
-      "{.strong Error {get_status_code}} ({get_status_desc}):",
-      " {.url {url}}."
+    cli::cli_alert_danger(paste0(
+      "HTTP error {.val {get_status_code}} ({.emph {get_status_desc}}) ",
+      "while requesting {.url {url}}."
     ))
     alert_open_issue()
     return(alert_return_null())
@@ -117,11 +117,11 @@ download_url <- function(
   file_local
 }
 
-#' Allow jsonlite in Imports
+#' Include \CRANpkg{jsonlite} in Imports
 #'
 #' The only purpose of this function is to use \CRANpkg{jsonlite} in the
 #' source package code, so it can be included in the Imports field. Otherwise,
-#' CRAN would complain that it is not directly used.
+#' CRAN would report that it is not directly used.
 #'
 #' We need to import \CRANpkg{jsonlite} because the package makes heavy use of
 #' it under the hood with [httr2::resp_body_json()], but \CRANpkg{httr2} lists
@@ -134,24 +134,73 @@ for_import_jsonlite <- function() {
   # Read JSON from the package website.
   url <- "https://ropenspain.github.io/mapSpain/search.json"
   res <- httr2::request(url)
-  resp <- httr2::req_perform(res)
+  resp <- esp_req_perform(res)
   txt <- httr2::resp_body_string(resp)
   local <- jsonlite::parse_json(txt)
 
-  # Also import tibble.
-  local <- tibble::tibble(row = unlist(local[[1]]))
-  local <- NULL
-  invisible(local)
+  # Also import `tibble`.
+  invisible(tibble::tibble(row = unlist(local[[1]])))
+  invisible(NULL)
 }
 
-#' Wrap `httr2::is_online()` for testing
+#' Wrap [httr2::is_online()] for testing
+#'
+#' @param ... Ignored.
+#'
 #' @noRd
 is_online_fun <- function(...) {
   httr2::is_online()
 }
 
-#' Wrap 404 checks for testing
+#' Wrap [httr2::req_perform()] for testing
+#'
+#' @param ... Passed to [httr2::req_perform()].
+#'
+#' @noRd
+# nocov start
+esp_req_perform <- function(...) {
+  httr2::req_perform(...)
+}
+# nocov end
+
+#' Wrap HTTP 404 checks for testing
+#'
+#' @param ... Ignored.
+#'
 #' @noRd
 is_404 <- function(...) {
   FALSE
+}
+
+#' Get an HTTP configuration value from options or environment variables
+#'
+#' @param option Character. Name of the R option.
+#' @param envvar Character. Name of the environment variable.
+#' @param default Numeric. Default value to use when neither setting is valid.
+#'
+#' @noRd
+esp_http_config <- function(option, envvar, default) {
+  opt <- getOption(option, NULL)
+  if (!is.null(opt)) {
+    return(opt)
+  }
+
+  env <- Sys.getenv(envvar, unset = NA_character_)
+  if (is.na(env) || identical(env, "")) {
+    return(default)
+  }
+
+  env_num <- suppressWarnings(as.numeric(env))
+  if (is.na(env_num)) {
+    return(default)
+  }
+
+  env_num
+}
+
+#' Get the timeout setting for mapSpain HTTP requests
+#'
+#' @noRd
+esp_timeout <- function() {
+  esp_http_config("mapspain_timeout", "MAPSPAIN_TIMEOUT", 300L)
 }

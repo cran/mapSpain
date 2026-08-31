@@ -1,4 +1,4 @@
-# Test gridmaps
+# Grid and hex functions return filtered regional layouts
 
     Code
       esp_get_grid_prov("Mallorca")

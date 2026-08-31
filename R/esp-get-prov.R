@@ -1,7 +1,7 @@
 #' Provinces of Spain from GISCO
 #'
 #' @description
-#' Get
+#' Return
 #' [provinces of Spain](https://en.wikipedia.org/wiki/Provinces_of_Spain)
 #' at a specified scale.
 #'
@@ -12,23 +12,26 @@
 #'
 #' Ceuta and Melilla are considered provinces in this dataset.
 #'
-#' When calling a higher level (Autonomous Community or City, or NUTS 1), all
-#' provinces of that level are added.
+#' When calling a higher level, such as an Autonomous Community, Autonomous
+#' City or NUTS 1 region, all provinces of that level are added.
 #'
+#' @inheritSection esp_set_cache_dir Caching
 #' @param prov A vector of names, codes or both for provinces, or `NULL` to get
 #'   all the provinces. See **Details**.
 #'
 #' @inheritParams esp_get_nuts
 #' @inheritDotParams esp_get_nuts -nuts_level -region
 #'
-#' @inherit esp_get_nuts
+#' @inherit esp_get_nuts return source
 #'
-#' @family political
+#' @seealso [esp_get_prov_siane()].
+#'
 #' @family gisco
+#' @concept political
 #' @encoding UTF-8
 #' @export
 #'
-#' @examples
+#' @examplesIf requireNamespace("ggplot2", quietly = TRUE)
 #' prov <- esp_get_prov()
 #'
 #' library(ggplot2)

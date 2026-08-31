@@ -6,7 +6,7 @@
 \title{Hypsometry and bathymetry of Spain from SIANE}
 \source{
 CartoBase ANE (Atlas Nacional de España) provided by Instituto Geográfico Nacional (IGN),
-\url{http://www.ign.es/web/ign/portal}. Years available are 2005 up to today.
+\url{https://www.ign.es/web/ign/portal}. Data are available from 2005 to the present.
 
 Copyright:
 \url{https://centrodedescargas.cnig.es/CentroDescargas/cartobase-ane}
@@ -49,22 +49,23 @@ esp_get_hypsobath(
 \item \code{"3857"}: \href{https://epsg.io/3857}{Pseudo-Mercator}.
 }}
 
-\item{cache}{Logical. Whether to cache downloaded files. Default is \code{TRUE}.
-See \strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
+\item{cache}{Logical. Whether to cache downloaded files. Defaults to \code{TRUE}.
+See \strong{Caching}.}
 
 \item{update_cache}{Logical. If \code{TRUE}, refreshes the cached file and forces
 a new download. Defaults to \code{FALSE}.}
 
 \item{cache_dir}{Character string. A path to a cache directory. See
-\strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
+\strong{Caching}.}
 
-\item{verbose}{A logical value. If \code{TRUE} displays informational messages.}
+\item{verbose}{A logical value indicating whether to display informational
+messages.}
 
 \item{resolution}{Character string or number. Resolution of the geospatial
 data. One of:
 \itemize{
-\item "6.5": 1:6.5 million.
-\item "3": 1:3 million.
+\item \code{"6.5"}: 1:6.5 million.
+\item \code{"3"}: 1:3 million.
 }}
 
 \item{spatialtype}{Character string. Spatial type of the output. Use
@@ -74,11 +75,11 @@ data. One of:
 A \code{\link[sf:st_sf]{sf}} object.
 }
 \description{
-Dataset representing the hypsometry and bathymetry of Spain.
+This dataset represents the hypsometry and bathymetry of Spain.
 \itemize{
 \item \strong{Hypsometry} represents the elevation and depth of features of the
 Earth's surface relative to mean sea level.
-\item \strong{Bathymetry} is the measurement of the depth of water in oceans, rivers,
+\item \strong{Bathymetry} is the measurement of the depth of water in oceans, rivers
 or lakes.
 }
 }
@@ -86,6 +87,16 @@ or lakes.
 Metadata available on
 \url{https://github.com/rOpenSpain/mapSpain/tree/sianedata/}.
 }
+\section{Caching}{
+
+
+Functions that download data store files in \code{cache_dir}. When \code{cache_dir}
+is \code{NULL}, they use the active package cache, which defaults to a temporary
+directory. Set \code{update_cache = TRUE} to replace an existing cached file.
+See \strong{Caching strategies} in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}} to configure a
+persistent cache.
+}
+
 \examples{
 \dontshow{if (esp_check_access()) withAutoprint(\{ # examplesIf}
 \donttest{

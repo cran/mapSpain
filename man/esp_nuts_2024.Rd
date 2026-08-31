@@ -4,14 +4,14 @@
 \encoding{UTF-8}
 \name{esp_nuts_2024}
 \alias{esp_nuts_2024}
-\title{NUTS 2024 for Spain \code{\link[sf:st_sf]{sf}} object}
+\title{NUTS 2024 boundaries for Spain}
 \format{
 An \code{\link[sf:st_sf]{sf}} object with \code{MULTIPOLYGON} geometries at 1:1 million
 resolution in \href{https://epsg.io/4258}{EPSG:4258} projection, containing
 86 rows and 10 variables:
 \describe{
 \item{\code{NUTS_ID}}{NUTS identifier.}
-\item{\code{LEVL_CODE}}{NUTS level code \verb{(0, 1, 2, 3)}.}
+\item{\code{LEVL_CODE}}{NUTS level code (\code{0}, \code{1}, \code{2} or \code{3}).}
 \item{\code{CNTR_CODE}}{Eurostat country code.}
 \item{\code{NAME_LATN}}{NUTS name in Latin characters.}
 \item{\code{NUTS_NAME}}{NUTS name in the local alphabet.}
@@ -68,7 +68,7 @@ head(esp_nuts_2024)
 
 }
 \seealso{
-\code{\link[=esp_get_nuts]{esp_get_nuts()}}
+\code{\link[=esp_get_nuts]{esp_get_nuts()}}.
 
 Included package datasets:
 \code{\link{esp_codelist}},
@@ -76,3 +76,4 @@ Included package datasets:
 \code{\link{pobmun25}}
 }
 \concept{datasets}
+\keyword{datasets}

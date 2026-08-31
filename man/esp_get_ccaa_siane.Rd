@@ -6,7 +6,7 @@
 \title{Autonomous Communities and Cities of Spain from SIANE}
 \source{
 CartoBase ANE (Atlas Nacional de España) provided by Instituto Geográfico Nacional (IGN),
-\url{http://www.ign.es/web/ign/portal}. Years available are 2005 up to today.
+\url{https://www.ign.es/web/ign/portal}. Data are available from 2005 to the present.
 
 Copyright:
 \url{https://centrodedescargas.cnig.es/CentroDescargas/cartobase-ane}
@@ -61,16 +61,17 @@ starts as of 2005.}
 \item \code{"3857"}: \href{https://epsg.io/3857}{Pseudo-Mercator}.
 }}
 
-\item{cache}{Logical. Whether to cache downloaded files. Default is \code{TRUE}.
-See \strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
+\item{cache}{Logical. Whether to cache downloaded files. Defaults to \code{TRUE}.
+See \strong{Caching}.}
 
 \item{update_cache}{Logical. If \code{TRUE}, refreshes the cached file and forces
 a new download. Defaults to \code{FALSE}.}
 
 \item{cache_dir}{Character string. A path to a cache directory. See
-\strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
+\strong{Caching}.}
 
-\item{verbose}{A logical value. If \code{TRUE} displays informational messages.}
+\item{verbose}{A logical value indicating whether to display informational
+messages.}
 
 \item{resolution}{Character string or number. Resolution of the geospatial
 data. One of:
@@ -85,14 +86,14 @@ data. One of:
 Initial position can be adjusted using the vector of coordinates. See
 \strong{Displacing the Canary Islands} in \code{\link[=esp_move_can]{esp_move_can()}}.}
 
-\item{rawcols}{Logical. If \code{TRUE}, adds the raw columns of the resulting
+\item{rawcols}{Logical. If \code{TRUE}, retains the raw columns of the resulting
 object as provided by IGN.}
 }
 \value{
 A \code{\link[sf:st_sf]{sf}} object.
 }
 \description{
-Get
+Return
 \href{https://en.wikipedia.org/wiki/Autonomous_communities_of_Spain}{Autonomous Communities and Cities of Spain} at a
 specified scale.
 }
@@ -105,10 +106,20 @@ level in this function.
 When calling a NUTS 1 level, all Autonomous Communities and Cities of that
 level are added.
 }
+\section{Caching}{
+
+
+Functions that download data store files in \code{cache_dir}. When \code{cache_dir}
+is \code{NULL}, they use the active package cache, which defaults to a temporary
+directory. Set \code{update_cache = TRUE} to replace an existing cached file.
+See \strong{Caching strategies} in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}} to configure a
+persistent cache.
+}
+
 \examples{
-\dontshow{if (esp_check_access()) withAutoprint(\{ # examplesIf}
+\dontshow{if (esp_check_access() && requireNamespace("ggplot2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 ccaas1 <- esp_get_ccaa_siane()
-dplyr::glimpse(ccaas1)
+utils::head(ccaas1)
 
 # Low resolution.
 ccaas_low <- esp_get_ccaa_siane(
@@ -124,23 +135,9 @@ ggplot(ccaas_low) +
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-Political and administrative boundary datasets:
-\code{\link[=esp_get_capimun]{esp_get_capimun()}},
-\code{\link[=esp_get_ccaa]{esp_get_ccaa()}},
-\code{\link[=esp_get_comarca]{esp_get_comarca()}},
-\code{\link[=esp_get_countries_siane]{esp_get_countries_siane()}},
-\code{\link{esp_get_gridmap}},
-\code{\link[=esp_get_munic]{esp_get_munic()}},
-\code{\link[=esp_get_munic_siane]{esp_get_munic_siane()}},
-\code{\link[=esp_get_nuts]{esp_get_nuts()}},
-\code{\link[=esp_get_prov]{esp_get_prov()}},
-\code{\link[=esp_get_prov_siane]{esp_get_prov_siane()}},
-\code{\link{esp_get_simpl}},
-\code{\link[=esp_get_spain]{esp_get_spain()}},
-\code{\link[=esp_get_spain_siane]{esp_get_spain_siane()}},
-\code{\link[=esp_siane_bulk_download]{esp_siane_bulk_download()}}
+\code{\link[=esp_get_ccaa]{esp_get_ccaa()}}.
 
-Datasets sourced from CartoBase ANE (Atlas Nacional de España):
+CartoBase ANE boundaries and utilities:
 \code{\link[=esp_get_capimun]{esp_get_capimun()}},
 \code{\link[=esp_get_countries_siane]{esp_get_countries_siane()}},
 \code{\link[=esp_get_munic_siane]{esp_get_munic_siane()}},

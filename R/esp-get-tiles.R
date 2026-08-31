@@ -44,6 +44,7 @@
 #'
 #' `x <- sf::st_transform(x, 3857)`
 #'
+#' @inheritSection esp_set_cache_dir Caching
 #' @param x An [`sf`][sf::st_sf] or [`sfc`][sf::st_sfc] object.
 #'
 #' @param type This argument can be one of:
@@ -85,11 +86,11 @@
 #' - [esp_tiles_providers].
 #'
 #' @family images
-#' @encoding UTF-8
 #' @rdname esp_get_tiles
 #' @name esp_get_tiles
 #' @order 1
 #'
+#' @encoding UTF-8
 #' @export
 #'
 #' @examplesIf esp_check_access()
@@ -173,7 +174,7 @@ esp_get_tiles <- function(
   prov_list <- provider$prov_list
   prov_type <- provider$prov_type
 
-  tile_geom <- prepare_tile_geometry(geom, zoom, crop, prov_type)
+  tile_geom <- prepare_tile_geometry(geom, zoom, crop, prov_type, verbose)
   geom <- tile_geom$geom
   zoom <- tile_geom$zoom
   crop <- tile_geom$crop
@@ -207,11 +208,11 @@ esp_get_tiles <- function(
   )
 }
 
-prepare_tile_provider <- function(type, options, res) {
-  prov_list <- validate_provider(type)
+prepare_tile_provider <- function(type, options, res, call = parent.frame()) {
+  prov_list <- validate_provider(type, call = call)
   prov_list <- modify_provider_list(prov_list, options)
 
-  validate_tile_ext(get_tile_ext(prov_list))
+  validate_tile_ext(get_tile_ext(prov_list), call = call)
 
   prov_type <- guess_provider_type(prov_list)
   if (prov_type == "WMS") {
@@ -226,20 +227,23 @@ prepare_tile_provider <- function(type, options, res) {
   )
 }
 
-validate_tile_ext <- function(ext) {
+validate_tile_ext <- function(ext, call = parent.frame()) {
   valid_ext <- c("png", "jpeg", "jpg", "tiff", "geotiff")
   if (ext %in% valid_ext) {
     return(ext)
   }
 
-  cli::cli_abort(paste0(
-    "The requested file extension must be one of ",
-    "{.str png}, {.str jpeg}, {.str jpg}, {.str tiff} or {.str geotiff}, ",
-    "not {.str {ext}}."
-  ))
+  cli::cli_abort(
+    paste0(
+      "The requested file extension must be one of ",
+      "{.str png}, {.str jpeg}, {.str jpg}, {.str tiff} or {.str geotiff}, ",
+      "not {.str {ext}}."
+    ),
+    call = call
+  )
 }
 
-prepare_tile_geometry <- function(geom, zoom, crop, prov_type) {
+prepare_tile_geometry <- function(geom, zoom, crop, prov_type, verbose) {
   zoom <- ensure_null(zoom)
 
   if (all(length(geom) == 1, sf::st_geometry_type(geom) == "POINT")) {
@@ -251,8 +255,12 @@ prepare_tile_geometry <- function(geom, zoom, crop, prov_type) {
       zoom <- 18
       make_msg(
         "info",
-        prov_type == "WMTS",
-        "Autozoom for a single {.cls POINT} set to {.val {18}}."
+        all(verbose, prov_type == "WMTS"),
+        paste0(
+          "Using {.arg zoom} = {.val {",
+          zoom,
+          "}} for a single {.code POINT} geometry."
+        )
       )
     }
   }
@@ -389,7 +397,7 @@ get_wms_tile <- function(bbox, prov_list, update_cache, cache_dir, verbose) {
     return(NULL)
   }
 
-  r <- terra::rast(file_local, noflip = TRUE)
+  r <- suppressWarnings(terra::rast(file_local, noflip = TRUE))
 
   # Set extent and CRS.
   terra::ext(r) <- terra::ext(terra::vect(bbox))
@@ -434,7 +442,7 @@ get_wmts_tile <- function(
   make_msg(
     "info",
     verbose,
-    paste0("{.strong ", length(tile_list), "} tile{?s} downloaded.")
+    paste0("{.val {", length(tile_list), "}} tile{?s} downloaded.")
   )
 
   # Build a SpatRasterCollection.
@@ -464,14 +472,16 @@ resolve_wmts_zoom <- function(bbox_4326, prov_list, zoom, zoommin, verbose) {
   if (all(!is.null(min_zoom), min_zoom > zoom)) {
     make_msg(
       "info",
-      TRUE,
+      verbose,
       paste0(
         "Minimum {.arg zoom} supported by this provider is ",
         "{.val {",
         min_zoom,
-        "}}. Increasing {.arg zoom} (it was {.val {",
+        "}}. Increasing {.arg zoom} from {.val {",
         zoom,
-        "}})."
+        "}} to {.val {",
+        min_zoom,
+        "}}."
       )
     )
     zoom <- max(zoom, min_zoom)
@@ -488,11 +498,7 @@ prepare_wmts_tile_query <- function(prov_list) {
     q <- paste0(q, paste0(names(rest), "=", rest, collapse = "&"))
   }
 
-  list(
-    q = q,
-    ext = get_tile_ext(prov_list),
-    folder = prov_list$id
-  )
+  list(q = q, ext = get_tile_ext(prov_list), folder = prov_list$id)
 }
 
 download_wmts_tile <- function(
@@ -525,7 +531,7 @@ download_wmts_tile <- function(
     return(NULL)
   }
 
-  r <- terra::rast(file_local, noflip = TRUE)
+  r <- suppressWarnings(terra::rast(file_local, noflip = TRUE))
   r <- colorize_single_layer_tile(r)
   set_wmts_tile_extent_crs(r, xtile, ytile, ztile, prov_list)
 }

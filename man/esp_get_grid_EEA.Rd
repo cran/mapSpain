@@ -3,7 +3,7 @@
 \encoding{UTF-8}
 \name{esp_get_grid_EEA}
 \alias{esp_get_grid_EEA}
-\title{Get \code{\link[sf:st_sf]{sf}} \code{POLYGON} of the national geographic grids from EEA}
+\title{National geographic grids from EEA}
 \source{
 \href{https://www.eea.europa.eu/en/datahub/datahubitem-view/3c362237-daa4-45e2-8c16-aaadfb1a003b}{EEA reference grid}.
 }
@@ -30,12 +30,13 @@ or \code{100}.}
 a new download. Defaults to \code{FALSE}.}
 
 \item{cache_dir}{Character string. A path to a cache directory. See
-\strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
+\strong{Caching}.}
 
-\item{verbose}{A logical value. If \code{TRUE} displays informational messages.}
+\item{verbose}{A logical value indicating whether to display informational
+messages.}
 }
 \value{
-A \code{\link[sf:st_sf]{sf}} \code{POLYGON}.
+An \code{\link[sf:st_sf]{sf}} \code{POLYGON} object.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#defunct}{\figure{lifecycle-defunct.svg}{options: alt='[Defunct]'}}}{\strong{[Defunct]}}

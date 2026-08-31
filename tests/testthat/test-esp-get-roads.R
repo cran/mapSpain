@@ -1,4 +1,4 @@
-test_that("Test offline", {
+test_that("esp_get_roads() returns NULL while offline", {
   skip_on_cran()
   skip_if_siane_offline()
 
@@ -16,14 +16,14 @@ test_that("Test offline", {
   })
 })
 
-test_that("Test 404", {
+test_that("esp_get_roads() returns NULL for HTTP 404 responses", {
   skip_on_cran()
   skip_if_siane_offline()
 
   local_mocked_bindings(is_404 = function(...) {
     TRUE
   })
-  expect_message(n <- esp_get_roads(update_cache = TRUE), "Error")
+  expect_message(n <- esp_get_roads(update_cache = TRUE), "HTTP error")
   expect_null(n)
 
   local_mocked_bindings(is_404 = function(...) {
@@ -31,15 +31,11 @@ test_that("Test 404", {
   })
 })
 
-test_that("Cache vs non-cached", {
+test_that("esp_get_roads() returns identical cached and uncached data", {
   skip_on_cran()
   skip_if_siane_offline()
 
-  cdir <- file.path(tempdir(), "testcacheroads")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
-
+  cdir <- withr::local_tempdir(pattern = "testcacheroads-")
   expect_identical(list.files(cdir, recursive = TRUE), character(0))
   expect_message(
     db_online <- esp_get_roads(cache = FALSE, verbose = TRUE, cache_dir = cdir),
@@ -63,23 +59,21 @@ test_that("Cache vs non-cached", {
   unlink(cdir, recursive = TRUE, force = TRUE)
 })
 
-test_that("roads online", {
-  expect_error(esp_get_roads(epsg = 3367))
+test_that("esp_get_roads() rejects unsupported CRS values", {
+  expect_snapshot(error = TRUE, esp_get_roads(epsg = 3367))
+})
 
+test_that("esp_get_roads() transforms CRS and moves Canary geometries", {
   skip_on_cran()
   skip_if_siane_offline()
 
-  cdir <- file.path(tempdir(), "testroads")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
-
+  cdir <- withr::local_tempdir(pattern = "testroads-")
   expect_silent(regular <- esp_get_roads(cache_dir = cdir))
 
   l <- esp_get_roads(epsg = 3857, cache_dir = cdir)
 
   expect_identical(sf::st_crs(l), sf::st_crs(3857))
-  expect_false("codauto" %in% names(l))
+  expect_named(l, setdiff(names(l), "codauto"))
   expect_s3_class(l, "sf")
   expect_s3_class(l, "tbl_df")
   expect_gt(nrow(l), 100)

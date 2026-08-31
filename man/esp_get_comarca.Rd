@@ -32,7 +32,7 @@ all possible comarcas.}
 Initial position can be adjusted using the vector of coordinates. See
 \strong{Displacing the Canary Islands} in \code{\link[=esp_move_can]{esp_move_can()}}.}
 
-\item{type}{Character string. One of \code{"INE"}, \code{"IGN"}, \code{"AGR"}, \code{"LIV"}.
+\item{type}{Character string. One of \code{"INE"}, \code{"IGN"}, \code{"AGR"} or \code{"LIV"}.
 Type of comarca to return. See \strong{Details}.}
 
 \item{epsg}{Character string or number. Projection of the map: 4-digit
@@ -48,9 +48,10 @@ Type of comarca to return. See \strong{Details}.}
 a new download. Defaults to \code{FALSE}.}
 
 \item{cache_dir}{Character string. A path to a cache directory. See
-\strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
+\strong{Caching}.}
 
-\item{verbose}{A logical value. If \code{TRUE} displays informational messages.}
+\item{verbose}{A logical value indicating whether to display informational
+messages.}
 }
 \value{
 A \code{\link[sf:st_sf]{sf}} object.
@@ -66,15 +67,14 @@ When using \code{region} you can use and mix names and NUTS codes
 (levels 1, 2 or 3), ISO codes (corresponding to level 2 or 3) or
 \code{"cpro"} (see \link{esp_codelist}).
 
-When calling a higher level (province, Autonomous Community or City, or
-NUTS 1), all comarcas of that level are added.
+When calling a higher level, such as a province, Autonomous Community,
+Autonomous City or NUTS 1 region, all comarcas of that level are added.
 }
 \note{
 The use of the information contained on the
-\href{https://www.ine.es/en/index.htm}{INE website} may be carried out by users
-or re-use agents, at their own risk, and they will be the sole liable parties
-in the case of having to answer to third parties due to damages arising
-from such use.
+\href{https://www.ine.es/en/index.htm}{INE website} is at the sole risk of users
+and re-use agents. They are liable for damages to third parties arising from
+such use.
 }
 \section{About comarcas}{
 Comarcas (English equivalent: district, county, area or zone) do not
@@ -82,7 +82,7 @@ always have a formal legal status. They correspond mainly to natural areas
 (valleys, river basins and similar areas), historical regions or ancient
 kingdoms.
 
-In the case of Spain, comarcas only have an administrative character legally
+In Spain, comarcas only have an administrative character legally
 recognized in Catalonia, the Basque Country, Navarra (named merindades
 instead), the region of El Bierzo (Castilla y Leon) and Aragon. Galicia,
 the Principality of Asturias and Andalusia have functional comarcas.
@@ -100,6 +100,16 @@ Fisheries and Food (MAPA).
 \item \code{"LIV"}: Livestock comarcas defined by the Ministry of Agriculture,
 Fisheries and Food (MAPA).
 }
+}
+
+\section{Caching}{
+
+
+Functions that download data store files in \code{cache_dir}. When \code{cache_dir}
+is \code{NULL}, they use the active package cache, which defaults to a temporary
+directory. Set \code{update_cache = TRUE} to replace an existing cached file.
+See \strong{Caching strategies} in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}} to configure a
+persistent cache.
 }
 
 \examples{
@@ -130,20 +140,9 @@ ggplot(comarcas_cat) +
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-Political and administrative boundary datasets:
-\code{\link[=esp_get_capimun]{esp_get_capimun()}},
-\code{\link[=esp_get_ccaa]{esp_get_ccaa()}},
-\code{\link[=esp_get_ccaa_siane]{esp_get_ccaa_siane()}},
-\code{\link[=esp_get_countries_siane]{esp_get_countries_siane()}},
+Additional boundary datasets and representations:
 \code{\link{esp_get_gridmap}},
-\code{\link[=esp_get_munic]{esp_get_munic()}},
-\code{\link[=esp_get_munic_siane]{esp_get_munic_siane()}},
-\code{\link[=esp_get_nuts]{esp_get_nuts()}},
-\code{\link[=esp_get_prov]{esp_get_prov()}},
-\code{\link[=esp_get_prov_siane]{esp_get_prov_siane()}},
-\code{\link{esp_get_simpl}},
-\code{\link[=esp_get_spain]{esp_get_spain()}},
-\code{\link[=esp_get_spain_siane]{esp_get_spain_siane()}},
-\code{\link[=esp_siane_bulk_download]{esp_siane_bulk_download()}}
+\code{\link{esp_get_simpl}}
 }
+\concept{boundary_helpers}
 \concept{political}

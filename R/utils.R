@@ -30,20 +30,27 @@ make_msg <- function(type = "generic", verbose, ...) {
   invisible()
 }
 
-#' Match argument with pretty error message
+cli_vec_no_oxford <- function(x, last = "and") {
+  last_sep <- paste0(" ", last, " ")
+  cli::cli_vec(x, style = list("vec-sep2" = last_sep, "vec-last" = last_sep))
+}
+
+#' Match an argument with an informative error
 #'
 #' @param arg The argument to match.
 #' @param choices The possible choices for the argument.
+#' @param call The execution environment to use in error messages.
 #'
 #' @return
 #' The matched argument.
 #'
 #' @noRd
-match_arg_pretty <- function(arg, choices) {
+match_arg_pretty <- function(arg, choices, call = parent.frame()) {
   arg_name <- as.character(substitute(arg)) # nolint
 
   if (missing(choices)) {
-    formal_args <- formals(sys.function(sys_par <- sys.parent()))
+    sys_par <- sys.parent()
+    formal_args <- formals(sys.function(sys_par))
     choices <- eval(
       formal_args[[as.character(substitute(arg))]],
       envir = sys.frame(sys_par)
@@ -65,10 +72,8 @@ match_arg_pretty <- function(arg, choices) {
     return(arg)
   }
 
-  msg <- paste0(
-    "{.arg {arg_name}} must be {.or {.str {choices}}}, not ",
-    "{.or {.str {arg}}}."
-  )
+  choices_msg <- cli_vec_no_oxford(choices, "or") # nolint
+  arg_msg <- cli_vec_no_oxford(arg, "or") # nolint
 
   hint <- NULL
   if (length(arg) == 1) {
@@ -78,15 +83,24 @@ match_arg_pretty <- function(arg, choices) {
     }
   }
 
-  cli::cli_abort(c(msg, i = hint), call = NULL)
+  cli::cli_abort(
+    c(
+      paste0(
+        "{.arg {arg_name}} must be {.str {choices_msg}}, not ",
+        "{.str {arg_msg}}."
+      ),
+      i = hint
+    ),
+    call = call
+  )
 }
 
 #' Row-bind data frames filling missing columns with `NA`
 #'
 #' @param a_list A list of data frames or lists to row bind.
 #' @return
-#' A data frame resulting from row binding the input data frames or `sf`
-#' objects.
+#' A data frame resulting from row binding the input data frames or
+#' [`sf`][sf::st_sf] objects.
 #'
 #' @noRd
 rbind_fill <- function(a_list) {
@@ -123,7 +137,7 @@ siane_filter_year <- function(data_sf, year = Sys.Date()) {
   if (nchar(sel_date) != 10) {
     cli::cli_abort(paste0(
       "Date {.val {sel_date}} is not valid. ",
-      "Use the {.val YYYY} or {.val YYYY-MM-DD} format. ",
+      "Use the {.code YYYY} or {.code YYYY-MM-DD} format. ",
       "See {.fn base::as.Date}."
     ))
   }
@@ -172,8 +186,12 @@ validate_non_empty_arg <- function(arg, call = parent.frame(1)) {
   arg
 }
 
-validate_epsg <- function(epsg, choices = c("4326", "4258", "3035", "3857")) {
-  match_arg_pretty(epsg, choices)
+validate_epsg <- function(
+  epsg,
+  choices = c("4326", "4258", "3035", "3857"),
+  call = parent.frame()
+) {
+  match_arg_pretty(epsg, choices, call = call)
 }
 
 is_moving_can <- function(moveCAN) {
@@ -188,13 +206,15 @@ merge_db_value_desc <- function(data_sf, field, names) {
 }
 
 return_empty_sf <- function(data_sf, warning, .envir = parent.frame()) {
-  cli::cli_alert_warning(warning, .envir = .envir)
-  cli::cli_alert_info("Returning empty {.cls sf} object.")
+  cli::cli_warn(
+    c(warning, i = "Returning empty {.cls sf} object."),
+    .envir = .envir
+  )
   data_sf
 }
 
 return_empty_name_sf <- function(data_sf, name) {
-  return_empty_sf(data_sf, "No results for {.arg name} {.str {name}}.")
+  return_empty_sf(data_sf, "No results for {.arg name} = {.str {name}}.")
 }
 
 return_empty_combination_sf <- function(data_sf, arg) {
@@ -208,39 +228,42 @@ return_empty_combination_sf <- function(data_sf, arg) {
 }
 
 warn_no_spanish_codes <- function(code_type, values) {
-  cli::cli_alert_warning(
-    "No Spanish {code_type} codes found for {.str {values}}."
+  values <- cli_vec_no_oxford(values)
+  cli::cli_warn(
+    "No Spanish {.emph {code_type}} codes found for {.str {values}}."
   )
 }
 
 abort_no_spanish_codes <- function(code_type, values, call = parent.frame()) {
+  values <- cli_vec_no_oxford(values)
   cli::cli_abort(
-    "No Spanish {code_type} codes found for {.str {values}}.",
+    "No Spanish {.emph {code_type}} codes found for {.str {values}}.",
     call = call
   )
 }
 
 warn_no_match <- function(values, destination = NULL) {
+  values <- cli_vec_no_oxford(values)
   if (is.null(destination)) {
-    cli::cli_alert_warning("No match found for {.str {values}}.")
+    cli::cli_warn("No match found for {.str {values}}.")
     return(invisible())
   }
 
-  cli::cli_alert_warning(paste0(
-    "No match found for {.str {values}} with ",
-    "{.arg destination} {.str {destination}}."
+  cli::cli_warn(paste0(
+    "No match found for {.str {values}} when {.arg destination} is ",
+    "{.str {destination}}."
   ))
   invisible()
 }
 
 alert_return_null <- function() {
-  cli::cli_alert("Returning {.val NULL}.")
+  cli::cli_alert("Returning {.code NULL}.")
   NULL
 }
 
 alert_open_issue <- function() {
-  cli::cli_alert_warning(c(
+  cli::cli_alert_info(paste0(
     "If you think this is a bug, please consider opening an issue at ",
-    "{.url https://github.com/rOpenSpain/mapSpain/issues}"
+    "{.url https://github.com/rOpenSpain/mapSpain/issues}."
   ))
 }

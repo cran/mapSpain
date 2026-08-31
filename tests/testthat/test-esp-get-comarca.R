@@ -1,4 +1,4 @@
-test_that("Test offline", {
+test_that("esp_get_comarca() returns NULL while offline", {
   skip_on_cran()
   skip_if_siane_offline()
   skip_if_gisco_offline()
@@ -17,7 +17,7 @@ test_that("Test offline", {
   })
 })
 
-test_that("Test 404", {
+test_that("esp_get_comarca() returns NULL for HTTP 404 responses", {
   skip_on_cran()
   skip_if_siane_offline()
   skip_if_gisco_offline()
@@ -25,7 +25,7 @@ test_that("Test 404", {
   local_mocked_bindings(is_404 = function(...) {
     TRUE
   })
-  expect_message(n <- esp_get_comarca(update_cache = TRUE), "Error")
+  expect_message(n <- esp_get_comarca(update_cache = TRUE), "HTTP error")
   expect_null(n)
 
   local_mocked_bindings(is_404 = function(...) {
@@ -33,13 +33,12 @@ test_that("Test 404", {
   })
 })
 
-test_that("comarcas online", {
+test_that("esp_get_comarca() validates and filters comarca datasets", {
   skip_on_cran()
   skip_if_siane_offline()
   skip_if_gisco_offline()
 
-  cdir <- file.path(tempdir(), "test_comarcas")
-  unlink(cdir, recursive = TRUE, force = TRUE)
+  cdir <- withr::local_tempdir(pattern = "test-comarcas-")
   expect_silent(n <- esp_get_comarca(cache_dir = cdir))
 
   expect_s3_class(n, "sf")
@@ -54,8 +53,14 @@ test_that("comarcas online", {
   )
   expect_lt(nrow(ncan), nrow(n))
 
-  expect_error(esp_get_comarca(region = "XX", cache_dir = cdir))
-  expect_error(esp_get_comarca(epsg = "5689", cache_dir = cdir))
+  expect_snapshot(
+    error = TRUE,
+    esp_get_comarca(region = "XX", cache_dir = cdir)
+  )
+  expect_snapshot(
+    error = TRUE,
+    esp_get_comarca(epsg = "5689", cache_dir = cdir)
+  )
   expect_snapshot(nemty <- esp_get_comarca(comarca = "XX", cache_dir = cdir))
 
   expect_equal(nrow(nemty), 0)

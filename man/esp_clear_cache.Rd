@@ -14,7 +14,8 @@ esp_clear_cache(config = FALSE, cached_data = TRUE, verbose = FALSE)
 \item{cached_data}{Logical. If \code{TRUE}, deletes your \code{cache_dir} and all
 its contents.}
 
-\item{verbose}{A logical value. If \code{TRUE} displays informational messages.}
+\item{verbose}{A logical value indicating whether to display informational
+messages.}
 }
 \value{
 Invisible. This function is called for its side effects.
@@ -51,7 +52,7 @@ identical(my_cache, esp_detect_cache_dir())
 }
 }
 \seealso{
-\code{\link[tools:R_user_dir]{tools::R_user_dir()}}
+\code{\link[tools:R_user_dir]{tools::R_user_dir()}}.
 
 Cache management utilities:
 \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}

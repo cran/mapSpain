@@ -1,4 +1,4 @@
-test_that("Test offline", {
+test_that("esp_get_spain_siane() returns NULL while offline", {
   skip_on_cran()
   skip_if_siane_offline()
   skip_if_gisco_offline()
@@ -17,7 +17,7 @@ test_that("Test offline", {
   })
 })
 
-test_that("Test 404", {
+test_that("esp_get_spain_siane() returns NULL for HTTP 404 responses", {
   skip_on_cran()
   skip_if_siane_offline()
   skip_if_gisco_offline()
@@ -25,7 +25,7 @@ test_that("Test 404", {
   local_mocked_bindings(is_404 = function(...) {
     TRUE
   })
-  expect_message(n <- esp_get_spain_siane(update_cache = TRUE), "Error")
+  expect_message(n <- esp_get_spain_siane(update_cache = TRUE), "HTTP error")
   expect_null(n)
 
   local_mocked_bindings(is_404 = function(...) {
@@ -33,15 +33,12 @@ test_that("Test 404", {
   })
 })
 
-test_that("Check country", {
+test_that("esp_get_spain_siane() returns Spain at requested detail and CRS", {
   skip_on_cran()
   skip_if_siane_offline()
   skip_if_gisco_offline()
 
-  cdir <- file.path(tempdir(), "testcntry_siane")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
+  cdir <- withr::local_tempdir(pattern = "testcntry-siane-")
   expect_silent(s <- esp_get_spain_siane(cache_dir = cdir))
 
   expect_s3_class(s, "sf")

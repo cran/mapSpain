@@ -23,17 +23,28 @@ or \code{10}.}
 a new download. Defaults to \code{FALSE}.}
 
 \item{cache_dir}{Character string. A path to a cache directory. See
-\strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
+\strong{Caching}.}
 
-\item{verbose}{A logical value. If \code{TRUE} displays informational messages.}
+\item{verbose}{A logical value indicating whether to display informational
+messages.}
 }
 \value{
-A \code{\link[sf:st_sf]{sf}} \code{POLYGON}.
+An \code{\link[sf:st_sf]{sf}} \code{POLYGON} object.
 }
 \description{
-Loads a \code{\link[sf:st_sf]{sf}} \code{POLYGON} with the geographic grids of Spain as
-provided by the European Soil Data Centre (ESDAC).
+This function loads an \code{\link[sf:st_sf]{sf}} \code{POLYGON} with the geographic
+grids of Spain provided by the European Soil Data Centre (ESDAC).
 }
+\section{Caching}{
+
+
+Functions that download data store files in \code{cache_dir}. When \code{cache_dir}
+is \code{NULL}, they use the active package cache, which defaults to a temporary
+directory. Set \code{update_cache = TRUE} to replace an existing cached file.
+See \strong{Caching strategies} in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}} to configure a
+persistent cache.
+}
+
 \examples{
 \dontshow{if (esp_check_access()) withAutoprint(\{ # examplesIf}
 \dontrun{
@@ -55,13 +66,13 @@ ggplot(grid) +
 \item Panagos P., Van Liedekerke M., Jones A., Montanarella L., "European Soil
 Data Centre: Response to European policy support and public data
 requirements", (2012) \emph{Land Use Policy}, 29 (2), pp. 329-338.
-\doi{10.1016/j.landusepol.2011.07.003}
+\doi{10.1016/j.landusepol.2011.07.003}.
 \item European Soil Data Centre (ESDAC), esdac.jrc.ec.europa.eu, European
 Commission, Joint Research Centre.
 }
 }
 \seealso{
-Geographical grid datasets:
+Geographic grid data:
 \code{\link[=esp_get_grid_BDN]{esp_get_grid_BDN()}},
 \code{\link[=esp_get_grid_MTN]{esp_get_grid_MTN()}}
 }

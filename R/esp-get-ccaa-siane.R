@@ -1,5 +1,6 @@
 #' Autonomous Communities and Cities of Spain from SIANE
 #'
+#' @inheritSection esp_set_cache_dir Caching
 #' @param year Character string or number. Release year. It must use format
 #'   `YYYY` (assuming end of year) or `YYYY-MM-DD`. Historical information
 #'   starts as of 2005.
@@ -9,7 +10,7 @@
 #'   - `"6.5"`: 1:6.5 million.
 #'   - `"3"`: 1:3 million.
 #'
-#' @param rawcols Logical. If `TRUE`, adds the raw columns of the resulting
+#' @param rawcols Logical. If `TRUE`, retains the raw columns of the resulting
 #'   object as provided by IGN.
 #'
 #' @inheritParams esp_get_nuts
@@ -18,8 +19,8 @@
 #' @source
 #' ```{r, echo=FALSE, results='asis'}
 #' cat("CartoBase ANE (Atlas Nacional de Espa\u00f1a) provided by Instituto",
-#'   "Geográfico Nacional (IGN),\n<http://www.ign.es/web/ign/portal>. Years",
-#'   "available are 2005 up to today.",
+#'   "Geográfico Nacional (IGN),\n<https://www.ign.es/web/ign/portal>. Data",
+#'   "are available from 2005 to the present.",
 #'   sep = " "
 #' )
 #' ```
@@ -39,14 +40,16 @@
 #' Data distributed through the `sianedata` data branch, see
 #' <https://github.com/rOpenSpain/mapSpain/tree/sianedata>.
 #'
-#' @family political
+#' @seealso [esp_get_ccaa()].
+#'
 #' @family siane
+#' @concept political
 #' @encoding UTF-8
 #' @export
 #'
-#' @examplesIf esp_check_access()
+#' @examplesIf esp_check_access() && requireNamespace("ggplot2", quietly = TRUE)
 #' ccaas1 <- esp_get_ccaa_siane()
-#' dplyr::glimpse(ccaas1)
+#' utils::head(ccaas1)
 #'
 #' # Low resolution.
 #' ccaas_low <- esp_get_ccaa_siane(

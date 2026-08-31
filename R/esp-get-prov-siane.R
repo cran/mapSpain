@@ -1,19 +1,20 @@
 #' Provinces of Spain from SIANE
 #'
+#' @inheritSection esp_set_cache_dir Caching
 #' @inheritParams esp_get_ccaa_siane
 #' @inheritParams esp_get_prov
 #' @inherit esp_get_prov description details
 #' @inherit esp_get_ccaa_siane source return
-#' @family political
+#' @seealso [esp_get_prov()].
 #' @family siane
+#' @concept political
 #' @encoding UTF-8
 #' @export
 #'
-#' @examplesIf esp_check_access()
+#' @examplesIf esp_check_access() && requireNamespace("ggplot2", quietly = TRUE)
 #' library(ggplot2)
 #'
 #' esp_get_ccaa_siane() |>
-#'   dplyr::glimpse() |>
 #'   ggplot() +
 #'   geom_sf()
 esp_get_prov_siane <- function(

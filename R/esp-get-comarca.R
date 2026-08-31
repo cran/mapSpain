@@ -11,8 +11,8 @@
 #' (levels 1, 2 or 3), ISO codes (corresponding to level 2 or 3) or
 #' `"cpro"` (see [esp_codelist]).
 #'
-#' When calling a higher level (province, Autonomous Community or City, or
-#' NUTS 1), all comarcas of that level are added.
+#' When calling a higher level, such as a province, Autonomous Community,
+#' Autonomous City or NUTS 1 region, all comarcas of that level are added.
 #'
 #' # About comarcas
 #'
@@ -21,7 +21,7 @@
 #' (valleys, river basins and similar areas), historical regions or ancient
 #' kingdoms.
 #'
-#' In the case of Spain, comarcas only have an administrative character legally
+#' In Spain, comarcas only have an administrative character legally
 #' recognized in Catalonia, the Basque Country, Navarra (named merindades
 #' instead), the region of El Bierzo (Castilla y Leon) and Aragon. Galicia,
 #' the Principality of Asturias and Andalusia have functional comarcas.
@@ -30,6 +30,7 @@
 #'
 #' `esp_get_comarca()` can retrieve several types of comarcas, each provided
 #' under different classification criteria.
+#'
 #' - `"INE"`: Comarcas defined by the National Statistics Institute (INE).
 #' - `"IGN"`: Official comarcas, only available for some Autonomous
 #'   Communities and Cities, provided by the National Geographic Institute.
@@ -38,15 +39,15 @@
 #' - `"LIV"`: Livestock comarcas defined by the Ministry of Agriculture,
 #'   Fisheries and Food (MAPA).
 #'
+#' @inheritSection esp_set_cache_dir Caching
 #' @param region Character string. A vector of names, codes or both for
 #'   provinces, or `NULL` to get all the comarcas. See **Details**.
 #' @param comarca Character string. A name or [`regex`][base::grep()]
 #'   expression with the names of the required comarcas. Use `NULL` to return
 #'   all possible comarcas.
-#' @param type Character string. One of `"INE"`, `"IGN"`, `"AGR"`, `"LIV"`.
+#' @param type Character string. One of `"INE"`, `"IGN"`, `"AGR"` or `"LIV"`.
 #'   Type of comarca to return. See **Details**.
 #'
-#' @inheritParams esp_get_prov
 #' @inheritParams esp_get_nuts
 #' @inherit esp_get_nuts return
 #' @source
@@ -54,12 +55,12 @@
 #'
 #' @note
 #' The use of the information contained on the
-#' [INE website](https://www.ine.es/en/index.htm) may be carried out by users
-#' or re-use agents, at their own risk, and they will be the sole liable parties
-#' in the case of having to answer to third parties due to damages arising
-#' from such use.
+#' [INE website](https://www.ine.es/en/index.htm) is at the sole risk of users
+#' and re-use agents. They are liable for damages to third parties arising from
+#' such use.
 #'
-#' @family political
+#' @family boundary_helpers
+#' @concept political
 #' @encoding UTF-8
 #' @export
 #'

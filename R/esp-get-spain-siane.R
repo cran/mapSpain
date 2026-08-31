@@ -3,11 +3,13 @@
 #' @description
 #' Returns the boundaries of Spain as a single [`sf`][sf::st_sf] `POLYGON`.
 #'
+#' @inheritSection esp_set_cache_dir Caching
 #' @inheritParams esp_get_ccaa_siane
 #' @inheritDotParams esp_get_ccaa_siane -ccaa -rawcols
 #' @inherit esp_get_ccaa_siane source return
-#' @family political
+#' @seealso [esp_get_spain()].
 #' @family siane
+#' @concept political
 #' @encoding UTF-8
 #' @export
 #'
@@ -50,7 +52,7 @@ esp_get_spain_siane <- function(moveCAN = TRUE, ...) {
   # Get country metadata.
   df <- sf::st_drop_geometry(for_data_frame)
 
-  # Generate the sf object.
+  # Build the `sf` object.
   data_sf <- sf::st_as_sf(df, g)
 
   # Arrange rows and normalize geometry.

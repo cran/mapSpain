@@ -1,4 +1,4 @@
-test_that("Test offline", {
+test_that("esp_get_prov_siane() returns NULL while offline", {
   skip_on_cran()
   skip_if_siane_offline()
   skip_if_gisco_offline()
@@ -17,7 +17,7 @@ test_that("Test offline", {
   })
 })
 
-test_that("Test 404", {
+test_that("esp_get_prov_siane() returns NULL for HTTP 404 responses", {
   skip_on_cran()
   skip_if_siane_offline()
   skip_if_gisco_offline()
@@ -25,7 +25,7 @@ test_that("Test 404", {
   local_mocked_bindings(is_404 = function(...) {
     TRUE
   })
-  expect_message(n <- esp_get_prov_siane(update_cache = TRUE), "Error")
+  expect_message(n <- esp_get_prov_siane(update_cache = TRUE), "HTTP error")
   expect_null(n)
 
   local_mocked_bindings(is_404 = function(...) {
@@ -33,15 +33,11 @@ test_that("Test 404", {
   })
 })
 
-test_that("Cache vs non-cached", {
+test_that("esp_get_prov_siane() returns identical cached and uncached data", {
   skip_on_cran()
   skip_if_siane_offline()
 
-  cdir <- file.path(tempdir(), "testprov")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
-
+  cdir <- withr::local_tempdir(pattern = "testprov-")
   expect_identical(list.files(cdir, recursive = TRUE), character(0))
   expect_message(
     db_online <- esp_get_prov_siane(
@@ -77,17 +73,17 @@ test_that("Cache vs non-cached", {
 })
 
 # Test siane
-test_that("prov online", {
+test_that("esp_get_prov_siane() validates and filters provincial data", {
   skip_on_cran()
   skip_if_siane_offline()
   skip_if_gisco_offline()
 
-  cdir <- file.path(tempdir(), "testcapimun")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
+  cdir <- withr::local_tempdir(pattern = "testprov-")
 
-  expect_error(esp_get_prov_siane(epsg = "FFF", cache_dir = cdir))
+  expect_error(
+    esp_get_prov_siane(epsg = "FFF", cache_dir = cdir),
+    class = "rlang_error"
+  )
 
   expect_silent(esp_get_prov_siane(cache_dir = cdir))
 
@@ -104,7 +100,10 @@ test_that("prov online", {
     prov = c("Galicia", "ES7", "Centro"),
     cache_dir = cdir
   ))
-  expect_error(esp_get_prov_siane(epsg = 39823, cache_dir = cdir))
+  expect_error(
+    esp_get_prov_siane(epsg = 39823, cache_dir = cdir),
+    class = "rlang_error"
+  )
   expect_silent(esp_get_prov_siane(cache_dir = cdir, resolution = 10))
   expect_silent(esp_get_prov_siane(
     moveCAN = c(1, 2),
@@ -115,13 +114,13 @@ test_that("prov online", {
     prov = c("Galicia", "ES7", "Centro"),
     cache_dir = cdir
   ))
-  expect_snapshot(
-    error = TRUE,
-    esp_get_prov_siane(prov = "Menorca", cache_dir = cdir)
+  expect_error(
+    esp_get_prov_siane(prov = "Menorca", cache_dir = cdir),
+    class = "rlang_error"
   )
-  expect_snapshot(
-    error = TRUE,
-    esp_get_prov_siane(prov = "ES6x", cache_dir = cdir)
+  expect_error(
+    esp_get_prov_siane(prov = "ES6x", cache_dir = cdir),
+    class = "rlang_error"
   )
 
   expect_equal(
@@ -159,11 +158,10 @@ test_that("prov online", {
   n <- esp_get_prov_siane(prov = f$cpro, cache_dir = cdir)
   expect_equal(nrow(n), 52)
 
-  expect_snapshot(
-    n <- esp_get_prov_siane(prov = f$nuts3.code, cache_dir = cdir)
+  expect_warning(
+    n <- esp_get_prov_siane(prov = f$nuts3.code, cache_dir = cdir),
+    "No Spanish province codes found",
+    class = "rlang_warning"
   )
   expect_equal(nrow(n), 49)
-
-  # Cleanup
-  unlink(cdir, recursive = TRUE, force = TRUE)
 })

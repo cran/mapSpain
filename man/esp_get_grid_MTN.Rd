@@ -3,7 +3,7 @@
 \encoding{UTF-8}
 \name{esp_get_grid_MTN}
 \alias{esp_get_grid_MTN}
-\title{National geographic grids from IGN MTN (Mapa Topografico Nacional)}
+\title{National geographic grids from IGN MTN (Mapa Topográfico Nacional)}
 \source{
 IGN data distributed through the \code{sianedata/MTN} data branch (see
 \url{https://github.com/rOpenSpain/mapSpain/tree/sianedata/MTN}).
@@ -23,15 +23,17 @@ esp_get_grid_MTN(
 a new download. Defaults to \code{FALSE}.}
 
 \item{cache_dir}{Character string. A path to a cache directory. See
-\strong{Caching strategies} section in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}}.}
+\strong{Caching}.}
 
-\item{verbose}{A logical value. If \code{TRUE} displays informational messages.}
+\item{verbose}{A logical value indicating whether to display informational
+messages.}
 }
 \value{
-A \code{\link[sf:st_sf]{sf}} \code{POLYGON}.
+An \code{\link[sf:st_sf]{sf}} \code{POLYGON} object.
 }
 \description{
-Loads a \code{\link[sf:st_sf]{sf}} \code{POLYGON} with the geographic grids of Spain.
+This function loads an \code{\link[sf:st_sf]{sf}} \code{POLYGON} with the geographic
+grids of Spain.
 }
 \details{
 Metadata available on
@@ -50,7 +52,7 @@ Possible values of \code{grid} are:\tabular{l}{
 
 \subsection{MTN grids}{
 
-A description of the MTN (Mapa Topografico Nacional) grids available:
+A description of the available MTN (Mapa Topográfico Nacional) grids:
 
 \strong{MTN25_ED50_Peninsula_Baleares}
 
@@ -101,6 +103,16 @@ series of the map, taking into account the special distribution of the
 Canary Islands sheets.
 }
 }
+\section{Caching}{
+
+
+Functions that download data store files in \code{cache_dir}. When \code{cache_dir}
+is \code{NULL}, they use the active package cache, which defaults to a temporary
+directory. Set \code{update_cache = TRUE} to replace an existing cached file.
+See \strong{Caching strategies} in \code{\link[=esp_set_cache_dir]{esp_set_cache_dir()}} to configure a
+persistent cache.
+}
+
 \examples{
 \dontshow{if (esp_check_access()) withAutoprint(\{ # examplesIf}
 \donttest{
@@ -116,7 +128,7 @@ ggplot(grid) +
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-Geographical grid datasets:
+Geographic grid data:
 \code{\link[=esp_get_grid_BDN]{esp_get_grid_BDN()}},
 \code{\link[=esp_get_grid_ESDAC]{esp_get_grid_ESDAC()}}
 }

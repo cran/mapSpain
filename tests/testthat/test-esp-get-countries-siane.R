@@ -1,4 +1,4 @@
-test_that("Test offline", {
+test_that("esp_get_countries_siane() returns NULL while offline", {
   skip_on_cran()
   skip_if_siane_offline()
 
@@ -16,14 +16,17 @@ test_that("Test offline", {
   })
 })
 
-test_that("Test 404", {
+test_that("esp_get_countries_siane() returns NULL for HTTP 404 responses", {
   skip_on_cran()
   skip_if_siane_offline()
 
   local_mocked_bindings(is_404 = function(...) {
     TRUE
   })
-  expect_message(n <- esp_get_countries_siane(update_cache = TRUE), "Error")
+  expect_message(
+    n <- esp_get_countries_siane(update_cache = TRUE),
+    "HTTP error"
+  )
   expect_null(n)
 
   local_mocked_bindings(is_404 = function(...) {
@@ -31,15 +34,11 @@ test_that("Test 404", {
   })
 })
 
-test_that("Cache vs non-cached", {
+test_that("esp_get_countries_siane() agrees across cached and uncached data", {
   skip_on_cran()
   skip_if_gisco_offline()
 
-  cdir <- file.path(tempdir(), "testcountry")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
-
+  cdir <- withr::local_tempdir(pattern = "testcountry-")
   expect_identical(list.files(cdir, recursive = TRUE), character(0))
   expect_message(
     db_online <- esp_get_countries_siane(
@@ -68,15 +67,11 @@ test_that("Cache vs non-cached", {
   # Cleanup
   unlink(cdir, recursive = TRUE, force = TRUE)
 })
-test_that("Filter countries", {
+test_that("esp_get_countries_siane() filters country names and codes", {
   skip_on_cran()
   skip_if_siane_offline()
 
-  cdir <- file.path(tempdir(), "testcountry")
-  if (dir.exists(cdir)) {
-    unlink(cdir, recursive = TRUE, force = TRUE)
-  }
-
+  cdir <- withr::local_tempdir(pattern = "testcountry-")
   db_cached <- esp_get_countries_siane(country = "Italy", cache_dir = cdir)
 
   expect_identical(db_cached$id_iso3, "ITA")
@@ -107,9 +102,14 @@ test_that("Filter countries", {
     db_null <- esp_get_countries_siane(country = "greenland", cache_dir = cdir)
   )
 
-  expect_true(nrow(db_null) == 0)
+  expect_equal(nrow(db_null), 0)
   expect_s3_class(db_null, "sf")
   expect_s3_class(db_null, "tbl_df")
+
+  # Test no `id_iso3` field.
+  db_err <- db_cached_full[, seq_len(4)] |> sf::st_drop_geometry()
+  expect_identical(filter_country(db_err, country = "JP"), db_err)
+  expect_contains(db_err$id_iso2, "JP")
 
   # Cleanup
   unlink(cdir, recursive = TRUE, force = TRUE)

@@ -1,10 +1,10 @@
 #' Canary Islands inset box and outline
 #'
 #' @description
-#' Create an `sf` `POLYGON` or `LINESTRING` that can be used to mark or
+#' Create an [`sf`][sf::st_sf] `POLYGON` or `LINESTRING` that can mark or
 #' frame the Canary Islands when they are displayed as an inset on maps of
 #' Spain. This object is useful together with [esp_move_can()] and the
-#' `moveCAN` arguments available in other `mapSpain` getters.
+#' `moveCAN` arguments available in other \CRANpkg{mapSpain} getters.
 #'
 #' @details
 #' The `style` parameter controls the geometry returned:
@@ -12,7 +12,7 @@
 #' - `"box"`: a rectangular boundary returned as a `LINESTRING`.
 #' - `"poly"`: a slightly expanded rectangle returned as a filled `POLYGON`.
 #' - `"left"` / `"right"`: decorative `LINESTRING` variants that follow
-#'   the western or eastern side of the islands respectively.
+#'   the western or eastern side of the islands, respectively.
 #'
 #' @param style Character string. One of `"right"`, `"left"`, `"box"` or
 #'   `"poly"`. Default is `"right"`, see **Details**.
@@ -23,12 +23,12 @@
 #' `LINESTRING` (other styles).
 #'
 #' @family can_helpers
-#' @encoding UTF-8
 #' @rdname esp_get_can_box
 #' @name esp_get_can_box
+#' @encoding UTF-8
 #' @export
 #'
-#' @examples
+#' @examplesIf requireNamespace("ggplot2", quietly = TRUE)
 #' provs <- esp_get_prov()
 #' box <- esp_get_can_box()
 #' line <- esp_get_can_provinces()
