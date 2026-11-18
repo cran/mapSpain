@@ -16,12 +16,12 @@ Always acknowledge authorship using the following statements:
 \item When the original digital product is not modified or altered, use one of
 the following statements:
 \itemize{
-\item CartoBase ANE 2006-2024 CC-BY 4.0 ign.es.
-\item CartoBase ANE 2006-2024 CC-BY 4.0 Instituto Geográfico Nacional.
+\item CartoBase ANE 2006-2026 CC-BY 4.0 ign.es.
+\item CartoBase ANE 2006-2026 CC-BY 4.0 Instituto Geográfico Nacional.
 }
 \item When a new product is generated:
 \itemize{
-\item Obra derivada de CartoBase ANE 2006-2024 CC-BY 4.0 ign.es.
+\item Obra derivada de CartoBase ANE 2006-2026 CC-BY 4.0 ign.es.
 }
 }
 
@@ -76,7 +76,7 @@ data. One of:
 }}
 }
 \value{
-A \code{\link[sf:st_sf]{sf}} object.
+An \code{\link[sf:st_sf]{sf}} object.
 }
 \description{
 River basin districts are the areas of land and sea, made up of one or more

@@ -17,18 +17,24 @@ contains additional parameters to pass to \code{\link[=addProviderEspTiles]{addP
 \source{
 \url{https://dieghernan.github.io/leaflet-providersESP/}, a plugin for
 \CRANpkg{leaflet},
-\strong{v1.3.3}.
+\strong{v1.5.0}.
 }
 \description{
-A named \code{\link[base:list]{list}} of length 102,
+A named \code{\link[base:list]{list}} of length 174,
 containing URL information from different public WMS and WMTS tile providers
 in Spain.
 
 This dataset is an implementation of the JavaScript plugin
 \href{https://dieghernan.github.io/leaflet-providersESP/}{leaflet-providersESP}
-\strong{v1.3.3}.
+\strong{v1.5.0}.
 }
 \details{
+Compare layers in the
+\href{https://dieghernan.github.io/leaflet-providersESP/preview/}{preview}
+and consult the
+\href{https://dieghernan.github.io/leaflet-providersESP/capas/}{layer guide}
+for coverage, scale and availability information.
+
 Providers available to be passed to \code{type} in \code{\link[=esp_get_tiles]{esp_get_tiles()}} are:
 \itemize{
 \item \code{"IDErioja"}
@@ -38,6 +44,7 @@ Providers available to be passed to \code{type} in \code{\link[=esp_get_tiles]{e
 \item \code{"IDErioja.Oscuro"}
 \item \code{"IGNBase"}
 \item \code{"IGNBase.Todo"}
+\item \code{"IGNBase.Simplificado"}
 \item \code{"IGNBase.Gris"}
 \item \code{"IGNBase.TodoNoFondo"}
 \item \code{"IGNBase.Orto"}
@@ -59,6 +66,11 @@ Providers available to be passed to \code{type} in \code{\link[=esp_get_tiles]{e
 \item \code{"Geofisica.Terremotos30dias"}
 \item \code{"Geofisica.Terremotos365dias"}
 \item \code{"Geofisica.ObservedEvents"}
+\item \code{"Geofisica.EstacionesSismicas"}
+\item \code{"Geofisica.HazardArea2015PGA"}
+\item \code{"Geofisica.HazardArea2015Isolineas"}
+\item \code{"Geofisica.HazardArea2015Intensidad"}
+\item \code{"Geofisica.HazardArea2002"}
 \item \code{"Geofisica.HazardArea"}
 \item \code{"VigilanciaVolcanica"}
 \item \code{"VigilanciaVolcanica.ErupcionesHistoricas"}
@@ -70,6 +82,7 @@ Providers available to be passed to \code{type} in \code{\link[=esp_get_tiles]{e
 \item \code{"CaminoDeSantiago.CaminosAndaluces"}
 \item \code{"CaminoDeSantiago.CaminosCentro"}
 \item \code{"CaminoDeSantiago.CaminosEste"}
+\item \code{"CaminoDeSantiago.CaminosNordeste"}
 \item \code{"CaminoDeSantiago.CaminosCatalanes"}
 \item \code{"CaminoDeSantiago.CaminosSureste"}
 \item \code{"CaminoDeSantiago.CaminosInsulares"}
@@ -88,6 +101,10 @@ Providers available to be passed to \code{type} in \code{\link[=esp_get_tiles]{e
 \item \code{"RedTransporte.Carreteras"}
 \item \code{"RedTransporte.Ferroviario"}
 \item \code{"RedTransporte.Aerodromo"}
+\item \code{"RedTransporte.Pistas"}
+\item \code{"RedTransporte.CallesRodaje"}
+\item \code{"RedTransporte.Plataformas"}
+\item \code{"RedTransporte.TransporteCable"}
 \item \code{"RedTransporte.AreaServicio"}
 \item \code{"RedTransporte.EstacionesFerroviario"}
 \item \code{"RedTransporte.Puertos"}
@@ -97,6 +114,7 @@ Providers available to be passed to \code{type} in \code{\link[=esp_get_tiles]{e
 \item \code{"NombresGeograficos"}
 \item \code{"UnidadesAdm"}
 \item \code{"UnidadesAdm.Limites"}
+\item \code{"UnidadesAdm.LimitesHistoricos"}
 \item \code{"UnidadesAdm.Unidades"}
 \item \code{"Hidrografia"}
 \item \code{"Hidrografia.MasaAgua"}
@@ -126,10 +144,70 @@ Providers available to be passed to \code{type} in \code{\link[=esp_get_tiles]{e
 \item \code{"Copernicus.WaterWet"}
 \item \code{"Copernicus.SoilSeal"}
 \item \code{"Copernicus.GrassLand"}
-\item \code{"Copernicus.RiparianGreen"}
 \item \code{"Copernicus.RiparianLandCover"}
 \item \code{"Copernicus.Natura2k"}
 \item \code{"Copernicus.UrbanAtlas"}
+\item \code{"Copernicus.RiparianGreen"}
+\item \code{"PNOAHistorico"}
+\item \code{"PNOAHistorico.Americano"}
+\item \code{"PNOAHistorico.Interministerial"}
+\item \code{"PNOAHistorico.Nacional"}
+\item \code{"PNOAHistorico.OLISTAT"}
+\item \code{"PNOAHistorico.SIGPAC"}
+\item \code{"PNOAHistorico.PNOA2004"}
+\item \code{"PNOAHistorico.PNOA2009"}
+\item \code{"PNOAHistorico.PNOA2014"}
+\item \code{"PNOAHistorico.PNOA2019"}
+\item \code{"PNOAHistorico.PNOA2024"}
+\item \code{"MTNHistorico"}
+\item \code{"MTNHistorico.MTN50"}
+\item \code{"MTNHistorico.MTN25"}
+\item \code{"MTNHistorico.Minutas"}
+\item \code{"Inundaciones"}
+\item \code{"Inundaciones.FluvialT10"}
+\item \code{"Inundaciones.FluvialT100"}
+\item \code{"Inundaciones.FluvialT500"}
+\item \code{"Inundaciones.MarinaT100"}
+\item \code{"Inundaciones.MarinaT500"}
+\item \code{"RedNatura"}
+\item \code{"RedNatura.General"}
+\item \code{"EspaciosProtegidos"}
+\item \code{"EspaciosProtegidos.General"}
+\item \code{"SeccionesINE"}
+\item \code{"SeccionesINE.Secciones2026"}
+\item \code{"SeccionesINE.Distritos2026"}
+\item \code{"SeccionesINE.Secciones2021"}
+\item \code{"SeccionesINE.Distritos2021"}
+\item \code{"Pendientes"}
+\item \code{"Pendientes.MDP05"}
+\item \code{"GEODE"}
+\item \code{"GEODE.Geologia"}
+\item \code{"GEODE.Unidades"}
+\item \code{"GEODE.Contactos"}
+\item \code{"GEODE.Cuaternario"}
+\item \code{"SIGPAC"}
+\item \code{"SIGPAC.Recintos"}
+\item \code{"SIGPAC.CultivoDeclarado2025"}
+\item \code{"SIGPAC.PaisajeAreas"}
+\item \code{"SIGPAC.PaisajeLineas"}
+\item \code{"SIGPAC.PaisajePuntos"}
+\item \code{"MapaForestal"}
+\item \code{"MapaForestal.Usos"}
+\item \code{"Planimetrias"}
+\item \code{"Planimetrias.Minutas"}
+\item \code{"CaminosNaturales"}
+\item \code{"CaminosNaturales.Etapas"}
+\item \code{"SpainByBike"}
+\item \code{"SpainByBike.Etapas"}
+\item \code{"SpainByBike.TiposVia"}
+\item \code{"SpainByBike.CentrosBTT"}
+\item \code{"SpainByBike.Puertos"}
+\item \code{"SpainByBike.PuertosPuntos"}
+\item \code{"ViasPecuarias"}
+\item \code{"ViasPecuarias.Red2024"}
+\item \code{"PotencialSolar"}
+\item \code{"PotencialSolar.Global"}
+\item \code{"PotencialSolar.Edificios"}
 \item \code{"ParquesNaturales"}
 \item \code{"ParquesNaturales.Limites"}
 \item \code{"ParquesNaturales.ZonasPerifericas"}

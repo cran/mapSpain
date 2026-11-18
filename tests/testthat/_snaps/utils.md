@@ -33,6 +33,13 @@
     Message
       v Hooray! 5/5 ;)
 
+---
+
+    Code
+      make_msg("anyothervalue", TRUE, "This is", "a fallback")
+    Message
+      > This is a fallback
+
 # match_arg_pretty() matches values and explains invalid choices
 
     Code

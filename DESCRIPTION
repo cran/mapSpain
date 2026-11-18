@@ -1,7 +1,7 @@
 Type: Package
 Package: mapSpain
 Title: Administrative Boundaries and Static Map Tiles for Spain
-Version: 1.2.1
+Version: 1.3.0
 Authors@R: c(
     person("Diego", "Hernangómez", , "diego.hernangomezherrero@gmail.com", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0001-8457-4658")),
@@ -23,7 +23,7 @@ License: GPL-3
 URL: https://ropenspain.github.io/mapSpain/,
         https://github.com/rOpenSpain/mapSpain
 BugReports: https://github.com/rOpenSpain/mapSpain/issues
-Depends: R (>= 4.1.0)
+Depends: R (>= 4.2.0)
 Imports: cli (>= 3.6.0), countrycode (>= 1.2.0), giscoR (>= 1.0.0),
         httr2 (>= 1.2.0), jsonlite, leaflet (>= 2.0.0), lifecycle,
         rappdirs (>= 0.3.0), sf (>= 1.0.0), terra (>= 1.1-4), tibble,
@@ -38,7 +38,7 @@ Config/Needs/website: ragg, reactable, rnaturalearth, tidyverse,
         ropensci/rnaturalearthhires, geodata, sessioninfo, sfheaders,
         rapidjsonr, jsonify, geometries, geobounds
 Config/roxygen2/markdown: TRUE
-Config/roxygen2/version: 8.1.0
+Config/roxygen2/version: 8.1.1
 Config/testthat/edition: 3
 Config/testthat/parallel: true
 Copyright: © EuroGeographics for the administrative boundaries. Atlas
@@ -53,7 +53,7 @@ X-schema.org-keywords: ropenspain, tiles, r, maps, spatial, rstats,
         autonomous-communities, administrative-boundaries,
         static-tiles, cran, ggplot2, gis, nuts, ccaa
 NeedsCompilation: no
-Packaged: 2026-08-31 09:00:32 UTC; diego
+Packaged: 2026-11-17 17:54:24 UTC; diego
 Author: Diego Hernangómez [aut, cre, cph] (ORCID:
     <https://orcid.org/0000-0001-8457-4658>),
   Eurostat [cph] (ROR: <https://ror.org/033d3q980>),
@@ -62,4 +62,4 @@ Author: Diego Hernangómez [aut, cre, cph] (ORCID:
     <https://orcid.org/0000-0003-1626-525X>)
 Maintainer: Diego Hernangómez <diego.hernangomezherrero@gmail.com>
 Repository: CRAN
-Date/Publication: 2026-08-31 17:00:13 UTC
+Date/Publication: 2026-11-18 13:50:08 UTC

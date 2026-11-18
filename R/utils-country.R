@@ -16,8 +16,8 @@ convert_country_code <- function(names, out = "iso3c", call = parent.frame()) {
     if (
       any(
         grepl("kosovo", tolower(x), fixed = TRUE),
-        "xk" == tolower(x),
-        "xkx" == tolower(x)
+        tolower(x) == "xk",
+        tolower(x) == "xkx"
       )
     ) {
       code <- switch(out,

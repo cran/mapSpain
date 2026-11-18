@@ -20,6 +20,8 @@ test_that("make_msg() respects verbose and formats alert types", {
   expect_snapshot(make_msg("danger", TRUE, "OOPS!", "I did it again :("))
 
   expect_snapshot(make_msg("success", TRUE, "Hooray!", "5/5 ;)"))
+
+  expect_snapshot(make_msg("anyothervalue", TRUE, "This is", "a fallback"))
 })
 
 test_that("match_arg_pretty() matches values and explains invalid choices", {
